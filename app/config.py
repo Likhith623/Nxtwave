@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 # Base directory of the repository
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -53,11 +53,37 @@ class Settings:
     OPENAI_API_KEY: Optional[str] = os.getenv("OPENAI_API_KEY", "").strip() or None
     LLM_MODEL: str = os.getenv("LLM_MODEL", "gpt-4o-mini").strip()
 
-    # WhatsApp Integration (Dry-run by default)
-    WHATSAPP_DRY_RUN: bool = os.getenv("WHATSAPP_DRY_RUN", "True").lower() in ("true", "1", "yes")
+    # ===========================================================================
+    # META WHATSAPP CLOUD API CONFIGURATION
+    # mode: "local_simulation" | "test" | "production"
+    #   local_simulation → zero network calls; full UI works, logs simulated msgs
+    #   test             → sends real messages only to WHATSAPP_ALLOWED_RECIPIENTS
+    #   production       → full access; disabled by default, requires explicit opt-in
+    # ===========================================================================
+    WHATSAPP_MODE: str = os.getenv("WHATSAPP_MODE", "local_simulation").strip().lower()
+    # Legacy compatibility flag — derived from WHATSAPP_MODE
+    @property
+    def WHATSAPP_DRY_RUN(self) -> bool:
+        return self.WHATSAPP_MODE == "local_simulation"
+
     WHATSAPP_VERIFY_TOKEN: str = os.getenv("WHATSAPP_VERIFY_TOKEN", "compass_whatsapp_webhook_token_2026")
     WHATSAPP_ACCESS_TOKEN: Optional[str] = os.getenv("WHATSAPP_ACCESS_TOKEN", "").strip() or None
     WHATSAPP_PHONE_NUMBER_ID: Optional[str] = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "").strip() or None
+    WHATSAPP_API_VERSION: str = os.getenv("WHATSAPP_API_VERSION", "v21.0").strip()
+
+    # Comma-separated E.164 numbers authorised to receive test messages
+    WHATSAPP_ALLOWED_RECIPIENTS_RAW: str = os.getenv("WHATSAPP_ALLOWED_RECIPIENTS", "").strip()
+    @property
+    def WHATSAPP_ALLOWED_RECIPIENTS(self) -> List[str]:
+        if not self.WHATSAPP_ALLOWED_RECIPIENTS_RAW:
+            return []
+        return [r.strip() for r in self.WHATSAPP_ALLOWED_RECIPIENTS_RAW.split(",") if r.strip()]
+
+    # Meta App Secret for HMAC-SHA256 webhook signature validation
+    META_APP_SECRET: Optional[str] = os.getenv("META_APP_SECRET", "").strip() or None
+
+    # Public base URL (required for ngrok/cloud webhook registration)
+    PUBLIC_BASE_URL: str = os.getenv("PUBLIC_BASE_URL", "http://127.0.0.1:8000").strip()
 
     @property
     def is_production(self) -> bool:
@@ -66,5 +92,18 @@ class Settings:
     @property
     def has_external_workshop(self) -> bool:
         return bool(self.WORKSHOP_REGISTRATION_URL and self.WORKSHOP_REGISTRATION_URL.startswith("http"))
+
+    @property
+    def whatsapp_graph_url(self) -> str:
+        return f"https://graph.facebook.com/{self.WHATSAPP_API_VERSION}/{self.WHATSAPP_PHONE_NUMBER_ID}/messages"
+
+    @property
+    def whatsapp_ready(self) -> bool:
+        """True when real API credentials are configured."""
+        return bool(
+            self.WHATSAPP_ACCESS_TOKEN
+            and self.WHATSAPP_PHONE_NUMBER_ID
+            and self.WHATSAPP_MODE in ("test", "production")
+        )
 
 settings = Settings()

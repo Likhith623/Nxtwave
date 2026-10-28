@@ -175,3 +175,57 @@ class AnalyticsEvent(Base):
             return json.loads(self.metadata_json) if self.metadata_json else {}
         except Exception:
             return {}
+
+
+# ==============================================================================
+# WHATSAPP CLOUD API — Persistence Models
+# ==============================================================================
+
+class WhatsAppConversationState(Base):
+    """Persisted multi-turn conversation state per WhatsApp sender."""
+    __tablename__ = "wa_conversation_states"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    wa_id = Column(String(32), unique=True, index=True, nullable=False)  # sender phone
+    state = Column(String(64), nullable=False, default="idle")           # FSM state
+    context_json = Column(Text, nullable=True)                           # serialised dict
+    last_contract_id = Column(String(64), nullable=True)
+    message_count = Column(Integer, default=0)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    def get_context(self) -> dict:
+        try:
+            return json.loads(self.context_json) if self.context_json else {}
+        except Exception:
+            return {}
+
+    def set_context(self, data: dict):
+        self.context_json = json.dumps(data)
+
+
+class ProcessedWhatsAppMessage(Base):
+    """Tracks processed wamid values — prevents duplicate handling on Meta retries."""
+    __tablename__ = "wa_processed_messages"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    wamid = Column(String(128), unique=True, index=True, nullable=False)
+    wa_id = Column(String(32), index=True, nullable=False)
+    processed_at = Column(DateTime, default=datetime.utcnow)
+
+
+class WhatsAppMessageLog(Base):
+    """Immutable audit log of all inbound and outbound WhatsApp messages."""
+    __tablename__ = "wa_message_log"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    log_id = Column(String(64), unique=True, index=True, default=lambda: generate_id("wml"))
+    direction = Column(String(8), nullable=False)           # "inbound" | "outbound"
+    wa_id = Column(String(32), index=True, nullable=False)
+    wamid = Column(String(128), nullable=True)
+    body = Column(Text, nullable=True)                      # safe/truncated text
+    state_before = Column(String(64), nullable=True)
+    state_after = Column(String(64), nullable=True)
+    status = Column(String(32), default="ok")               # ok | error | simulated
+    error_detail = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
