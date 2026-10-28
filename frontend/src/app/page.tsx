@@ -69,8 +69,31 @@ export default function HomePage() {
 
   return (
     <div className="relative min-h-screen">
+      {/* Top Workshop Announcement Banner */}
+      <div className="pt-20 sm:pt-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+        <div className="glass-panel rounded-2xl p-4 sm:p-5 border border-indigo-500/25 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-cyan-500/10">
+          <div className="flex items-start sm:items-center gap-3 text-left">
+            <span className="text-xl flex-shrink-0 mt-0.5 sm:mt-0">⚡</span>
+            <div>
+              <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                NxtWave Free Live Workshop: Build Your First AI Project in 60 Minutes
+              </h4>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5">
+                Don&apos;t spend 4 months coding the wrong project. Learn how to scaffold, integrate, and test a working AI prototype in one session.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/register"
+            className="flex-shrink-0 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/20 transition active:scale-95"
+          >
+            <span>Register Free (₹0) →</span>
+          </Link>
+        </div>
+      </div>
+
       {/* HERO SECTION */}
-      <section className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto flex flex-col items-center text-center">
+      <section className="relative pt-10 sm:pt-16 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto flex flex-col items-center text-center">
         {/* Animated Particles Canvas */}
         <ParticleHero />
 
