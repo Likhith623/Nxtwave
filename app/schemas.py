@@ -186,13 +186,15 @@ class WorkshopRegistrationResponse(BaseModel):
     created_at: datetime
 
 class AnalyticsEventRequest(BaseModel):
-    event_name: str = Field(..., min_length=2, max_length=64)
+    event_name: Optional[str] = Field(default='page_view', max_length=64)
+    event_type: Optional[str] = Field(default=None, max_length=64)
     contract_id: Optional[str] = None
     utm_source: Optional[str] = None
     utm_medium: Optional[str] = None
     utm_campaign: Optional[str] = None
     ref: Optional[str] = None
     session_id: Optional[str] = None
+    payload: Optional[Dict[str, Any]] = None
     metadata: Optional[Dict[str, Any]] = None
 
 class AdminMetricsResponse(BaseModel):

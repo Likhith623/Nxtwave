@@ -17,9 +17,11 @@ def track_event(
 ):
     """Logs client-side interactions (e.g., CTA clicks, page impressions, share button clicks)."""
     client_ip = req.client.host if req.client else None
+    effective_event_name = event_in.event_name or event_in.event_type or 'page_view'
+    effective_metadata = event_in.metadata or event_in.payload
     evt = record_event(
         db=db,
-        event_name=sanitize_string(event_in.event_name),
+        event_name=sanitize_string(effective_event_name),
         contract_id=sanitize_string(event_in.contract_id) if event_in.contract_id else None,
         utm_source=sanitize_string(event_in.utm_source) if event_in.utm_source else None,
         utm_medium=sanitize_string(event_in.utm_medium) if event_in.utm_medium else None,
@@ -27,7 +29,7 @@ def track_event(
         ref=sanitize_string(event_in.ref) if event_in.ref else None,
         session_id=sanitize_string(event_in.session_id) if event_in.session_id else None,
         client_ip=client_ip,
-        metadata=event_in.metadata
+        metadata=effective_metadata
     )
     return {"status": "recorded", "event_id": evt.event_id}
 
