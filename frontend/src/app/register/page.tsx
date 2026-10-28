@@ -36,9 +36,15 @@ export default function RegisterPage() {
 
   const [loading, setLoading] = useState(false);
   const [registered, setRegistered] = useState<any | null>(null);
+  const [contractId, setContractId] = useState<string | null>(null);
 
   useEffect(() => {
     trackAnalyticsEvent("page_view_register");
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const cid = params.get("contract_id");
+      if (cid) setContractId(cid);
+    }
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,25 +82,46 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans">
       {/* Page Header */}
-      <div className="text-center max-w-2xl mx-auto mb-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 mb-4">
+      <div className="text-center max-w-2xl mx-auto mb-8">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-3">
           <UserCheck className="w-3.5 h-3.5" />
-          <span>NxtWave Growth Intern Challenge 2026</span>
+          <span>100% FREE ONLINE MASTERCLASS</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4">
-          Register for Demo Day
+        <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white mb-3">
+          Build Your First AI Project in 60 Minutes
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-          Lock in your place for the 48-Hour Sprint Showcase. Present your Build Contract,
-          demonstrate your Hour-One milestone, and receive direct feedback from engineering mentors.
+        <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+          Turn your 60-minute Build Contract into a runnable prototype live with NxtWave mentors at ₹0 cloud cost.
         </p>
       </div>
 
-      {!registered ? (
-        <div className="glass-panel p-8 sm:p-10 rounded-3xl shadow-xl max-w-2xl mx-auto border border-slate-200 dark:border-slate-800">
-          <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Column: Registration Form */}
+        <div className="lg:col-span-7">
+          {!registered ? (
+            <div className="glass-panel p-6 sm:p-8 rounded-3xl shadow-2xl border border-indigo-500/30 space-y-5 bg-gradient-to-b from-slate-950 to-slate-900">
+              
+              {/* Linked Plan Pill */}
+              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between gap-3 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                  <span className="text-xs font-bold text-emerald-300">
+                    Your plan: 88/100 · 60-min build blueprint ready
+                  </span>
+                </div>
+                {contractId && (
+                  <Link
+                    href={`/contract/${contractId}`}
+                    className="text-[11px] font-bold text-emerald-400 underline"
+                  >
+                    View Plan ({contractId})
+                  </Link>
+                )}
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                 Full Name *
@@ -249,6 +276,90 @@ export default function RegisterPage() {
           </div>
         </div>
       )}
+        </div>
+
+        {/* Right Column: Slide 5 Growth Target Breakdown */}
+        <div className="lg:col-span-5 space-y-4">
+          
+          {/* HOW WE REACH 500 */}
+          <div className="glass-panel p-5 rounded-2xl border border-white/10 space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                HOW WE REACH 500 (PLANNING TARGETS)
+              </span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-300">
+                ~31% end-to-end
+              </span>
+            </div>
+            <div className="grid grid-cols-4 gap-2 text-center">
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                <div className="text-base font-extrabold text-white">1,600</div>
+                <div className="text-[10px] text-slate-400 mt-0.5">Runs</div>
+              </div>
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                <div className="text-base font-extrabold text-white">900</div>
+                <div className="text-[10px] text-slate-400 mt-0.5">Plans</div>
+              </div>
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                <div className="text-base font-extrabold text-white">650</div>
+                <div className="text-[10px] text-slate-400 mt-0.5">Visits</div>
+              </div>
+              <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30">
+                <div className="text-base font-extrabold text-emerald-400">500</div>
+                <div className="text-[10px] text-emerald-400 font-bold mt-0.5">Registered</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ₹2,000 BUDGET · ₹0 ON TECH & CLOUD */}
+          <div className="glass-panel p-5 rounded-2xl border border-white/10 space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                ₹2,000 · ₹0 ON TECH &amp; CLOUD
+              </span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400">
+                ₹4 CAC Target
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                <strong className="text-white block">₹800 club stipends</strong>
+                <span className="text-[10px] text-slate-400">4 × ₹200 campus ambassadors</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                <strong className="text-white block">₹600 rewards</strong>
+                <span className="text-[10px] text-slate-400">Top 3 peer referrers</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                <strong className="text-white block">₹400 QR posters</strong>
+                <span className="text-[10px] text-slate-400">40 A3 prints in labs &amp; hostels</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                <strong className="text-white block">₹200 reserve</strong>
+                <span className="text-[10px] text-slate-400">Day 5–6 WhatsApp backup boost</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 7-DAY SPRINT */}
+          <div className="glass-panel p-5 rounded-2xl border border-white/10 space-y-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
+              7-DAY SPRINT EXECUTION
+            </span>
+            <div className="grid grid-cols-7 gap-1 text-center">
+              <div className="p-1.5 rounded-lg bg-white/5"><div className="font-bold text-[11px] text-indigo-400">D1</div><div className="text-[9px] text-slate-400">Build</div></div>
+              <div className="p-1.5 rounded-lg bg-white/5"><div className="font-bold text-[11px] text-indigo-400">D2</div><div className="text-[9px] text-slate-400">Clubs</div></div>
+              <div className="p-1.5 rounded-lg bg-white/5"><div className="font-bold text-[11px] text-indigo-400">D3</div><div className="text-[9px] text-slate-400">Waves</div></div>
+              <div className="p-1.5 rounded-lg bg-white/5"><div className="font-bold text-[11px] text-indigo-400">D4</div><div className="text-[9px] text-slate-400">Posters</div></div>
+              <div className="p-1.5 rounded-lg bg-white/5"><div className="font-bold text-[11px] text-indigo-400">D5</div><div className="text-[9px] text-slate-400">Board</div></div>
+              <div className="p-1.5 rounded-lg bg-white/5"><div className="font-bold text-[11px] text-indigo-400">D6</div><div className="text-[9px] text-slate-400">Push</div></div>
+              <div className="p-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/30"><div className="font-bold text-[11px] text-emerald-400">D7</div><div className="text-[9px] text-emerald-400 font-bold">500</div></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
     </div>
   );
 }

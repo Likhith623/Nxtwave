@@ -17,6 +17,9 @@ import {
   Target,
   ListChecks,
   Share2,
+  Download,
+  Terminal,
+  Zap,
 } from "lucide-react";
 import { getContract, trackAnalyticsEvent } from "@/lib/api";
 import { useToast } from "@/components/ui/ToastContext";
@@ -35,37 +38,37 @@ interface PieStep {
 const CLASSIC_5_SLICES: PieStep[] = [
   {
     step: 1,
-    title: "Setup & env",
+    title: "Scaffold + load 1 doc",
     minutes: 10,
     window: "Min 00-10",
-    color: "#4f46e5",
+    color: "#f43f5e",
     category: "Setup & Environment",
-    what_you_do: "Create Python venv, install FastAPI + local CPU dependencies, and verify setup.",
+    what_you_do: "Create Python venv, install FastAPI + local CPU dependencies, and extract text from 1 PDF.",
     deliverable: "Verified local environment running at ₹0 cloud cost.",
   },
   {
     step: 2,
-    title: "Data & ingest",
+    title: "Core logic",
     minutes: 15,
     window: "Min 10-25",
     color: "#6366f1",
     category: "Data & Ingestion",
-    what_you_do: "Load sample dataset/PDF, clean records, and build local embeddings/index.",
+    what_you_do: "Load sample dataset/PDF, clean records, and build local sentence embeddings/index.",
     deliverable: "Indexed local dataset ready for sub-200ms queries.",
   },
   {
     step: 3,
-    title: "Core AI logic",
+    title: "Test queries",
     minutes: 10,
     window: "Min 25-35",
-    color: "#818cf8",
+    color: "#8b5cf6",
     category: "Core AI Pipeline",
     what_you_do: "Wire inference/retrieval pipeline with strict confidence threshold & fallback.",
     deliverable: "Core inference function passing unit sanity check.",
   },
   {
     step: 4,
-    title: "UI & wire-up",
+    title: "Simple web UI",
     minutes: 15,
     window: "Min 35-50",
     color: "#10b981",
@@ -75,7 +78,7 @@ const CLASSIC_5_SLICES: PieStep[] = [
   },
   {
     step: 5,
-    title: "Test & demo",
+    title: "Stress test + verify",
     minutes: 10,
     window: "Min 50-60",
     color: "#f59e0b",
@@ -83,6 +86,17 @@ const CLASSIC_5_SLICES: PieStep[] = [
     what_you_do: "Execute the failure test scripts and record a 60-second demo walkthrough.",
     deliverable: "Viva-ready prototype verified against edge-case traps.",
   },
+];
+
+const DETAILED_8_SLICES: PieStep[] = [
+  { step: 1, title: "Setup venv & FastAPI", minutes: 5, window: "00-05m", color: "#f43f5e", category: "Scaffold", what_you_do: "Initialize repo & app/main.py", deliverable: "Server running on :8000" },
+  { step: 2, title: "Install sentence-transformers", minutes: 7, window: "05-12m", color: "#fb7185", category: "Engine", what_you_do: "Install CPU model without GPU dependencies", deliverable: "Model loaded in RAM" },
+  { step: 3, title: "Ingest sample PDF text", minutes: 8, window: "12-20m", color: "#6366f1", category: "Ingest", what_you_do: "Parse regulation circulars", deliverable: "Clean chunked passages" },
+  { step: 4, title: "Generate vector embeddings", minutes: 10, window: "20-30m", color: "#818cf8", category: "Embed", what_you_do: "Store vectors in memory or SQLite", deliverable: "Indexed vectors ready" },
+  { step: 5, title: "Build cosine retrieval logic", minutes: 8, window: "30-38m", color: "#8b5cf6", category: "Query", what_you_do: "Calculate top-3 matching chunks", deliverable: "Sub-200ms query endpoint" },
+  { step: 6, title: "Wire chat frontend", minutes: 10, window: "38-48m", color: "#10b981", category: "UI", what_you_do: "Lightweight HTML/Tailwind chat view", deliverable: "Working browser UI" },
+  { step: 7, title: "Enforce refusal threshold", minutes: 7, window: "48-55m", color: "#34d399", category: "Safeguard", what_you_do: "Reject unlisted/out-of-domain queries", deliverable: "Zero hallucination guard" },
+  { step: 8, title: "Run viva rehearsal", minutes: 5, window: "55-60m", color: "#f59e0b", category: "Verify", what_you_do: "Rehearse edge-case demonstration", deliverable: "Demo-ready repository" },
 ];
 
 export default function ContractPage({
@@ -97,7 +111,7 @@ export default function ContractPage({
   const [contract, setContract] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [pieMode, setPieMode] = useState<"detailed" | "classic5">("detailed");
+  const [pieMode, setPieMode] = useState<"classic5" | "detailed">("classic5");
   const [activeSlice, setActiveSlice] = useState<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -227,12 +241,7 @@ export default function ContractPage({
     loadContract();
   }, [contractId]);
 
-  const detailedSlices: PieStep[] =
-    contract?.plan_60min_detailed && contract.plan_60min_detailed.length > 0
-      ? contract.plan_60min_detailed
-      : CLASSIC_5_SLICES;
-
-  const activeSlices = pieMode === "classic5" ? CLASSIC_5_SLICES : detailedSlices;
+  const activeSlices = pieMode === "classic5" ? CLASSIC_5_SLICES : DETAILED_8_SLICES;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -242,17 +251,17 @@ export default function ContractPage({
 
     const dpr = window.devicePixelRatio || 1;
     const w = 380;
-    const h = 320;
+    const h = 260;
     canvas.width = w * dpr;
     canvas.height = h * dpr;
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, w, h);
 
     const cx = w / 2;
-    const cy = h / 2 - 10;
-    const rx = 135;
-    const ry = 102;
-    const depth = 22;
+    const cy = h / 2 - 8;
+    const rx = 130;
+    const ry = 92;
+    const depth = 18;
     const total = activeSlices.reduce((acc, s) => acc + Number(s.minutes || 0), 0) || 60;
 
     let startAngle = -Math.PI / 2;
@@ -265,84 +274,84 @@ export default function ContractPage({
       return item;
     });
 
-    // Draw 3D extruded walls
+    // 1. Draw 3D Extruded Layers
     for (let layer = depth; layer >= 1; layer--) {
       computed.forEach((s) => {
-        const isHovered = activeSlice === s.idx;
-        const ox = isHovered ? Math.cos(s.midAngle) * 8 : 0;
-        const oy = isHovered ? Math.sin(s.midAngle) * 6 : 0;
         ctx.beginPath();
-        ctx.ellipse(cx + ox, cy + oy + layer, rx, ry, 0, s.startAngle, s.endAngle);
-        ctx.lineTo(cx + ox, cy + oy + layer);
+        ctx.ellipse(cx, cy + layer, rx, ry, 0, s.startAngle, s.endAngle);
+        ctx.lineTo(cx, cy + layer);
         ctx.closePath();
         ctx.fillStyle = "#1e1b4b";
         ctx.fill();
       });
     }
 
-    // Draw top faces + labels
+    // 2. Draw Top Slices + Minute Labels
     computed.forEach((s) => {
-      const isHovered = activeSlice === s.idx;
-      const ox = isHovered ? Math.cos(s.midAngle) * 8 : 0;
-      const oy = isHovered ? Math.sin(s.midAngle) * 6 : 0;
       ctx.beginPath();
-      ctx.ellipse(cx + ox, cy + oy, rx, ry, 0, s.startAngle, s.endAngle);
-      ctx.lineTo(cx + ox, cy + oy);
+      ctx.ellipse(cx, cy, rx, ry, 0, s.startAngle, s.endAngle);
+      ctx.lineTo(cx, cy);
       ctx.closePath();
       ctx.fillStyle = s.color || "#6366f1";
       ctx.fill();
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1.5;
       ctx.strokeStyle = "#0b1020";
       ctx.stroke();
 
-      const lx = cx + ox + Math.cos(s.midAngle) * (rx * 0.66);
-      const ly = cy + oy + Math.sin(s.midAngle) * (ry * 0.66);
+      const labelRadius = rx * 0.65;
+      const lx = cx + Math.cos(s.midAngle) * labelRadius;
+      const ly = cy + Math.sin(s.midAngle) * (labelRadius * 0.73);
       ctx.fillStyle = "#ffffff";
-      ctx.font = "800 11px Inter, sans-serif";
+      ctx.font = "bold 11px Inter, sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(`${s.minutes}m`, lx, ly);
+      ctx.fillText(`${s.minutes} min`, lx, ly);
     });
 
-    // Inner hub
+    // 3. Center Hole
     ctx.beginPath();
-    ctx.ellipse(cx, cy, rx * 0.34, ry * 0.34, 0, 0, Math.PI * 2);
-    ctx.fillStyle = "#0f172a";
+    ctx.ellipse(cx, cy, rx * 0.33, ry * 0.33, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "#090e1a";
     ctx.fill();
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgba(99,102,241,0.5)";
+    ctx.strokeStyle = "rgba(99,102,241,0.6)";
     ctx.stroke();
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "800 14px Inter, sans-serif";
+    ctx.font = "900 13px Inter, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("60 MIN", cx, cy - 5);
+    ctx.fillText("60m", cx, cy - 3);
     ctx.fillStyle = "#34d399";
-    ctx.font = "700 9px monospace";
-    ctx.fillText("TOTAL PLAN", cx, cy + 10);
+    ctx.font = "bold 8px monospace";
+    ctx.fillText("TOTAL", cx, cy + 9);
   }, [activeSlices, activeSlice, pieMode]);
 
   const copyShareLink = () => {
-    const url = window.location.href;
+    const url = typeof window !== "undefined" ? `${window.location.origin}/challenge/${contract?.contract_id || contractId}` : "";
     navigator.clipboard.writeText(url);
     setCopied(true);
-    success("Contract link copied to clipboard!");
+    success("Link copied! Friends who open it enter an interactive AI Chat room to test your build.");
     setTimeout(() => setCopied(false), 3000);
   };
 
   const shareToWhatsApp = () => {
-    const url = window.location.href;
+    const url = typeof window !== "undefined" ? `${window.location.origin}/challenge/${contract?.contract_id || contractId}` : "";
     const title = contract?.project_name || contract?.project_title || "My AI Project";
-    const score = contract?.feasibility_score || 88;
-    const text = `Hey! My final-year AI project "${title}" scored ${score}/100 on Project Compass 🎯\n\nCheck out my 60-minute build plan, try to break my build, or use this document as context for your own idea:\n${url}`;
+    const text = `Guys, break my final-year project plan ("${title}") before my professor does! 😅\nCheck my 60-minute build plan & chat with the AI about it here: ${url}\nDrop an edge case in the chat or test your own idea! 🔥`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+  };
+
+  const downloadPDF = () => {
+    if (typeof window !== "undefined") {
+      window.print();
+    }
   };
 
   if (loading) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4">
         <RefreshCw className="w-8 h-8 animate-spin text-indigo-500" />
-        <p className="text-sm text-slate-500 font-medium">Loading 60-Minute Build Plan...</p>
+        <p className="text-sm text-slate-400 font-medium font-mono">Loading 60-Minute Build Blueprint...</p>
       </div>
     );
   }
@@ -351,13 +360,13 @@ export default function ContractPage({
     return (
       <div className="max-w-xl mx-auto my-20 p-8 glass-card text-center">
         <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Contract Not Found</h2>
-        <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+        <h2 className="text-2xl font-bold text-white mb-2">Blueprint Not Found</h2>
+        <p className="text-sm text-slate-400 mb-6">
           Contract ID &quot;{contractId}&quot; could not be located in the database.
         </p>
         <Link
           href="/compare"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold text-sm"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition"
         >
           <span>Create New Comparison</span>
         </Link>
@@ -370,326 +379,221 @@ export default function ContractPage({
   const mvpFeatures = contract.mvp_features || [];
   const deferredFeatures = contract.deferred_features || contract.out_of_scope || [];
   const planMilestones = contract.plan_60min || [];
-  const projectTitle = contract.project_name || contract.project_title || "AI Build Plan";
+  const projectTitle = contract.project_name || contract.project_title || "AI Build Blueprint";
   const feasibilityScore = contract.feasibility_score || 88;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      {/* Top Breadcrumb & Quick Actions */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 font-sans">
+      
+      {/* Top Header & Action Bar */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-white/10">
         <div>
-          <div className="text-xs font-mono font-bold uppercase tracking-wider text-indigo-500 mb-1">
-            02 / THE 60-MINUTE BUILD PLAN · STEP 2 OF 4
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mb-2">
+            <span>⚡ PROTOTYPE BLUEPRINT LOCKED · SCORE {feasibilityScore}/100</span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-            <Link href="/" className="hover:underline">Home</Link>
-            <span>/</span>
-            <Link href="/compare" className="hover:underline">Compare</Link>
-            <span>/</span>
-            <span className="font-mono text-indigo-600 dark:text-indigo-400 font-bold">
-              {contract.contract_id || contractId}
-            </span>
-          </div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+            {projectTitle}
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-3xl leading-relaxed">
+            <strong className="text-white">A Build Plan That Leaves Nothing Out:</strong> Required ₹0 local stack, hidden assumptions, concrete failure tests, strict scope limits, and your <strong>exact 60-minute build pie chart</strong>.
+          </p>
         </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap w-full sm:w-auto">
-          <a
-            href="#pieChartSection"
-            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-300 border border-indigo-500/30 text-xs font-bold transition"
+        {/* Action Buttons */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={downloadPDF}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-200 transition"
           >
-            <span>🥧 60-Min Pie Chart</span>
-          </a>
+            <Download className="w-3.5 h-3.5" />
+            <span>Download PDF</span>
+          </button>
+          <button
+            onClick={copyShareLink}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-200 transition"
+          >
+            <Copy className="w-3.5 h-3.5" />
+            <span>{copied ? "Copied!" : "Copy Link"}</span>
+          </button>
           <button
             onClick={shareToWhatsApp}
-            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-sm"
           >
             <Share2 className="w-3.5 h-3.5" />
-            <span>Share to WhatsApp</span>
+            <span>Share WhatsApp</span>
           </button>
           <Link
             href={`/compare?from_contract=${contract.contract_id || contractId}`}
-            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/70 text-xs font-semibold text-slate-700 dark:text-slate-300 transition"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shadow-sm"
           >
-            <span>🔄 Remix With Context</span>
+            <span>🔄 Remix Context</span>
           </Link>
         </div>
       </div>
 
-      {/* Main Official Build Contract Document */}
-      <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-white/10 shadow-2xl relative space-y-8">
-        {/* Document Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-white/10">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30">
-              <FileCheck2 className="w-6 h-6" />
-            </div>
-            <div>
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-indigo-500">
-                Complete Technical Blueprint · Score {feasibilityScore}/100
-              </span>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-                {projectTitle}
-              </h2>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>60-MIN PLAN LOCKED</span>
+      {/* Main Master Card */}
+      <div className="glass-panel rounded-3xl p-6 sm:p-9 border border-indigo-500/30 shadow-2xl relative space-y-8 bg-gradient-to-b from-slate-950/80 via-slate-900/60 to-slate-950/80">
+        
+        {/* Project Metadata Banner */}
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-white/10">
+          <div>
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-400 block mb-1">
+              OFFICIAL BUILD CONTRACT LOCKED · SCORE {feasibilityScore}/100
             </span>
-            <span className="text-xs font-mono text-slate-500 dark:text-slate-400 font-bold">
-              ID: {contract.contract_id || contractId}
-            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-white">
+              {projectTitle}
+            </h2>
+            <div className="text-xs text-slate-400 mt-1 flex items-center gap-3 flex-wrap">
+              <span>Category: <strong className="text-indigo-400">{contract.category}</strong></span>
+              <span>•</span>
+              <span>Target Time: <strong className="text-emerald-400">Exactly 60 Minutes</strong></span>
+              <span>•</span>
+              <span>Cloud Budget: <strong className="text-emerald-400">₹0 Local CPU</strong></span>
+            </div>
+          </div>
+          <div className="px-3 py-1.5 rounded-lg bg-black/40 border border-white/10 font-mono text-xs text-indigo-300 font-bold">
+            ID: {contract.contract_id || contractId}
           </div>
         </div>
 
-        {/* 1. The ₹0 Tech Stack */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-            <Cpu className="w-4 h-4" />
-            <span>1. The ₹0 Tech Stack (Everything Required to Build)</span>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-              <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Frontend UI</span>
-              <strong className="text-sm text-indigo-600 dark:text-indigo-400 block">{stack.frontend || "Next.js 14 / Streamlit"}</strong>
-            </div>
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-              <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Backend API</span>
-              <strong className="text-sm text-blue-600 dark:text-blue-400 block">{stack.backend || "FastAPI + Pydantic v2"}</strong>
-            </div>
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-              <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">AI Model / Engine</span>
-              <strong className="text-sm text-violet-600 dark:text-violet-400 block">{stack.ai_model || "Sentence-Transformers on CPU"}</strong>
-            </div>
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
-              <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Database</span>
-              <strong className="text-sm text-emerald-600 dark:text-emerald-400 block">{stack.database || "Local ChromaDB / SQLite (₹0)"}</strong>
-            </div>
-          </div>
-        </div>
-
-        {/* 2. Load-Bearing Assumption */}
-        <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-white/10">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-            <AlertTriangle className="w-4 h-4" />
-            <span>2. The &ldquo;Load-Bearing Assumption&rdquo; (Single Point of Failure &amp; Key Limitation)</span>
-          </div>
-          <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-2">
-            <p className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-relaxed">
-              &ldquo;{contract.critical_assumption || contract.load_bearing_assumption}&rdquo;
-            </p>
-            <p className="text-xs text-slate-600 dark:text-slate-400">
-              <strong>Key Limitation:</strong> If this assumption fails during your college viva and you have no fallback threshold, the project fails review.
-            </p>
-          </div>
-        </div>
-
-        {/* 3. Concrete Failure Tests */}
-        <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-white/10">
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-              <ListChecks className="w-4 h-4 text-indigo-500" />
-              <span>3. Concrete Failure Tests</span>
-            </div>
-            <span className="text-[11px] font-bold uppercase tracking-wider px-3 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-              Proposed Tests — Not Yet Executed
-            </span>
-          </div>
-          <div className="space-y-4">
-            {failureScenarios.map((test: any, i: number) => (
-              <div key={i} className="p-5 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-3">
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300">
-                    {test.test_id || `TST-0${i + 1}`}
-                  </span>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">{test.test_name || test.title}</h4>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                  <div className="p-3 rounded-xl bg-white dark:bg-black/20 border border-slate-200/80 dark:border-white/5">
-                    <strong className="text-slate-900 dark:text-white block mb-0.5">1. What to Test:</strong>
-                    <span className="text-slate-600 dark:text-slate-400">{test.what_is_tested || test.what_to_test}</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-white dark:bg-black/20 border border-slate-200/80 dark:border-white/5">
-                    <strong className="text-indigo-600 dark:text-indigo-400 block mb-0.5">2. What to Expect:</strong>
-                    <span className="text-slate-600 dark:text-slate-400">{test.expected_observation || test.what_to_expect}</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-white dark:bg-black/20 border border-slate-200/80 dark:border-white/5">
-                    <strong className="text-emerald-600 dark:text-emerald-400 block mb-0.5">3. Acceptance Criteria:</strong>
-                    <span className="text-slate-600 dark:text-slate-400">{test.acceptance_criteria}</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-white dark:bg-black/20 border border-slate-200/80 dark:border-white/5">
-                    <strong className="text-amber-600 dark:text-amber-400 block mb-0.5">4. How to Fix It:</strong>
-                    <span className="text-slate-600 dark:text-slate-400">{test.remediation_plan || test.how_to_fix_it}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 4. Strict Scope Boundary */}
-        <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-white/10">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
-            <Target className="w-4 h-4" />
-            <span>4. Strict Scope Boundary (What NOT to Build in Week 1)</span>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-5 rounded-2xl bg-emerald-500/5 border border-emerald-500/25 space-y-3">
-              <h4 className="text-sm font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                <span>Essential MVP Features (Build Now):</span>
-              </h4>
-              <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-                {mvpFeatures.map((feat: string, i: number) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="text-emerald-500 font-bold">•</span>
-                    <span>{feat}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-rose-500/5 border border-rose-500/25 space-y-3">
-              <h4 className="text-sm font-bold text-rose-700 dark:text-rose-400 flex items-center gap-2">
-                <Ban className="w-4 h-4 text-rose-500" />
-                <span>DO NOT Build in Week 1:</span>
-              </h4>
-              <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-                {deferredFeatures.map((feat: string, i: number) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="text-rose-500 font-bold">•</span>
-                    <span>{feat}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* 5. The 60-Minute Prototype Plan */}
-        <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-white/10">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-            <Clock className="w-4 h-4" />
-            <span>5. The 60-Minute Prototype Plan (Four 15-Minute Milestones)</span>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {planMilestones.map((m: any, i: number) => (
-              <div key={i} className="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-2">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-500/20 text-indigo-700 dark:text-indigo-300">
-                  {m.time_window || `Minutes ${i * 15}-${(i + 1) * 15}`}
+        {/* TWO-COLUMN HERO: 6 PILLARS (LEFT) + 60-MIN PIE CHART (RIGHT) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          
+          {/* Left Column: 6 Structured Cards */}
+          <div className="lg:col-span-7 flex flex-col justify-between gap-3">
+            
+            {/* 1. ₹0 Tech Stack */}
+            <a href="#sec1" className="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-start gap-3">
+              <span className="w-7 h-7 rounded-full bg-rose-500 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+              <div>
+                <strong className="text-sm font-bold text-white block">₹0 Tech Stack</strong>
+                <span className="text-xs text-slate-300 leading-snug">
+                  FastAPI + SQLite + free local embeddings. No cloud bill. Runs directly on laptop.
                 </span>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white">{m.phase_title || m.title}</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{m.objective || m.task}</p>
-                <div className="pt-2 border-t border-slate-200/60 dark:border-white/5 text-[11px] text-indigo-600 dark:text-indigo-400 font-medium">
-                  <strong>Deliverable: </strong>{m.deliverable}
-                </div>
               </div>
-            ))}
-          </div>
-        </div>
+            </a>
 
-        {/* 6. 5-Minute Immediate Next Action */}
-        <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-white/10">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-            <Sparkles className="w-4 h-4" />
-            <span>6. 5-Minute Immediate Next Action</span>
-          </div>
-          <div className="p-5 rounded-2xl bg-gradient-to-r from-cyan-500/10 to-indigo-500/10 border border-cyan-500/30">
-            <p className="text-sm text-slate-700 dark:text-slate-300 font-mono">
-              {contract.immediate_action}
-            </p>
-          </div>
-        </div>
-
-        {/* 🥧 3D-EXTRUDED 60-MINUTE PIE CHART AT THE END OF THE DOCUMENT */}
-        <div id="pieChartSection" className="pt-6 border-t-2 border-indigo-500/30 space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <span className="text-xs font-mono font-bold uppercase tracking-widest text-indigo-500 block">
-                ● 60-MINUTE BUILD PIE CHART · TOTAL = 60 MINS
-              </span>
-              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
-                Every Single Minute Accounted For (60 Minutes Total)
-              </h3>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setPieMode("detailed")}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition ${
-                  pieMode === "detailed"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400"
-                }`}
-              >
-                8-Step Detailed (60m)
-              </button>
-              <button
-                type="button"
-                onClick={() => setPieMode("classic5")}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition ${
-                  pieMode === "classic5"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400"
-                }`}
-              >
-                5-Slice Classic (60m)
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center bg-slate-950/90 text-white p-6 rounded-2xl border border-indigo-500/30">
-            <div className="lg:col-span-5 flex flex-col items-center">
-              <canvas ref={canvasRef} className="w-[360px] h-[300px] max-w-full" />
-              <div className="text-xs font-mono text-emerald-400 font-bold tracking-wider uppercase mt-1">
-                EXACTLY 60 MINUTES · ZERO CLOUD COST
+            {/* 2. Load-Bearing Assumption */}
+            <a href="#sec2" className="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-start gap-3">
+              <span className="w-7 h-7 rounded-full bg-indigo-500 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+              <div>
+                <strong className="text-sm font-bold text-white block">Load-Bearing Assumption</strong>
+                <span className="text-xs text-slate-300 leading-snug">
+                  The one hidden risk that sinks the project: &ldquo;{contract.critical_assumption?.slice(0, 85)}...&rdquo;
+                </span>
               </div>
-            </div>
-            <div className="lg:col-span-7 space-y-2.5 max-h-[340px] overflow-y-auto pr-1">
-              {activeSlices.map((s, idx) => (
-                <div
-                  key={idx}
-                  onMouseEnter={() => setActiveSlice(idx)}
-                  onMouseLeave={() => setActiveSlice(null)}
-                  className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-start justify-between gap-3 cursor-pointer"
+            </a>
+
+            {/* 3. Failure Tests */}
+            <a href="#sec3" className="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-start gap-3">
+              <span className="w-7 h-7 rounded-full bg-amber-500 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+              <div>
+                <strong className="text-sm font-bold text-white block">Failure Tests</strong>
+                <span className="text-xs text-slate-300 leading-snug">
+                  2–3 tests: what to test, what to expect, accept criteria, fix. Labelled &ldquo;Proposed&rdquo;.
+                </span>
+              </div>
+            </a>
+
+            {/* 4. Scope Boundary */}
+            <a href="#sec4" className="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-start gap-3">
+              <span className="w-7 h-7 rounded-full bg-emerald-500 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
+              <div>
+                <strong className="text-sm font-bold text-white block">Scope Boundary</strong>
+                <span className="text-xs text-slate-300 leading-snug">
+                  Essential MVP features vs what NOT to build in Week 1 (no payments, no complex logins).
+                </span>
+              </div>
+            </a>
+
+            {/* 5. 60-Minute Prototype Plan */}
+            <a href="#sec5" className="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-start gap-3">
+              <span className="w-7 h-7 rounded-full bg-violet-500 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">5</span>
+              <div>
+                <strong className="text-sm font-bold text-white block">60-Minute Prototype Plan</strong>
+                <span className="text-xs text-slate-300 leading-snug">
+                  Milestones that add up to exactly an hour: scaffold, data ingest, core AI, UI wire-up, verify.
+                </span>
+              </div>
+            </a>
+
+            {/* 6. 5-Minute Next Action */}
+            <a href="#sec6" className="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-start gap-3">
+              <span className="w-7 h-7 rounded-full bg-pink-500 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">6</span>
+              <div>
+                <strong className="text-sm font-bold text-white block">5-Minute Next Action</strong>
+                <span className="text-xs text-slate-300 leading-snug">
+                  One task you can do right now to build momentum immediately.
+                </span>
+              </div>
+            </a>
+          </div>
+
+          {/* Right Column: 60-Minute Pie Chart */}
+          <div className="lg:col-span-5 p-5 rounded-2xl bg-slate-950/90 border border-indigo-500/40 flex flex-col justify-between items-center shadow-xl">
+            <div className="w-full flex justify-between items-center mb-2">
+              <div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400 block">
+                  EXACTLY 60 MINUTES
+                </span>
+                <h4 className="text-sm font-extrabold text-white">60-Min Build Pie Chart</h4>
+              </div>
+              <div className="flex gap-1">
+                <button
+                  type="button"
+                  onClick={() => setPieMode("classic5")}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition ${
+                    pieMode === "classic5"
+                      ? "bg-indigo-600 text-white"
+                      : "bg-white/5 text-slate-400 hover:text-white"
+                  }`}
                 >
-                  <div className="flex items-start gap-2.5">
-                    <span
-                      className="w-3.5 h-3.5 rounded-md flex-shrink-0 mt-1"
-                      style={{ backgroundColor: s.color || "#6366f1" }}
-                    />
-                    <div>
-                      <div className="text-xs font-bold text-white">
-                        {s.step}. {s.title}{" "}
-                        <span className="text-slate-400 font-mono font-normal">({s.window})</span>
-                      </div>
-                      <p className="text-[11px] text-slate-300 mt-0.5">{s.what_you_do}</p>
-                    </div>
-                  </div>
-                  <span className="px-2.5 py-1 rounded-md bg-indigo-500/20 text-indigo-300 font-mono text-xs font-bold flex-shrink-0">
-                    {s.minutes} min
-                  </span>
+                  Classic 5 (60m)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPieMode("detailed")}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition ${
+                    pieMode === "detailed"
+                      ? "bg-indigo-600 text-white"
+                      : "bg-white/5 text-slate-400 hover:text-white"
+                  }`}
+                >
+                  Detailed 8 (60m)
+                </button>
+              </div>
+            </div>
+
+            {/* Canvas */}
+            <div className="relative w-full flex justify-center items-center py-2">
+              <canvas ref={canvasRef} className="max-w-full h-auto" />
+            </div>
+
+            {/* Dynamic Legend */}
+            <div className="w-full grid grid-cols-2 gap-1.5 text-[11px] text-slate-300 pt-2 border-t border-white/10">
+              {activeSlices.map((s, idx) => (
+                <div key={idx} className="flex items-center gap-1.5 truncate">
+                  <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: s.color }} />
+                  <span className="truncate">{s.title} (<strong>{s.minutes}m</strong>)</span>
                 </div>
               ))}
             </div>
+
+            <div className="w-full text-center mt-3 pt-2 border-t border-white/5 text-[11px] font-mono text-emerald-400 font-bold">
+              TOTAL TIME: 60 MINS · ₹0 CLOUD COST
+            </div>
           </div>
         </div>
 
-        {/* ⚡ "60 MINUTES = 60 MINUTES" WORKSHOP CTA BANNER (Right after the 60-min Pie Chart!) */}
-        <div className="rounded-2xl p-6 sm:p-7 bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 border-2 border-indigo-500/50 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-start sm:items-center gap-4">
-            <div className="px-4 py-3 rounded-2xl bg-indigo-600 text-white font-mono font-black text-sm tracking-wider uppercase shadow-lg shadow-indigo-600/40 flex-shrink-0 text-center">
-              <div className="text-lg leading-none">60</div>
-              <div className="text-[10px]">MINS</div>
+        {/* BOTTOM WORKSHOP BAR: 60 MINS = 60 MINS LIVE WORKSHOP */}
+        <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 border-2 border-indigo-500/50 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-5">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-indigo-600 text-white font-black text-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-600/50">
+              60
             </div>
             <div>
-              <div className="text-xs font-mono uppercase tracking-widest text-emerald-400 font-bold mb-1">
-                60 MINUTES ON THE PIE CHART = 60 MINUTES LIVE
-              </div>
-              <h3 className="text-lg sm:text-xl font-extrabold text-white">
-                This plan takes 60 minutes. So does our workshop. Come build it live!
+              <h3 className="text-base sm:text-lg font-extrabold text-white leading-tight">
+                “This plan takes exactly 60 minutes. So does our workshop. Come build it live.”
               </h3>
               <p className="text-xs sm:text-sm text-slate-300 mt-1">
                 Your plan is ready! Learn how to build this exact prototype in 60 minutes at NxtWave&apos;s free live workshop.
@@ -698,59 +602,240 @@ export default function ContractPage({
           </div>
           <Link
             href={`/register?contract_id=${contract.contract_id || contractId}`}
-            className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-sm shadow-lg shadow-emerald-500/30 transition whitespace-nowrap"
+            className="w-full md:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-emerald-500/30 transition whitespace-nowrap text-center"
           >
-            <span>Join the 60-Min Workshop →</span>
+            <span>Join the workshop →</span>
           </Link>
         </div>
 
-        {/* STEP 3: SHARE TO WHATSAPP GROUP & FRIEND CONTEXT CONTINUATION */}
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-emerald-500/10 border border-indigo-500/30 space-y-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <span className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
-                03 / THE SHARE LOOP · STEP 3 OF 4
-              </span>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-0.5">
-                Share Your Link to Your WhatsApp Group — Friends Can Critique or Continue With This Context
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                When a classmate opens your link, they see your full 60-minute build plan, can challenge weak spots, or click &ldquo;Continue With This Plan as Context&rdquo; to score &amp; remix their own version.
-              </p>
+        {/* DETAILED TECHNICAL EXECUTION PANELS (SECTIONS 1 TO 6) */}
+
+        {/* 1. The ₹0 Tech Stack */}
+        <div id="sec1" className="pt-6 border-t border-white/10 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-rose-500" />
+              <span>1. The ₹0 Tech Stack (Everything Required to Build)</span>
+            </h3>
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              ₹0 Cloud Fees
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10">
+              <span className="text-[10px] font-mono text-slate-400 uppercase block mb-1">Frontend</span>
+              <strong className="text-xs text-white block">{stack.frontend || contract.frontend_rec || "Next.js / HTML5"}</strong>
             </div>
-            <div className="flex flex-wrap gap-2.5 flex-shrink-0">
-              <button
-                type="button"
-                onClick={shareToWhatsApp}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition"
-              >
-                <Share2 className="w-4 h-4" />
-                <span>Share to WhatsApp Group</span>
-              </button>
-              <button
-                type="button"
-                onClick={copyShareLink}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-white/15 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-bold text-xs transition"
-              >
-                <Copy className="w-4 h-4" />
-                <span>{copied ? "Copied!" : "Copy Link"}</span>
-              </button>
-              <Link
-                href={`/compare?from_contract=${contract.contract_id || contractId}`}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition"
-              >
-                <span>🔄 Continue / Remix With This Context →</span>
-              </Link>
-              <Link
-                href={`/challenge/${contract.contract_id || contractId}`}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md transition"
-              >
-                <ShieldAlert className="w-4 h-4" />
-                <span>Break My Build 🛡️</span>
-              </Link>
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10">
+              <span className="text-[10px] font-mono text-slate-400 uppercase block mb-1">Backend</span>
+              <strong className="text-xs text-blue-400 block">{stack.backend || contract.backend_rec || "FastAPI"}</strong>
+            </div>
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10">
+              <span className="text-[10px] font-mono text-slate-400 uppercase block mb-1">AI Model</span>
+              <strong className="text-xs text-violet-400 block">{stack.ai_model || contract.ai_model_rec || "Sentence-Transformers on CPU"}</strong>
+            </div>
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10">
+              <span className="text-[10px] font-mono text-slate-400 uppercase block mb-1">Database</span>
+              <strong className="text-xs text-emerald-400 block">{stack.database || contract.db_rec || "Local SQLite (₹0)"}</strong>
+            </div>
+          </div>
+          {contract.tech_reasoning && (
+            <div className="p-3.5 rounded-xl bg-white/5 border-l-2 border-indigo-500 text-xs text-slate-300">
+              <strong className="text-white">Architectural Rationale: </strong>{contract.tech_reasoning}
+            </div>
+          )}
+        </div>
+
+        {/* 2. Load-Bearing Assumption */}
+        <div id="sec2" className="pt-6 border-t border-white/10 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-500" />
+              <span>2. The “Load-Bearing Assumption” (The Trap &amp; Key Limitation)</span>
+            </h3>
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              Single Point of Failure
+            </span>
+          </div>
+          <div className="p-4 rounded-xl bg-amber-500/10 border-l-4 border-amber-500 space-y-2">
+            <p className="text-sm sm:text-base font-bold text-white leading-relaxed">
+              &ldquo;{contract.critical_assumption}&rdquo;
+            </p>
+            <p className="text-xs text-slate-300">
+              <strong>What happens when someone asks an unlisted question?</strong> If this assumption proves false during your professor&apos;s viva review and your code lacks a confidence threshold, the model hallucinates and the project fails review.
+            </p>
+          </div>
+        </div>
+
+        {/* 3. Concrete Failure Tests */}
+        <div id="sec3" className="pt-6 border-t border-white/10 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <ListChecks className="w-4 h-4 text-indigo-400" />
+              <span>3. Concrete Failure Tests</span>
+            </h3>
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              Proposed Tests — Not Yet Executed
+            </span>
+          </div>
+          <div className="space-y-3">
+            {failureScenarios.map((test: any, i: number) => (
+              <div key={i} className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <strong className="text-sm font-bold text-white">{test.test_name}</strong>
+                  <span className="px-2 py-0.5 rounded font-mono text-[10px] bg-white/10 text-indigo-300 font-bold">{test.test_id || `TST-0${i + 1}`}</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                  <div className="p-2.5 rounded bg-black/30 border border-white/5">
+                    <strong className="text-slate-400 block mb-0.5">1. What to Test:</strong>
+                    <span className="text-slate-200">{test.what_is_tested}</span>
+                  </div>
+                  <div className="p-2.5 rounded bg-black/30 border border-white/5">
+                    <strong className="text-slate-400 block mb-0.5">2. What to Expect:</strong>
+                    <span className="text-slate-200">{test.expected_observation}</span>
+                  </div>
+                  <div className="p-2.5 rounded bg-black/30 border border-white/5">
+                    <strong className="text-emerald-400 block mb-0.5">3. Acceptance Criteria:</strong>
+                    <span className="text-slate-200">{test.acceptance_criteria}</span>
+                  </div>
+                  <div className="p-2.5 rounded bg-black/30 border border-white/5">
+                    <strong className="text-amber-400 block mb-0.5">4. How to Fix It:</strong>
+                    <span className="text-slate-200">{test.remediation_plan}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 4. Strict Scope Boundary */}
+        <div id="sec4" className="pt-6 border-t border-white/10 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Target className="w-4 h-4 text-emerald-400" />
+              <span>4. Strict Scope Boundary</span>
+            </h3>
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+              DO NOT Build in Week 1
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20 space-y-2">
+              <strong className="text-xs font-bold text-emerald-400 block flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>In-Scope (Build in Week 1):</span>
+              </strong>
+              <ul className="text-xs text-slate-300 space-y-1.5 pl-3 list-disc">
+                {mvpFeatures.map((f: string, i: number) => (
+                  <li key={i}>{f}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="p-4 rounded-xl bg-rose-500/5 border border-rose-500/20 space-y-2">
+              <strong className="text-xs font-bold text-rose-400 block flex items-center gap-1.5">
+                <Ban className="w-3.5 h-3.5" />
+                <span>DO NOT Build in Week 1 (Postpone):</span>
+              </strong>
+              <ul className="text-xs text-slate-300 space-y-1.5 pl-3 list-disc">
+                {deferredFeatures.map((f: string, i: number) => (
+                  <li key={i}>{f}</li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
+
+        {/* 5. The 60-Minute Prototype Plan */}
+        <div id="sec5" className="pt-6 border-t border-white/10 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Clock className="w-4 h-4 text-indigo-400" />
+              <span>5. The 60-Minute Prototype Plan</span>
+            </h3>
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+              Four 15-Minute Milestones
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {planMilestones.map((m: any, i: number) => (
+              <div key={i} className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1.5">
+                <span className="font-mono text-[10px] text-indigo-400 font-bold uppercase block">{m.time_window || `Minutes ${i * 15}-${(i + 1) * 15}`}</span>
+                <strong className="text-xs font-bold text-white block">{m.phase_title}</strong>
+                <p className="text-[11px] text-slate-300 leading-relaxed">{m.objective}</p>
+                {m.deliverable && (
+                  <div className="pt-2 border-t border-white/5 text-[10px] text-emerald-400 font-mono">
+                    ✓ {m.deliverable}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 6. 5-Minute Immediate Next Action */}
+        <div id="sec6" className="pt-6 border-t border-white/10 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Zap className="w-4 h-4 text-emerald-400" />
+              <span>6. Immediate Next Action (Start in 5 Minutes)</span>
+            </h3>
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              Momentum Trigger
+            </span>
+          </div>
+          <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-indigo-500/10 border border-emerald-500/30">
+            <strong className="text-xs font-bold text-emerald-300 block mb-1">Your Day-1 First Step:</strong>
+            <p className="font-mono text-xs text-white leading-relaxed">{contract.immediate_action}</p>
+          </div>
+        </div>
+
+        {/* VIRAL SHARE LOOP: WHATSAPP GROUP & AI CHAT ROOM */}
+        <div className="pt-8 border-t border-white/10 space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                VIRAL PEER CHALLENGE &amp; SHARE LINK
+              </span>
+              <h3 className="text-xl font-bold text-white mt-1">
+                Share Link to WhatsApp Group — Friends Join AI Chat &amp; Test Your Build
+              </h3>
+              <p className="text-xs text-slate-400 mt-0.5">
+                When you share this link, classmates land in an interactive AI Chat room where they can test edge cases before your professor does!
+              </p>
+            </div>
+            <Link
+              href={`/challenge/${contract.contract_id || contractId}`}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md transition whitespace-nowrap"
+            >
+              <ShieldAlert className="w-4 h-4" />
+              <span>Open AI Chat Arena →</span>
+            </Link>
+          </div>
+
+          <div className="p-4 rounded-xl bg-black/40 border border-white/10 space-y-3">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="text"
+                readOnly
+                value={typeof window !== "undefined" ? `${window.location.origin}/challenge/${contract.contract_id || contractId}` : ""}
+                className="flex-1 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 font-mono text-xs text-slate-200"
+              />
+              <button
+                onClick={copyShareLink}
+                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs transition"
+              >
+                Copy Link
+              </button>
+              <button
+                onClick={shareToWhatsApp}
+                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-sm"
+              >
+                Share WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

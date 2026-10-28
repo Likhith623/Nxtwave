@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Layers,
@@ -86,9 +87,35 @@ export default function ComparePage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any | null>(null);
   const [generatingContract, setGeneratingContract] = useState(false);
+  const [sourceContractId, setSourceContractId] = useState<string | null>(null);
 
   useEffect(() => {
     trackAnalyticsEvent("page_view_compare");
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const fc = params.get("from_contract");
+      if (fc) {
+        setSourceContractId(fc);
+        import("@/lib/api").then(({ getContract }) => {
+          getContract(fc)
+            .then((data: any) => {
+              if (data) {
+                setIdeas((prev) => [
+                  {
+                    name: data.project_title || data.project_name || "Friend's Project",
+                    description: data.original_idea || "",
+                    target_audience: data.target_audience || "College students",
+                    tech_stack: data.suggested_stack?.backend || "FastAPI, Python",
+                  },
+                  prev[1] || { name: "", description: "", target_audience: "", tech_stack: "" },
+                ]);
+                success(`Loaded friend's project context: "${data.project_title || data.project_name}"`);
+              }
+            })
+            .catch(() => {});
+        });
+      }
+    }
   }, []);
 
   const handleIdeaChange = (index: number, field: keyof IdeaInput, value: string) => {
@@ -220,6 +247,37 @@ export default function ComparePage() {
           Feasibility, 48-Hour Scope Viability, and Market Traction to give you a definitive winner.
         </p>
       </div>
+
+      {/* Friend Context Loaded Banner */}
+      {sourceContractId && (
+        <div className="glass-card p-4 sm:p-5 mb-6 border-2 border-indigo-500/40 bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-cyan-500/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-400 block mb-1">
+              🔗 LOADED CONTEXT FROM SHARED BLUEPRINT ({sourceContractId})
+            </span>
+            <h4 className="text-sm font-bold text-white">
+              Friend&apos;s project loaded into Idea #1!
+            </h4>
+            <p className="text-xs text-slate-300 mt-0.5">
+              Refine their scope, or enter your own idea in Idea #2 to compare head-to-head and generate your own 60-min build plan.
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Link
+              href={`/contract/${sourceContractId}`}
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/10 hover:bg-white/15 text-white transition whitespace-nowrap"
+            >
+              View Friend&apos;s Blueprint
+            </Link>
+            <Link
+              href={`/challenge/${sourceContractId}`}
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-600 hover:bg-purple-500 text-white transition whitespace-nowrap"
+            >
+              Break Their Build 🛡️
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Preset Quick Fill Bar */}
       <div className="glass-card p-4 mb-8 flex flex-col sm:flex-row items-center justify-between gap-3">

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, use } from "react";
+import React, { useEffect, useState, useRef, use } from "react";
 import Link from "next/link";
 import {
   ShieldAlert,
@@ -14,18 +14,21 @@ import {
   FileCheck2,
   Sparkles,
   Zap,
+  Cpu,
+  Clock,
+  MessageSquare,
+  Bot,
 } from "lucide-react";
-import { getContract, submitChallenge, trackAnalyticsEvent } from "@/lib/api";
+import { getContract, trackAnalyticsEvent } from "@/lib/api";
 import { useToast } from "@/components/ui/ToastContext";
 
-const CHALLENGE_TYPES = [
-  "Scope Creep Trap",
-  "Latency Bottleneck",
-  "API Rate Limit Trap",
-  "Schema Migration Lock",
-  "Unrealistic 60m Milestone",
-  "Missing Error Boundary",
-];
+interface ChatMessage {
+  id: string;
+  sender: "user" | "bot";
+  text: string;
+  isCritique?: boolean;
+  timestamp: string;
+}
 
 export default function ChallengePage({
   params,
@@ -38,35 +41,11 @@ export default function ChallengePage({
 
   const [contract, setContract] = useState<any | null>(null);
   const [loadingContract, setLoadingContract] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [submittedSuccess, setSubmittedSuccess] = useState<any | null>(null);
-
-  const [challengerName, setChallengerName] = useState("");
-  const [challengerRole, setChallengerRole] = useState("Peer Hacker");
-  const [challengeType, setChallengeType] = useState(CHALLENGE_TYPES[0]);
-  const [critique, setCritique] = useState("");
-  const [suggestedFix, setSuggestedFix] = useState("");
-
-  const [challengesList, setChallengesList] = useState<any[]>([
-    {
-      id: "ch_mock_1",
-      challenger_name: "Devon (Senior Mentor)",
-      challenger_role: "Mentor",
-      challenge_type: "Latency Bottleneck",
-      critique: "If the PDF has complex tables, the embedding step will exceed 5s per chunk. The 60-min milestone will fail without asynchronous queueing.",
-      suggested_fix: "Strip tables in v1 or process only the first 2 pages synchronously.",
-      created_at: "10 mins ago",
-    },
-    {
-      id: "ch_mock_2",
-      challenger_name: "Priya",
-      challenger_role: "Peer Hacker",
-      challenge_type: "Scope Creep Trap",
-      critique: "You listed 'Markdown export' in your assumptions, but that will force you to write a custom AST renderer by hour 30.",
-      suggested_fix: "Return raw JSON with an inline pre-formatted block instead.",
-      created_at: "25 mins ago",
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [inputMsg, setInputMsg] = useState("");
+  const [sending, setSending] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     trackAnalyticsEvent("page_view_challenge", { contract_id: contractId });
@@ -74,19 +53,44 @@ export default function ChallengePage({
     async function loadData() {
       try {
         setLoadingContract(true);
-        const data = await getContract(contractId);
+        const data: any = await getContract(contractId);
         setContract(data);
-        if (data.challenges && Array.isArray(data.challenges) && data.challenges.length > 0) {
-          setChallengesList(data.challenges);
-        }
+        
+        // Initial AI greeting message
+        const title = data?.project_name || data?.project_title || "Academic Document RAG Assistant";
+        const score = data?.feasibility_score || 88;
+        const assumption = data?.critical_assumption || "Students will primarily query policies explicitly stated in the indexed PDF handbook.";
+
+        setMessages([
+          {
+            id: "msg_init",
+            sender: "bot",
+            text: `👋 Hey! Your classmate shared their 60-minute build plan for **${title}** (Feasibility: **${score}/100**).\n\nTheir load-bearing assumption is:\n> *“${assumption}”*\n\nTry to break their build! Ask how their ₹0 architecture works, probe edge-cases (e.g. *“What if circulars change?”* or *“Can it run without GPU?”*), or challenge their design!`,
+            timestamp: "Just now",
+          },
+        ]);
       } catch {
         // Fallback demo data
-        setContract({
+        const fallback = {
           contract_id: contractId,
-          project_name: "Academic Document RAG Assistant",
-          archetype: "RAG_PIPELINE",
-          first_hour_milestone: "Working FastAPI endpoint embedding a 5-page PDF and performing top-3 cosine similarity retrieval.",
-        });
+          project_title: "Academic Document RAG Assistant",
+          feasibility_score: 88,
+          category: "RAG & Document Intelligence",
+          critical_assumption: "What happens when someone asks an unlisted question? If the model hallucinates non-existent rules, students act on false advice.",
+          frontend_rec: "Next.js / HTML5 Chat Interface",
+          backend_rec: "FastAPI + Pydantic v2",
+          ai_model_rec: "Sentence-Transformers on CPU",
+          db_rec: "SQLite (Local ₹0)",
+        };
+        setContract(fallback);
+        setMessages([
+          {
+            id: "msg_init",
+            sender: "bot",
+            text: `👋 Hey! Your classmate shared their 60-minute build plan for **${fallback.project_title}** (Score: **88/100**).\n\nTheir critical assumption is:\n> *“${fallback.critical_assumption}”*\n\nAsk me anything about how this build works, or test edge-cases to break their build!`,
+            timestamp: "Just now",
+          },
+        ]);
       } finally {
         setLoadingContract(false);
       }
@@ -95,310 +99,421 @@ export default function ChallengePage({
     loadData();
   }, [contractId]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!challengerName.trim() || !critique.trim()) {
-      error("Please fill in your name and critique.");
-      return;
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, sending]);
+
+  // Mini 3D Pie Chart Render
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const w = 260;
+    const h = 150;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, w, h);
+
+    const data = [
+      { minutes: 10, color: "#f43f5e" },
+      { minutes: 15, color: "#6366f1" },
+      { minutes: 10, color: "#8b5cf6" },
+      { minutes: 15, color: "#10b981" },
+      { minutes: 10, color: "#f59e0b" },
+    ];
+
+    const cx = w / 2;
+    const cy = h / 2;
+    const rx = 85;
+    const ry = 58;
+    const depth = 12;
+
+    let startAngle = -Math.PI / 2;
+    const slices = data.map((s) => {
+      const sweep = (s.minutes / 60) * Math.PI * 2;
+      const endAngle = startAngle + sweep;
+      const item = { ...s, startAngle, endAngle };
+      startAngle = endAngle;
+      return item;
+    });
+
+    for (let l = depth; l >= 1; l--) {
+      slices.forEach((s) => {
+        ctx.beginPath();
+        ctx.ellipse(cx, cy + l, rx, ry, 0, s.startAngle, s.endAngle);
+        ctx.lineTo(cx, cy + l);
+        ctx.fillStyle = "#1e1b4b";
+        ctx.fill();
+      });
     }
 
-    setSubmitting(true);
+    slices.forEach((s) => {
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, rx, ry, 0, s.startAngle, s.endAngle);
+      ctx.lineTo(cx, cy);
+      ctx.fillStyle = s.color;
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "#0b1020";
+      ctx.stroke();
+    });
+
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx * 0.35, ry * 0.35, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "#090e1a";
+    ctx.fill();
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 11px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("60m", cx, cy);
+  }, [contract]);
+
+  const handleSendMessage = async (text?: string) => {
+    const msg = text || inputMsg;
+    if (!msg.trim() || sending) return;
+
+    const userEntry: ChatMessage = {
+      id: `u_${Date.now()}`,
+      sender: "user",
+      text: msg.trim(),
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+
+    setMessages((prev) => [...prev, userEntry]);
+    setInputMsg("");
+    setSending(true);
+
     try {
-      const res = await submitChallenge(contractId, {
-        challenger_name: challengerName.trim(),
-        challenger_role: challengerRole,
-        challenge_type: challengeType,
-        critique: critique.trim(),
-        suggested_fix: suggestedFix.trim() || undefined,
+      const res = await fetch(`/api/contracts/${contractId}/challenges/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg.trim(), peer_name: "Classmate" }),
       });
 
-      const newEntry = {
-        id: res?.challenge_id || `ch_${Date.now()}`,
-        challenger_name: challengerName.trim(),
-        challenger_role: challengerRole,
-        challenge_type: challengeType,
-        critique: critique.trim(),
-        suggested_fix: suggestedFix.trim() || undefined,
-        created_at: "Just now",
-        recommendation: res?.recommendation,
+      if (!res.ok) {
+        throw new Error("Chat request failed");
+      }
+
+      const data = await res.json();
+      const botEntry: ChatMessage = {
+        id: `b_${Date.now()}`,
+        sender: "bot",
+        text: data.reply,
+        isCritique: data.is_critique,
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
 
-      setChallengesList((prev) => [newEntry, ...prev]);
-      setSubmittedSuccess(res?.recommendation || {
-        risk_level: "High Risk",
-        recommended_scope_adjustment: "Wrap the query pipeline in a fallback threshold before calling external services.",
-        architectural_safeguard: "Added explicit boundary checks to project specification.",
-      });
-
-      setCritique("");
-      setSuggestedFix("");
-      success("Edge-case critique submitted! Contract risk mitigation logged.");
-      trackAnalyticsEvent("challenge_submitted", { contract_id: contractId, attack_vector: challengeType });
-    } catch (err: any) {
-      error(err.message || "Failed to submit challenge");
+      setMessages((prev) => [...prev, botEntry]);
+      trackAnalyticsEvent("peer_challenge_chat_message", { is_critique: data.is_critique });
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `b_err_${Date.now()}`,
+          sender: "bot",
+          text: "The architecture evaluates this query as an edge-case. Try checking the 60-minute plan on the right, or click 'Test My Idea Free' to run your own project!",
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        },
+      ]);
     } finally {
-      setSubmitting(false);
+      setSending(false);
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      {/* ⚡ Top Workshop Conversion Bar */}
-      <div className="glass-panel rounded-2xl p-5 border border-indigo-500/30 bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-teal-500/10 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
-        <div className="flex items-start sm:items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white shadow-md shadow-orange-500/30 flex-shrink-0">
-            <Zap className="w-5 h-5" />
-          </div>
-          <div>
-            <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-              ⚡ Reviewing a Classmate&apos;s Build? Now Build Your Own in 60 Minutes
-            </h4>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-              Don&apos;t spend 4 months coding the wrong project. Join NxtWave&apos;s free live workshop to scaffold and deploy a working prototype.
-            </p>
-          </div>
-        </div>
-        <Link
-          href="/register?utm_source=break_my_build_peer"
-          className="flex-shrink-0 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/25 transition active:scale-95 whitespace-nowrap"
-        >
-          <span>Register Free (₹0) →</span>
-        </Link>
-      </div>
-
-      {/* Header Info Banner */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30">
-            🛡️ Feature 3: Viral Peer Validation Loop
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans space-y-8">
+      
+      {/* Top Header */}
+      <div>
+        <div className="flex gap-2 flex-wrap mb-2">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            PEER REVIEW &amp; STRESS-TEST ARENA
           </span>
-          <span className="text-xs text-slate-500">Zero-Login Classmate Review Arena</span>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20">
+            BREAK MY BUILD
+          </span>
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            ZERO LOGIN REQUIRED
+          </span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-          Break My Build: Peer Stress-Test
+        <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          Peer Review &amp; <span className="text-purple-400">AI Stress-Test Arena</span>
         </h1>
-        <p className="text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
-          Classmates find edge cases, latency bottlenecks, and scope creep before college examiners conduct the final viva review.
+        <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl">
+          Your classmate shared their final-year AI project plan for <strong>{contract?.project_title || "Academic Document RAG Assistant"}</strong> (Score: <strong>{contract?.feasibility_score || 88}/100</strong>). Chat with the AI, probe edge-cases, or see if your own idea can beat their score!
         </p>
       </div>
 
-      {/* Target Project Card */}
-      {contract && (
-        <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-indigo-500">
-              Active Build Contract Under Review
+      {/* 🔥 TEMPTING CTA BANNER: "Wait... what would MINE score?" */}
+      <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-red-500/15 via-amber-500/15 to-indigo-500/15 border-2 border-amber-500/40 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <span className="text-3xl">🔥</span>
+          <div>
+            <strong className="text-base sm:text-lg font-bold text-white block">
+              “Wait… what would MY idea score?!”
+            </strong>
+            <span className="text-xs text-slate-300">
+              Curious if your own final-year idea is feasible? Get an instant score across 6 weighted criteria with ₹0 cloud budget.
             </span>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-              {contract.project_name}
-            </h3>
-            {contract.first_hour_milestone && (
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-                Milestone 1: {contract.first_hour_milestone}
-              </p>
-            )}
           </div>
-          <Link
-            href={`/contract/${contract.contract_id || contractId}`}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-xs font-semibold text-slate-800 dark:text-slate-200 transition"
-          >
-            <FileCheck2 className="w-4 h-4 text-indigo-500" />
-            <span>View Full Contract</span>
-          </Link>
         </div>
-      )}
+        <Link
+          href="/"
+          className="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-600/30 transition whitespace-nowrap text-center active:scale-95"
+        >
+          <span>Test My Idea Free → (Start Over)</span>
+        </Link>
+      </div>
 
-      {/* Post-Submission Viral Banner (Organic Loop Hook) */}
-      {submittedSuccess && (
-        <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-indigo-500/10 border border-emerald-500/30 space-y-3 animate-fade-up">
-          <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
-            <CheckCircle2 className="w-5 h-5" />
-            <span>Critique Accepted! Architectural Safeguard Applied</span>
-          </div>
-          <p className="text-xs text-slate-700 dark:text-slate-300">
-            <strong>Safeguard: </strong>{submittedSuccess.architectural_safeguard || submittedSuccess.recommended_scope_adjustment}
-          </p>
-          <div className="pt-2 border-t border-emerald-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <p className="text-xs font-bold text-slate-900 dark:text-white">
-              💡 Have your own final-year idea? Test your project for free or join the 60-Minute Workshop!
-            </p>
-            <div className="flex gap-2">
+      {/* Two-Column Grid: Left = AI Chat Room, Right = Friend's 60-Min Plan */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
+        
+        {/* LEFT: Interactive Gemini AI Chat Room */}
+        <div className="lg:col-span-7 rounded-2xl bg-slate-950/90 border border-indigo-500/40 flex flex-col h-[640px] shadow-2xl overflow-hidden">
+          
+          {/* Chat Header */}
+          <div className="p-3.5 bg-slate-900/90 border-b border-white/10 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <div>
+                <strong className="text-xs font-bold text-white block">Project Compass AI Assistant</strong>
+                <span className="text-[10px] text-slate-400">Testing: {contract?.project_title || "Project Plan"}</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                Gemini 2.5 Flash
+              </span>
               <Link
-                href="/compare"
-                className="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-sm hover:bg-indigo-500 transition"
+                href="/"
+                className="px-2.5 py-1 rounded-lg text-[11px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition"
               >
-                Test My Own Idea 🧭
-              </Link>
-              <Link
-                href="/register?utm_source=peer_review_cta"
-                className="px-4 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow-sm hover:bg-emerald-500 transition"
-              >
-                Join Free Workshop ⚡
+                Score My Idea 🚀
               </Link>
             </div>
           </div>
-        </div>
-      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Form: Submit Challenge */}
-        <div className="lg:col-span-5">
-          <div className="glass-panel p-6 sm:p-7 rounded-2xl sticky top-24 space-y-4">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <ShieldAlert className="w-5 h-5 text-amber-500" />
-              <span>Launch a Challenge</span>
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Where will this architecture break when college faculty or 100 students query it?
-            </p>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1">
-                  Your Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Alex Rivera (4th Year CSE)"
-                  value={challengerName}
-                  onChange={(e) => setChallengerName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/40 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1">
-                    Your Role
-                  </label>
-                  <select
-                    value={challengerRole}
-                    onChange={(e) => setChallengerRole(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/40 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  >
-                    <option value="Peer Hacker">Peer Classmate</option>
-                    <option value="Senior Mentor">Senior Student</option>
-                    <option value="Security Dev">Faculty / Guide</option>
-                    <option value="Product Judge">Placement Lead</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1">
-                    Attack Vector
-                  </label>
-                  <select
-                    value={challengeType}
-                    onChange={(e) => setChallengeType(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/40 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  >
-                    {CHALLENGE_TYPES.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1">
-                  The Critique / Failure Mode *
-                </label>
-                <textarea
-                  required
-                  rows={4}
-                  placeholder="Detail the failure scenario: e.g. What if the college circular is in scanned Telugu/Hindi image format rather than English text?"
-                  value={critique}
-                  onChange={(e) => setCritique(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/40 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-300 mb-1">
-                  Suggested Mitigation / Fix (Optional)
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Add OCR bounding-box filter before embedding text"
-                  value={suggestedFix}
-                  onChange={(e) => setSuggestedFix(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/40 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm shadow-md shadow-amber-500/25 transition hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
-              >
-                {submitting ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Submitting Challenge...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-4 h-4" />
-                    <span>Submit Peer Challenge 🛡️</span>
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
-        </div>
-
-        {/* Right: Live Feed of Challenges */}
-        <div className="lg:col-span-7 space-y-4">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <span>Active Critiques & Defenses</span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 font-bold">
-                {challengesList.length}
-              </span>
-            </h3>
-          </div>
-
-          {challengesList.map((ch, i) => (
-            <div
-              key={ch.id || i}
-              className="glass-card p-6 border-l-4 border-l-amber-500 space-y-3"
+          {/* Quick Suggestion Chips */}
+          <div className="px-3.5 py-2 bg-slate-900/50 border-b border-white/5 flex gap-1.5 overflow-x-auto no-scrollbar">
+            <button
+              onClick={() => handleSendMessage("What if fees or rules change in the 2026 circular?")}
+              className="flex-shrink-0 px-2.5 py-1 rounded-full bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/30 text-[11px] text-indigo-200 transition"
             >
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-sm text-slate-900 dark:text-white">
-                    {ch.challenger_name}
-                  </span>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400">
-                    {ch.challenger_role || "Peer"}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-500/30">
-                    {ch.challenge_type}
-                  </span>
-                  <span className="text-[11px] text-slate-400">{ch.created_at || "Recent"}</span>
-                </div>
-              </div>
+              ⚡ What if fees change in 2026?
+            </button>
+            <button
+              onClick={() => handleSendMessage("Can this really run on CPU with zero cloud costs?")}
+              className="flex-shrink-0 px-2.5 py-1 rounded-full bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/30 text-[11px] text-indigo-200 transition"
+            >
+              💻 Can it run on CPU for ₹0?
+            </button>
+            <button
+              onClick={() => handleSendMessage("What happens when someone asks an unlisted question?")}
+              className="flex-shrink-0 px-2.5 py-1 rounded-full bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/30 text-[11px] text-indigo-200 transition"
+            >
+              ❓ Unlisted questions test
+            </button>
+            <button
+              onClick={() => handleSendMessage("How will this pass the professor viva review?")}
+              className="flex-shrink-0 px-2.5 py-1 rounded-full bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/30 text-[11px] text-indigo-200 transition"
+            >
+              🎓 Viva presentation advice
+            </button>
+          </div>
 
-              <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                &ldquo;{ch.critique}&rdquo;
-              </p>
-
-              {ch.suggested_fix && (
-                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-800 dark:text-emerald-300 flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-bold">Mitigation Strategy: </span>{ch.suggested_fix}
+          {/* Chat Messages */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 font-sans">
+            {messages.map((m) => {
+              const isBot = m.sender === "bot";
+              return (
+                <div
+                  key={m.id}
+                  className={`flex ${isBot ? "justify-start" : "justify-end"}`}
+                >
+                  <div
+                    className={`max-w-[88%] rounded-2xl p-3.5 text-xs sm:text-[13px] leading-relaxed whitespace-pre-wrap ${
+                      isBot
+                        ? "bg-slate-900/90 text-slate-100 rounded-tl-2xs border border-white/10"
+                        : "bg-indigo-600 text-white rounded-tr-2xs shadow-md shadow-indigo-600/30"
+                    }`}
+                  >
+                    {isBot && (
+                      <div className="flex items-center gap-1.5 mb-1 text-[11px] font-bold text-cyan-400">
+                        <Bot className="w-3.5 h-3.5" />
+                        <span>Project Compass AI</span>
+                        {m.isCritique && (
+                          <span className="ml-1 px-2 py-0.5 rounded text-[9px] font-mono uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            🚨 BUILD BREAKER DETECTED
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    <div>{m.text}</div>
+                    {isBot && (
+                      <div className="mt-2 pt-2 border-t border-white/10 text-[10px] text-indigo-300 flex items-center justify-between">
+                        <span>Curious about your own project?</span>
+                        <Link href="/" className="text-emerald-400 font-bold underline">
+                          Test My Idea Free →
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 </div>
-              )}
+              );
+            })}
+            {sending && (
+              <div className="flex justify-start">
+                <div className="bg-slate-900/90 px-3.5 py-2 rounded-2xl rounded-tl-2xs text-xs text-slate-400 flex items-center gap-2 border border-white/10">
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-indigo-400" />
+                  <span>Evaluating architecture on Gemini 2.5 Flash...</span>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Chat Input Bar */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSendMessage();
+            }}
+            className="p-3 bg-slate-900/90 border-t border-white/10 flex items-center gap-2"
+          >
+            <input
+              type="text"
+              placeholder="Ask a question or drop a critique to break this build..."
+              value={inputMsg}
+              onChange={(e) => setInputMsg(e.target.value)}
+              className="flex-1 bg-white/5 border border-white/10 text-white px-3.5 py-2.5 rounded-xl text-xs focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+            />
+            <button
+              type="submit"
+              disabled={sending}
+              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition active:scale-95 whitespace-nowrap flex items-center gap-1.5"
+            >
+              <span>Send</span>
+              <Send className="w-3.5 h-3.5" />
+            </button>
+          </form>
+
+        </div>
+
+        {/* RIGHT: Friend's Blueprint & 60-Min Pie Chart */}
+        <div className="lg:col-span-5 rounded-2xl bg-slate-950/80 border border-white/10 p-5 space-y-4">
+          
+          <div className="pb-3 border-b border-white/10">
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400">
+                FRIEND&apos;S PROJECT
+              </span>
+              <span className="font-mono text-xs font-black text-emerald-400">
+                {contract?.feasibility_score || 88}/100 SCORE
+              </span>
             </div>
-          ))}
+            <h3 className="text-lg font-bold text-white">
+              {contract?.project_title || "Academic Document RAG Assistant"}
+            </h3>
+            <p className="text-xs text-slate-400 mt-1 line-clamp-3">
+              {contract?.original_idea || "Interactive policy QA bot grounded in university handbooks."}
+            </p>
+          </div>
+
+          {/* Mini 60-Minute Pie Chart */}
+          <div className="p-3 rounded-xl bg-slate-900 border border-indigo-500/20 text-center space-y-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400 block">
+              ● EXACTLY 60 MINUTES PROTOTYPE PLAN
+            </span>
+            <div className="flex justify-center">
+              <canvas ref={canvasRef} className="max-w-full h-auto" />
+            </div>
+            <div className="grid grid-cols-2 gap-1 text-[10px] text-slate-300 text-left pt-2 border-t border-white/5">
+              <div><span className="text-rose-400 font-bold">●</span> Scaffold: 10m</div>
+              <div><span className="text-indigo-400 font-bold">●</span> Core AI: 15m</div>
+              <div><span className="text-violet-400 font-bold">●</span> Query test: 10m</div>
+              <div><span className="text-emerald-400 font-bold">●</span> Web UI: 15m</div>
+              <div><span className="text-amber-400 font-bold">●</span> Verify: 10m</div>
+              <div className="text-emerald-400 font-bold">Total: 60m (₹0)</div>
+            </div>
+          </div>
+
+          {/* The ₹0 Tech Stack */}
+          <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1.5 text-xs">
+            <strong className="text-white block font-bold">⚙️ The ₹0 Tech Stack:</strong>
+            <div className="grid grid-cols-2 gap-1.5 text-slate-300 text-[11px]">
+              <div><strong>Backend:</strong> {contract?.backend_rec || "FastAPI"}</div>
+              <div><strong>Frontend:</strong> {contract?.frontend_rec || "Next.js"}</div>
+              <div><strong>Model:</strong> {contract?.ai_model_rec || "MiniLM CPU"}</div>
+              <div><strong>DB:</strong> {contract?.db_rec || "Local SQLite"}</div>
+            </div>
+          </div>
+
+          {/* Load-Bearing Assumption */}
+          <div className="p-3 rounded-xl bg-amber-500/10 border-l-2 border-amber-500 text-xs space-y-1">
+            <strong className="text-amber-300 block font-bold">⚠️ Critical Assumption Under Test:</strong>
+            <p className="text-slate-200 text-[11px] leading-relaxed">
+              &ldquo;{contract?.critical_assumption || "Students will only query policies explicitly in PDF."}&rdquo;
+            </p>
+          </div>
+
+          {/* Action Links */}
+          <div className="pt-2 flex flex-col gap-2">
+            <Link
+              href={`/contract/${contractId}`}
+              className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs text-center transition"
+            >
+              View Full 6-Pillar Blueprint 📋
+            </Link>
+            <Link
+              href={`/compare?from_contract=${contractId}`}
+              className="w-full py-2.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/40 border border-indigo-500/30 text-indigo-300 font-semibold text-xs text-center transition"
+            >
+              🔄 Remix This Plan as My Context →
+            </Link>
+            <Link
+              href="/"
+              className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs text-center transition shadow-md"
+            >
+              🚀 Test My Own Project Idea Free →
+            </Link>
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* VIRAL LOOP RESTART BANNER */}
+      <div className="p-6 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 border border-indigo-500/30 text-center space-y-3 shadow-xl">
+        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-purple-500/10 text-purple-400 border border-purple-500/20">
+          THE VIRAL LOOP RESTARTS
+        </span>
+        <h3 className="text-xl sm:text-2xl font-black text-white">
+          “Your plan breaks if fees change.” · “Wait. Mine?!”
+        </h3>
+        <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
+          No ads. No rupee. Just ego, curiosity, and a WhatsApp group. Every friend who tests this plan becomes a visitor who tests their own.
+        </p>
+        <div className="flex gap-3 justify-center flex-wrap pt-2">
+          <Link
+            href="/"
+            className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-lg transition active:scale-95"
+          >
+            🔥 Test Your Own Project Idea Free →
+          </Link>
+          <Link
+            href={`/compare?from_contract=${contractId}`}
+            className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition"
+          >
+            Remix With This Context →
+          </Link>
         </div>
       </div>
+
     </div>
   );
 }
