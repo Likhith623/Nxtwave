@@ -145,7 +145,7 @@
                 <div class="card" style="margin-bottom: 0; background: var(--bg-tertiary); border-color: var(--border-subtle);">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem;">
                         <strong style="color: var(--accent-purple);">🛡️ {{ ch.peer_name }}</strong>
-                        <span style="color: var(--text-muted);">{{ ch.created_at.strftime('%Y-%m-%d %H:%M') if ch.created_at else '' }}</span>
+                        <span style="color: var(--text-muted);">{{ ch.created_at[:16]|replace('T', ' ') if (ch.created_at is string) else (ch.created_at.strftime('%Y-%m-%d %H:%M') if ch.created_at else '') }}</span>
                     </div>
                     <div style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 0.4rem; font-weight: 600; line-height: 1.5;">
                         Challenge: {{ ch.challenge_text }}

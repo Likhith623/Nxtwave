@@ -39,6 +39,18 @@ class Settings:
     # Database
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./local_compass.db")
 
+    # Supabase Cloud Database Configuration
+    USE_SUPABASE: bool = os.getenv("USE_SUPABASE", "True").lower() in ("true", "1", "yes")
+    SUPABASE_URL: str = os.getenv("SUPABASE_URL", "").strip()
+    SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "").strip()
+    SUPABASE_ANON_KEY: str = os.getenv("SUPABASE_ANON_KEY", "").strip()
+    SUPABASE_SECRET_KEY: str = os.getenv("SUPABASE_SECRET_KEY", "").strip()
+    SUPABASE_PUBLISHABLE_KEY: str = os.getenv("SUPABASE_PUBLISHABLE_KEY", "").strip()
+
+    @property
+    def supabase_configured(self) -> bool:
+        return bool(self.USE_SUPABASE and self.SUPABASE_URL and self.SUPABASE_KEY)
+
     # Security
     ADMIN_TOKEN: str = os.getenv("ADMIN_TOKEN", "compass_growth_admin_secret_2026")
 

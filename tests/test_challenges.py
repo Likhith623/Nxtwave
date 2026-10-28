@@ -6,7 +6,19 @@ client = TestClient(app)
 
 def test_peer_challenge_workflow():
     """Verify peer challenge submission, validation, and recommendation generation."""
-    contract_id = "bc_demo_rag"
+    # Create fresh contract to guarantee test isolation
+    c_res = client.post("/api/contracts", json={
+        "selected_project_title": "AI College-Policy QA Assistant Test",
+        "selected_project_description": "An interactive chatbot grounded in college academic regulations.",
+        "domain": "AI/ML",
+        "experience": "intermediate",
+        "languages": ["Python"],
+        "time_weeks": 4,
+        "team_size": 2,
+        "resources": ["laptop"]
+    })
+    assert c_res.status_code == 200
+    contract_id = c_res.json()["contract_id"]
     
     payload = {
         "peer_name": "Siddharth (4th Year IT)",
@@ -46,7 +58,20 @@ def test_peer_challenge_invalid_length():
 
 def test_peer_challenge_duplicate_rejection():
     """Verify rejection of immediate duplicate submissions on same contract."""
-    contract_id = "bc_demo_rag"
+    # Create fresh contract to guarantee clean slate for duplicate test
+    c_res = client.post("/api/contracts", json={
+        "selected_project_title": "AI Dupe Test Project",
+        "selected_project_description": "Test project for duplicate rejection check.",
+        "domain": "AI/ML",
+        "experience": "intermediate",
+        "languages": ["Python"],
+        "time_weeks": 4,
+        "team_size": 2,
+        "resources": ["laptop"]
+    })
+    assert c_res.status_code == 200
+    contract_id = c_res.json()["contract_id"]
+
     payload = {
         "peer_name": "Dupe Peer",
         "challenge_text": "What happens if a user submits random non-English symbols or corrupted UTF-8 files?",
@@ -62,4 +87,3 @@ def test_peer_challenge_duplicate_rejection():
     res2 = client.post(f"/api/contracts/{contract_id}/challenges", json=payload)
     assert res2.status_code == 409
     assert "already been submitted" in res2.json()["detail"]
-

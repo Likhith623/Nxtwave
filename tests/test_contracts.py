@@ -64,10 +64,42 @@ def test_get_nonexistent_contract():
     assert "not found" in res.json()["detail"].lower()
 
 def test_contract_html_page_rendering():
-    """Verify that the contract HTML page renders without template errors."""
+    """Verify that the contract HTML page renders without template errors and contains all Feature 2 components."""
     res = client.get("/contract/bc_demo_rag")
     assert res.status_code == 200
     assert "text/html" in res.headers["content-type"]
     assert "AI College-Policy QA Assistant" in res.text
-    assert "Critical Assumption" in res.text
-
+    
+    # 1. ₹0 Tech Stack
+    assert "The ₹0 Tech Stack" in res.text
+    assert "FastAPI" in res.text
+    
+    # 2. Load-Bearing Assumption
+    assert "Load-Bearing Assumption" in res.text
+    assert "What happens when someone asks an unlisted question?" in res.text
+    
+    # 3. Concrete Failure Tests
+    assert "Concrete Failure Tests" in res.text
+    assert "Proposed Tests — Not Yet Executed" in res.text
+    assert "What to Test" in res.text
+    assert "What to Expect" in res.text
+    assert "Acceptance Criteria" in res.text
+    assert "How to Fix It" in res.text
+    
+    # 4. Strict Scope Boundary
+    assert "Strict Scope Boundary" in res.text
+    assert "DO NOT Build in Week 1" in res.text
+    
+    # 5. 60-Minute Prototype Plan
+    assert "The 60-Minute Prototype Plan" in res.text
+    assert "Minutes 00-15" in res.text
+    assert "Minutes 15-30" in res.text
+    assert "Minutes 30-45" in res.text
+    assert "Minutes 45-60" in res.text
+    
+    # 6. Immediate Next Action
+    assert "5-Minute Immediate Next Action" in res.text
+    
+    # Prominent Conversion Banners
+    banner_phrase = "Your plan is ready! Learn how to build this exact prototype in 60 minutes at NxtWave's free live workshop."
+    assert banner_phrase in res.text

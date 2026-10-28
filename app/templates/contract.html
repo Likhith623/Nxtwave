@@ -43,7 +43,7 @@
     line-height: 1;
   }
   .big-quote-block .quote-text {
-    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-size: clamp(1.3rem, 2.8vw, 1.9rem);
     font-weight: 800;
     color: var(--text-main);
     line-height: 1.4;
@@ -58,6 +58,7 @@
     font-weight: 600;
     position: relative;
     z-index: 1;
+    line-height: 1.6;
   }
 
   .download-share-bar {
@@ -76,8 +77,8 @@
   }
   .btn-register-final {
     animation: pulse-ring 2s infinite;
-    font-size: 1.25rem;
-    padding: 1rem 2.5rem;
+    font-size: 1.15rem;
+    padding: 0.9rem 2.2rem;
     border-radius: 50px;
     font-weight: 800;
     letter-spacing: -0.01em;
@@ -115,26 +116,51 @@
   /* Share link row */
   .share-input-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
   .share-input-row input { flex: 1; min-width: 200px; }
+
+  /* Print Optimization: Clean Official Document Layout */
+  @media print {
+    body { background: #ffffff !important; color: #111827 !important; }
+    .navbar, .btn, .download-share-bar, .share-input-row, footer { display: none !important; }
+    #contractContent { padding: 0 !important; max-width: 100% !important; }
+    .card, .big-quote-block, .workshop-banner {
+      background: #ffffff !important;
+      color: #111827 !important;
+      border: 1px solid #d1d5db !important;
+      box-shadow: none !important;
+      break-inside: avoid;
+    }
+    h1, h2, h3, h4, h5, strong { color: #111827 !important; }
+    .badge { border: 1px solid #9ca3af !important; color: #111827 !important; background: #f3f4f6 !important; }
+    .pie-wrapper { filter: none !important; }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;" id="contractContent">
 
-    <!-- ⚡ TOP Workshop Conversion Banner -->
-    <div class="workshop-banner reveal">
+    <!-- ⚡ TOP Workshop Conversion Banner: Prominent Workshop Solution -->
+    <div class="workshop-banner reveal" style="border: 2px solid var(--accent-emerald); background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(6,182,212,0.12)); margin-bottom: 2rem; padding: 1.5rem 2rem; border-radius: var(--radius-lg);">
         <div class="workshop-content">
-            <h4>⚡ Your Build Contract Is Ready! Next Step: Build the Prototype</h4>
-            <p>Don't let this sit as a document. Join NxtWave's free live workshop: <strong>"Build Your First AI Project in 60 Minutes."</strong></p>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
+                <span class="badge badge-emerald">FREE 60-MIN LIVE WORKSHOP</span>
+                <span style="font-size: 0.82rem; color: var(--accent-cyan); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">₹0 Cost • Standard Laptop • Zero Cloud Fees</span>
+            </div>
+            <h3 style="font-size: clamp(1.15rem, 2.5vw, 1.45rem); font-weight: 800; color: var(--text-main); line-height: 1.35; margin-bottom: 0.35rem;">
+                ⚡ "Your plan is ready! Learn how to build this exact prototype in 60 minutes at NxtWave's free live workshop."
+            </h3>
+            <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 0;">
+                Look at the 60-minute roadmap below! The workshop is no longer an advertisement — it is the <strong>solution</strong> to building your contract.
+            </p>
         </div>
-        <div>
-            <a href="/register?contract_id={{ contract.contract_id }}" class="btn btn-emerald btn-sm" onclick="handleWorkshopCtaClick('contract_top_banner', '{{ contract.contract_id }}')">
-                Register Free Workshop (0₹) →
+        <div style="flex-shrink: 0;">
+            <a href="/register?contract_id={{ contract.contract_id }}" class="btn btn-emerald btn-md" onclick="handleWorkshopCtaClick('contract_top_banner', '{{ contract.contract_id }}')">
+                Register Free Workshop (₹0) →
             </a>
         </div>
     </div>
 
-    <!-- Contract Master Card -->
+    <!-- Contract Master Card (Official Printable Technical Document) -->
     <div class="card reveal" style="padding: 2.5rem; background: var(--bg-card); border-color: rgba(var(--accent-emerald-rgb), 0.3);">
         <!-- Contract Header -->
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 2rem; margin-bottom: 2rem;">
@@ -144,6 +170,7 @@
                     <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-cyan); background: var(--bg-tertiary); padding: 0.2rem 0.6rem; border-radius: var(--radius-sm);">
                         ID: {{ contract.contract_id }}
                     </span>
+                    <span class="badge badge-purple">The Action Blueprint</span>
                 </div>
                 <h1 style="font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin-bottom: 0.5rem;">
                     {{ contract.project_title }}
@@ -160,7 +187,7 @@
             <!-- Action buttons at top -->
             <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="downloadContractPDF()">
-                    📥 Download PDF
+                    📥 Download Printable PDF
                 </button>
                 <button type="button" class="btn btn-secondary btn-sm" onclick="copyToClipboard(window.location.href, 'Build Contract link copied!')">
                     Copy Contract Link 🔗
@@ -173,7 +200,7 @@
 
         <!-- Section: Concept & Scope -->
         <div style="margin-bottom: 2.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem;">
                 <span>🎯</span> Scope & Original Concept
             </div>
             <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent-cyan); color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
@@ -181,11 +208,19 @@
             </div>
         </div>
 
-        <!-- Section: Technical Stack -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- 1. THE ₹0 TECH STACK                                               -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
         <div style="margin-bottom: 2.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
-                <span>⚙️</span> Technical Foundation (₹0 Local Execution Stack)
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+                    <span>⚙️</span> 1. The ₹0 Tech Stack
+                </div>
+                <span class="badge badge-emerald">₹0 Cloud Fees • Runs on Standard Laptop</span>
             </div>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                Specifically recommends free tools that run on standard laptops without cloud fees (for example: FastAPI backend + local SQLite database + free sentence embeddings).
+            </p>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
                 <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
                     <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">Frontend</div>
@@ -212,34 +247,44 @@
             </div>
         </div>
 
-        <!-- Section: The Critical Assumption -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- 2. THE "LOAD-BEARING ASSUMPTION" (THE TRAP)                         -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
         <div style="margin-bottom: 2.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
-                <span>⚠️</span> The Critical Assumption (Load-Bearing Risk)
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+                    <span>⚠️</span> 2. The "Load-Bearing Assumption" (The Trap)
+                </div>
+                <span class="badge badge-amber">Critical Hidden Risk</span>
             </div>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                Identifies the single biggest hidden risk that could make the project fail.
+            </p>
             <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid var(--accent-amber); border-radius: var(--radius-md); padding: 1.5rem;">
-                <h5 style="color: var(--accent-amber); font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
-                    <span>⚠️</span> SINGLE POINT OF FAILURE ASSUMPTION:
+                <h5 style="color: var(--accent-amber); font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
+                    <span>⚠️</span> SINGLE POINT OF FAILURE (THE TRAP):
                 </h5>
-                <p style="font-size: 1.15rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.75rem; line-height: 1.5;">
+                <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.85rem; line-height: 1.5;">
                     "{{ contract.critical_assumption }}"
                 </p>
-                <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
-                    <strong style="color: var(--text-main);">Why this matters:</strong> If this assumption is false, your architecture collapses regardless of how much UI code you write. The failure scenarios below are specifically built to verify this assumption.
+                <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; border-top: 1px dashed rgba(245, 158, 11, 0.3); padding-top: 0.75rem;">
+                    <strong style="color: var(--accent-amber);">Why this matters:</strong> If this assumption fails, the entire project collapses during the college viva review regardless of how much UI code you write. The failure tests below verify this risk before your professor does.
                 </div>
             </div>
         </div>
 
-        <!-- Section: Proposed Failure Tests -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- 3. CONCRETE FAILURE TESTS                                          -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
         <div style="margin-bottom: 2.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main);">
-                    <span>🧪</span> Proposed Technical Stress Tests
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+                    <span>🧪</span> 3. Concrete Failure Tests
                 </div>
                 <span class="badge badge-amber">Proposed Tests — Not Yet Executed</span>
             </div>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
-                Execute these targeted checks before writing weeks of application code. Honest disclaimer: these are <em>proposed</em> — not yet executed.
+                2 to 3 specific tests to run to check for bugs before your professor does. Honestly labeled as <strong>"Proposed Tests — Not Yet Executed"</strong> rather than faking test results.
             </p>
 
             <div style="display: flex; flex-direction: column; gap: 1.25rem;">
@@ -257,19 +302,19 @@
                     </p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; font-size: 0.85rem;">
                         <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
-                            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Test Procedure</div>
+                            <div style="font-size: 0.75rem; color: var(--accent-cyan); text-transform: uppercase; font-weight: 800; margin-bottom: 0.25rem;">1. What to Test (Procedure)</div>
                             <div style="color: var(--text-main);">{{ test.test_procedure }}</div>
                         </div>
                         <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
-                            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Expected Observation</div>
+                            <div style="font-size: 0.75rem; color: var(--accent-blue); text-transform: uppercase; font-weight: 800; margin-bottom: 0.25rem;">2. What to Expect (Observation)</div>
                             <div style="color: var(--text-main);">{{ test.expected_observation }}</div>
                         </div>
                         <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
-                            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Acceptance Criteria</div>
+                            <div style="font-size: 0.75rem; color: var(--accent-emerald); text-transform: uppercase; font-weight: 800; margin-bottom: 0.25rem;">3. Acceptance Criteria</div>
                             <div style="color: var(--accent-emerald); font-weight: 600;">{{ test.acceptance_criteria }}</div>
                         </div>
                         <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
-                            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Remediation if Fails</div>
+                            <div style="font-size: 0.75rem; color: var(--accent-amber); text-transform: uppercase; font-weight: 800; margin-bottom: 0.25rem;">4. How to Fix It (Remediation)</div>
                             <div style="color: var(--accent-amber); font-weight: 600;">{{ test.remediation_plan }}</div>
                         </div>
                     </div>
@@ -278,11 +323,19 @@
             </div>
         </div>
 
-        <!-- Section: MVP Boundary -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- 4. STRICT SCOPE BOUNDARY (WHAT NOT TO BUILD)                       -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
         <div style="margin-bottom: 2.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
-                <span>🎯</span> Minimum Viable Prototype (MVP) Boundary
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+                    <span>🎯</span> 4. Strict Scope Boundary (What NOT to Build in Week 1)
+                </div>
+                <span class="badge badge-rose">Save 80% Time</span>
             </div>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                Students always waste time on things they don't need (like fancy logins, payment gateways, or multi-language support). The contract explicitly says: <strong>"DO NOT build these in Week 1."</strong>
+            </p>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
                 <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-md); padding: 1.5rem;">
                     <div style="color: var(--accent-emerald); font-weight: 800; font-size: 1rem; margin-bottom: 0.75rem;">
@@ -296,7 +349,7 @@
                 </div>
                 <div style="background: rgba(244, 63, 94, 0.05); border: 1px solid rgba(244, 63, 94, 0.25); border-radius: var(--radius-md); padding: 1.5rem;">
                     <div style="color: var(--accent-rose); font-weight: 800; font-size: 1rem; margin-bottom: 0.75rem;">
-                        🚫 Postponed Scope — DO NOT Build in Week 1:
+                        🚫 Strict Boundary: DO NOT Build in Week 1:
                     </div>
                     <ul style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.5rem; line-height: 1.5;">
                         {% for feat in contract.deferred_features %}
@@ -308,14 +361,21 @@
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 🏆 60-MINUTE PROTOTYPE PLAN + 3D PIE CHART                        -->
+        <!-- 5. THE 60-MINUTE PROTOTYPE PLAN + 3D PIE CHART                     -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
         <div style="margin-bottom: 2.5rem;" id="plan60Section">
-            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">
-                <span>⏱️</span> The 60-Minute Prototype Roadmap
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+                    <span>⏱️</span> 5. The 60-Minute Prototype Plan
+                </div>
+                <span class="badge badge-cyan">Four 15-Minute Milestones</span>
             </div>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.75rem;">
-                Four 15-minute milestones. Start from an empty folder, finish with a verifiable working prototype.
+                Breaks down the first working prototype into four 15-minute milestones:
+                <strong>Minutes 0–15</strong> (Scaffold & load 1 document),
+                <strong>Minutes 15–30</strong> (Write core logic & test queries),
+                <strong>Minutes 30–45</strong> (Connect simple web UI), and
+                <strong>Minutes 45–60</strong> (Run stress test & verify).
             </p>
 
             <!-- Timeline View -->
@@ -361,24 +421,31 @@
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 💬 BIG QUOTE: "This 60 min plan = Workshop"                       -->
+        <!-- 💬 BIG QUOTE: Workshop Solution Connection                         -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
         <div class="big-quote-block reveal">
             <div class="quote-text">
-                You've just mapped your entire project into 60 minutes.<br>
-                <span style="color: var(--accent-cyan);">That's also exactly how long NxtWave's live workshop is.</span>
+                "Your plan is ready! Learn how to build this exact prototype in 60 minutes at NxtWave's free live workshop."
             </div>
             <div class="quote-sub">
-                🚀 In the workshop, a mentor walks you through building this <em>exact</em> prototype — live on your screen, in real-time.<br>
-                <strong>Same 60 minutes. Zero guessing. 100% working code at the end.</strong>
+                Look at the 60-minute roadmap! The contract naturally prepares the student for the workshop.<br>
+                <strong>The workshop is no longer an advertisement — it is the solution to building your contract.</strong>
             </div>
         </div>
 
-        <!-- Section: Immediate Next Action -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- 6. 5-MINUTE IMMEDIATE NEXT ACTION                                  -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
         <div style="margin-bottom: 2.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
-                <span>🚀</span> Immediate Next Action (Start in 5 Minutes)
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+                    <span>🚀</span> 6. 5-Minute Immediate Next Action
+                </div>
+                <span class="badge badge-emerald">Start Right Now</span>
             </div>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                One simple task the student can do right now.
+            </p>
             <div style="background: linear-gradient(135deg, rgba(var(--accent-cyan-rgb), 0.15), rgba(var(--accent-blue-rgb), 0.15)); border: 1px solid var(--accent-cyan); border-radius: var(--radius-md); padding: 1.5rem;">
                 <div style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); line-height: 1.5;">
                     {{ contract.immediate_action }}
@@ -417,7 +484,7 @@
             <!-- Download & Action Buttons -->
             <div class="download-share-bar">
                 <button type="button" class="btn btn-secondary" onclick="downloadContractPDF()">
-                    📥 Download PDF Report
+                    📥 Download Printable PDF
                 </button>
                 <a href="/challenge/{{ contract.contract_id }}" class="btn btn-primary">
                     🛡️ Invite Peers: Break My Build →
@@ -476,7 +543,7 @@ Also try this free tool — I got my full tech stack in 60 seconds! 🔥</span>
                     <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent-purple); border: 1px solid var(--border-subtle);">
                         <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem;">
                             <strong style="color: var(--accent-purple);">From: {{ ch.peer_name }}</strong>
-                            <span style="color: var(--text-muted); font-size: 0.8rem;">{{ ch.created_at.strftime('%Y-%m-%d %H:%M') if ch.created_at else '' }}</span>
+                            <span style="color: var(--text-muted); font-size: 0.8rem;">{{ ch.created_at[:16]|replace('T', ' ') if (ch.created_at is string) else (ch.created_at.strftime('%Y-%m-%d %H:%M') if ch.created_at else '') }}</span>
                         </div>
                         <div style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 0.4rem; font-weight: 600;">
                             Challenge: {{ ch.challenge_text }}
@@ -492,29 +559,31 @@ Also try this free tool — I got my full tech stack in 60 seconds! 🔥</span>
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 🎯 FINAL REGISTER CTA BLOCK                                        -->
+        <!-- 🎯 BOTTOM PROMINENT BANNER: Solution to Building Their Contract     -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div style="text-align: center; padding: 3.5rem 1.5rem 1.5rem; border-top: 1px solid var(--border-subtle); margin-top: 3rem;">
-            <span class="badge badge-emerald" style="margin-bottom: 1rem; font-size: 0.9rem;">🎓 FREE LIVE WORKSHOP — 0₹</span>
-            <h2 style="font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem; letter-spacing: -0.02em;">
-                Your 60-Minute Plan Is Ready.<br>
-                <span style="background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Now Build It Live — Free.</span>
+        <div class="workshop-banner reveal" style="border: 2px solid var(--accent-emerald); background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(6,182,212,0.15)); margin-top: 3.5rem; padding: 2.5rem 2rem; border-radius: var(--radius-lg); text-align: center; display: block;">
+            <div style="display: inline-block; margin-bottom: 0.75rem;">
+                <span class="badge badge-emerald" style="font-size: 0.85rem; padding: 0.35rem 0.9rem;">🎓 FREE LIVE WORKSHOP — ₹0</span>
+            </div>
+            <h2 style="font-size: clamp(1.5rem, 3.5vw, 2.3rem); font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem; letter-spacing: -0.02em; line-height: 1.35;">
+                ⚡ "Your plan is ready! Learn how to build this exact prototype in 60 minutes at NxtWave's free live workshop."
             </h2>
-            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem; font-size: 1.1rem; line-height: 1.6;">
-                NxtWave's mentor will guide you through building this <strong style="color: var(--text-main);">exact prototype</strong> — live on your laptop — in their free hands-on masterclass. Same 60 minutes. Zero guessing. 100% working code at the end.
+            <p style="color: var(--text-secondary); max-width: 680px; margin: 0 auto 1.75rem; font-size: 1.05rem; line-height: 1.6;">
+                The workshop is no longer an advertisement — it is the <strong style="color: var(--accent-cyan);">solution</strong> to building your contract.
+                A senior mentor guides you through building this exact prototype on your laptop in four 15-minute milestones. Zero guessing. 100% working code.
             </p>
             <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; align-items: center; margin-bottom: 1rem;">
                 <a href="/register?contract_id={{ contract.contract_id }}"
                    class="btn btn-emerald btn-register-final"
-                   onclick="handleWorkshopCtaClick('contract_final_cta', '{{ contract.contract_id }}')">
+                   onclick="handleWorkshopCtaClick('contract_bottom_banner', '{{ contract.contract_id }}')">
                     🚀 Register Free for the 60-Min AI Workshop
                 </a>
                 <button type="button" class="btn btn-secondary btn-lg" onclick="downloadContractPDF()">
-                    📥 Download My Build Contract
+                    📥 Download Printable PDF
                 </button>
             </div>
-            <p style="font-size: 0.82rem; color: var(--text-muted);">
-                ✅ Completely free • No credit card required • ₹0 cost • Instant workshop access
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0;">
+                ✅ Completely free • Standard laptop • ₹0 cloud costs • Instant workshop seat confirmation
             </p>
         </div>
 
@@ -540,7 +609,6 @@ function buildPieChart() {
     const labels  = milestones.map(m => m.window + ': ' + m.label);
     const data    = milestones.map(() => 15); // each = 15 min
     const colors  = PIE_COLORS.slice(0, milestones.length);
-    const hovers  = colors.map(c => c);
 
     // Build Legend
     const legendEl = document.getElementById('pieChartLegend');
@@ -619,7 +687,7 @@ async function downloadContractPDF() {
         const { jsPDF } = window.jspdf;
         const element = document.getElementById('contractContent');
 
-        showToast('📄 Preparing your PDF... this takes a few seconds.', 'info');
+        showToast('📄 Preparing your printable PDF... this takes a few seconds.', 'info');
 
         const canvas = await html2canvas(element, {
             scale: 1.5,
@@ -650,7 +718,7 @@ async function downloadContractPDF() {
 
         const title = '{{ contract.project_title }}'.substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
         pdf.save('BuildContract_{{ contract.contract_id }}_' + title + '.pdf');
-        showToast('📥 PDF downloaded! Share it with your team.', 'success');
+        showToast('📥 PDF downloaded! Official printable document ready for your review.', 'success');
     } catch (err) {
         console.error('PDF error:', err);
         showToast('PDF generation failed. Try right-click → Print → Save as PDF.', 'error');

@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -9,7 +10,12 @@ from app.schemas import (
 from app.config import settings
 from app.security import verify_rate_limit, sanitize_string
 from app.analytics import record_event
+from app.supabase_client import (
+    supabase_save_registration,
+    supabase_get_registrations,
+)
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/register", tags=["Workshop Registration"])
 
 @router.get("/status")
@@ -29,13 +35,13 @@ def register_for_workshop(
     res: Response,
     db: Session = Depends(get_db)
 ):
-    """Registers a student for the NxtWave Workshop (or records local demo registration in Mode B)."""
+    """Registers a student for the NxtWave Workshop — persists to Supabase and local DB."""
     verify_rate_limit(req)
-    
+
     name = sanitize_string(reg_in.name)
     normalized_email = reg_in.email.lower().strip()
     phone = sanitize_string(reg_in.phone) if reg_in.phone else None
-    
+
     # Check for duplicate registration by normalized email
     existing_reg = (
         db.query(WorkshopRegistration)
@@ -53,9 +59,9 @@ def register_for_workshop(
             external_url=settings.WORKSHOP_REGISTRATION_URL if settings.has_external_workshop else None,
             created_at=existing_reg.created_at
         )
-        
+
     is_demo = not settings.has_external_workshop
-    
+
     db_reg = WorkshopRegistration(
         name=name,
         email=normalized_email,
@@ -67,10 +73,29 @@ def register_for_workshop(
         utm_campaign=reg_in.utm_campaign,
         is_demo=is_demo
     )
-    db.add(db_reg)
-    db.commit()
-    db.refresh(db_reg)
-    
+
+    # 1. Save to Supabase Cloud Database
+    supabase_save_registration({
+        "registration_id": db_reg.registration_id,
+        "name": name,
+        "email": normalized_email,
+        "phone": phone,
+        "referral_source": reg_in.referral_source,
+        "contract_id": reg_in.contract_id,
+        "utm_source": reg_in.utm_source,
+        "utm_medium": reg_in.utm_medium,
+        "utm_campaign": reg_in.utm_campaign,
+        "is_demo": is_demo
+    })
+
+    # 2. Local DB persistence
+    try:
+        db.add(db_reg)
+        db.commit()
+        db.refresh(db_reg)
+    except Exception as e:
+        logger.warning("[DB] Local registration save warning: %s", e)
+
     # Record analytics event
     client_ip = req.client.host if req.client else None
     record_event(
@@ -84,13 +109,13 @@ def register_for_workshop(
         client_ip=client_ip,
         metadata={"is_demo": is_demo, "registration_id": db_reg.registration_id}
     )
-    
+
     success_msg = (
         "Demonstration registration successful! In live production, confirmation is sent via email."
         if is_demo else
         "Registration confirmed for 'Build Your First AI Project in 60 Minutes'!"
     )
-    
+
     return WorkshopRegistrationResponse(
         registration_id=db_reg.registration_id,
         message=success_msg,

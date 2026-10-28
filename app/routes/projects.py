@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
@@ -11,7 +12,12 @@ from app.schemas import (
 from app.services.project_analyzer import analyze_and_rank_candidates, SAMPLE_PROJECTS
 from app.security import verify_rate_limit, sanitize_string
 from app.analytics import record_event
+from app.supabase_client import (
+    supabase_save_comparison,
+    supabase_get_comparison,
+)
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/projects", tags=["Projects"])
 
 @router.get("/samples", response_model=List[Dict[str, Any]])
@@ -35,36 +41,54 @@ def compare_candidate_projects(
 ):
     """Compares candidate project ideas against student constraints using the transparent scoring engine."""
     verify_rate_limit(req)
-    
+
     # Sanitize user string inputs
     request_data.domain = sanitize_string(request_data.domain)
     for c in request_data.candidates:
         c.title = sanitize_string(c.title)
         c.description = sanitize_string(c.description)
-        
+
     # Analyze and rank
     comparison_response = analyze_and_rank_candidates(request_data)
-    
-    # Store in database
+
     candidates_dicts = [c.model_dump() for c in request_data.candidates]
     results_dicts = [r.model_dump() for r in comparison_response.all_scored_projects]
-    
-    db_cmp = ProjectComparison(
-        comparison_id=comparison_response.comparison_id,
-        domain=request_data.domain,
-        experience=request_data.experience,
-        languages=", ".join(request_data.languages),
-        time_weeks=request_data.time_weeks,
-        team_size=request_data.team_size,
-        resources=", ".join(request_data.resources),
-        primary_goal=request_data.primary_goal,
-        candidates_json=json.dumps(candidates_dicts),
-        results_json=json.dumps(results_dicts),
-        recommended_index=comparison_response.best_fit_index
-    )
-    db.add(db_cmp)
-    db.commit()
-    
+
+    # 1. Save to Supabase Cloud Database
+    supabase_save_comparison({
+        "comparison_id": comparison_response.comparison_id,
+        "domain": request_data.domain,
+        "experience": request_data.experience,
+        "languages": ", ".join(request_data.languages),
+        "time_weeks": request_data.time_weeks,
+        "team_size": request_data.team_size,
+        "resources": ", ".join(request_data.resources),
+        "primary_goal": request_data.primary_goal,
+        "candidates_json": json.dumps(candidates_dicts),
+        "results_json": json.dumps(results_dicts),
+        "recommended_index": comparison_response.best_fit_index
+    })
+
+    # 2. Local DB persistence fallback
+    try:
+        db_cmp = ProjectComparison(
+            comparison_id=comparison_response.comparison_id,
+            domain=request_data.domain,
+            experience=request_data.experience,
+            languages=", ".join(request_data.languages),
+            time_weeks=request_data.time_weeks,
+            team_size=request_data.team_size,
+            resources=", ".join(request_data.resources),
+            primary_goal=request_data.primary_goal,
+            candidates_json=json.dumps(candidates_dicts),
+            results_json=json.dumps(results_dicts),
+            recommended_index=comparison_response.best_fit_index
+        )
+        db.add(db_cmp)
+        db.commit()
+    except Exception as e:
+        logger.warning("[DB] Local comparison save warning: %s", e)
+
     # Record analytics event
     client_ip = req.client.host if req.client else None
     record_event(
@@ -77,6 +101,5 @@ def compare_candidate_projects(
         client_ip=client_ip,
         metadata={"candidates_count": len(request_data.candidates), "comparison_id": comparison_response.comparison_id}
     )
-    
-    return comparison_response
 
+    return comparison_response

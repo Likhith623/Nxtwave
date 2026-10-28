@@ -43,8 +43,9 @@ def generate_build_contract_data(
             "required_data": "3 to 5 official college PDF policy documents (academic handbook, exam regulations, hostel rules). Clean text extraction via PyPDF/pdfplumber."
         }
         critical_assumption = (
-            "Students will primarily ask questions whose factual answers are explicitly stated "
-            "within the indexed college handbook, and queries outside this document set will be gracefully admitted as unanswerable."
+            "The student assumes users will only ask questions found in the PDF. "
+            "What happens when someone asks an unlisted question? "
+            "If the model hallucinates or invents non-existent rules, students act on false advice and the project fails the viva."
         )
         failure_scenarios = [
             FailureScenario(
@@ -85,16 +86,16 @@ def generate_build_contract_data(
             "Minimalist responsive web chat UI displaying answers with expandable source document citations."
         ]
         deferred_features = [
-            "User login / authentication system (unnecessary for MVP demo).",
-            "Multi-modal image/diagram scanning in scanned documents.",
-            "Voice-to-text integration or automated WhatsApp chatbot deployment.",
-            "Live syncing with college intranet portals behind authentication."
+            "Fancy logins, OAuth, and user accounts (waste of Week 1 time; DO NOT build in Week 1).",
+            "Payment gateways or subscription billing (zero value for college project viva).",
+            "Multi-language translation or voice-to-text integration (postpone until core AI works).",
+            "Live syncing with college intranet portals behind authentication or captchas."
         ]
         plan_60min = [
             Plan60MinMilestone(
                 time_window="Minutes 00-15",
-                phase_title="Project Scaffolding & PDF Extraction",
-                objective="Create FastAPI directory, install sentence-transformers, and extract clean text from 1 college handbook PDF.",
+                phase_title="Minutes 0–15: Scaffold the code and load 1 document",
+                objective="Scaffold the code and load 1 document: Initialize FastAPI directory, install sentence-transformers, and extract clean text from 1 college handbook PDF.",
                 action_items=[
                     "Initialize virtual environment and app/main.py structure.",
                     "Load PyPDF and extract text from 5 pages of college rules.",
@@ -104,8 +105,8 @@ def generate_build_contract_data(
             ),
             Plan60MinMilestone(
                 time_window="Minutes 15-30",
-                phase_title="Local Embedding & Similarity Engine",
-                objective="Generate embeddings for document chunks and build cosine similarity search.",
+                phase_title="Minutes 15–30: Write the core logic and test queries",
+                objective="Write the core logic and test queries: Generate embeddings for document chunks and build cosine similarity search.",
                 action_items=[
                     "Load 'all-MiniLM-L6-v2' model locally.",
                     "Embed chunks and compute dot-product similarity against a test query.",
@@ -115,8 +116,8 @@ def generate_build_contract_data(
             ),
             Plan60MinMilestone(
                 time_window="Minutes 30-45",
-                phase_title="FastAPI Endpoint & Web UI Connection",
-                objective="Wrap search logic into REST endpoint and hook up clean single-page chat UI.",
+                phase_title="Minutes 30–45: Connect a simple web user interface",
+                objective="Connect a simple web user interface: Wrap search logic into REST endpoint and hook up clean single-page chat UI.",
                 action_items=[
                     "Create POST /api/ask endpoint with Pydantic request/response validation.",
                     "Serve simple Jinja2 HTML page with question input and chat log.",
@@ -126,8 +127,8 @@ def generate_build_contract_data(
             ),
             Plan60MinMilestone(
                 time_window="Minutes 45-60",
-                phase_title="Stress Test Verification & Demo Rehearsal",
-                objective="Execute Out-of-Domain failure test and prepare 60-second live demonstration walkthrough.",
+                phase_title="Minutes 45–60: Run the stress test and verify it works",
+                objective="Run the stress test and verify it works: Execute Out-of-Domain failure test and prepare 60-second live demonstration walkthrough.",
                 action_items=[
                     "Test with 1 valid question and 1 completely fake question.",
                     "Verify the system politely declines to answer the fake question.",
@@ -181,16 +182,16 @@ def generate_build_contract_data(
             "Actionable remediation or disposal recommendation for top predicted class."
         ]
         deferred_features = [
-            "Real-time 60fps video bounding-box tracking.",
-            "Mobile app compilation for iOS and Android.",
-            "Automated drone camera integration.",
-            "GPS location tagging with cloud GIS mapping."
+            "Fancy user login, JWT tokens, and user profiles (waste of Week 1 time; DO NOT build in Week 1).",
+            "Payment gateways or in-app purchases (zero value for academic viva).",
+            "Multi-language UI and mobile app compilation for iOS/Android (DO NOT build in Week 1).",
+            "Real-time 60fps drone video tracking and cloud GIS mapping."
         ]
         plan_60min = [
             Plan60MinMilestone(
                 time_window="Minutes 00-15",
-                phase_title="Scaffolding & Model Download",
-                objective="Set up FastAPI and load pre-trained MobileNet ONNX weights.",
+                phase_title="Minutes 0–15: Scaffold the code and load 1 model weights",
+                objective="Scaffold the code and load 1 model: Set up FastAPI directory and load pre-trained MobileNet ONNX weights.",
                 action_items=[
                     "Create project directory and install pillow, onnxruntime, fastapi.",
                     "Download pre-trained MobileNetV3 ONNX model (free, ~15MB).",
@@ -200,8 +201,8 @@ def generate_build_contract_data(
             ),
             Plan60MinMilestone(
                 time_window="Minutes 15-30",
-                phase_title="Inference & Output Mapping Pipeline",
-                objective="Map model output indices to human-readable labels with confidence scores.",
+                phase_title="Minutes 15–30: Write the core logic and test queries",
+                objective="Write the core logic and test queries: Map model output indices to human-readable labels with confidence scores.",
                 action_items=[
                     "Create class dictionary mapping index to name and guidance.",
                     "Apply softmax to output logits to obtain percentages.",
@@ -211,8 +212,8 @@ def generate_build_contract_data(
             ),
             Plan60MinMilestone(
                 time_window="Minutes 30-45",
-                phase_title="Drag-and-Drop Web UI",
-                objective="Build clean image upload interface with live preview.",
+                phase_title="Minutes 30–45: Connect a simple web user interface",
+                objective="Connect a simple web user interface: Build clean image upload interface with live preview.",
                 action_items=[
                     "Create upload card with file input and drag-drop support.",
                     "Render immediate client-side preview via FileReader API.",
@@ -222,8 +223,8 @@ def generate_build_contract_data(
             ),
             Plan60MinMilestone(
                 time_window="Minutes 45-60",
-                phase_title="Edge Case Thresholding & Demo Check",
-                objective="Test non-domain rejection and confirm demonstration script.",
+                phase_title="Minutes 45–60: Run the stress test and verify it works",
+                objective="Run the stress test and verify it works: Test non-domain rejection, shadow invariance, and confirm demonstration script.",
                 action_items=[
                     "Upload a blank image; verify threshold catches it.",
                     "Verify latency under 100ms on CPU.",
@@ -277,16 +278,16 @@ def generate_build_contract_data(
             "Clear ethical disclaimer regarding the advisory and educational nature of the prototype."
         ]
         deferred_features = [
-            "Full automated resume PDF parser with OCR.",
-            "Integration with LinkedIn / GitHub OAuth APIs.",
-            "Company-specific interview scheduling portal.",
-            "Salary negotiation AI simulator."
+            "Fancy login systems, OAuth, and password resets (waste of Week 1 time; DO NOT build in Week 1).",
+            "Payment gateways or premium company application tiers (zero value for academic viva).",
+            "Multi-language resumes and full automated PDF OCR parsers (DO NOT build in Week 1).",
+            "Automated LinkedIn / GitHub crawlers and interview scheduling bots."
         ]
         plan_60min = [
             Plan60MinMilestone(
                 time_window="Minutes 00-15",
-                phase_title="Scaffolding & Data Pipeline",
-                objective="Create FastAPI project and prepare synthetic or sample campus recruitment dataset.",
+                phase_title="Minutes 0–15: Scaffold the code and load 1 dataset",
+                objective="Scaffold the code and load 1 dataset: Create FastAPI project and prepare sample campus recruitment dataset.",
                 action_items=[
                     "Set up virtual environment with pandas, scikit-learn, fastapi.",
                     "Load dataset and inspect feature distributions.",
@@ -296,8 +297,8 @@ def generate_build_contract_data(
             ),
             Plan60MinMilestone(
                 time_window="Minutes 15-30",
-                phase_title="API & Validation Layer",
-                objective="Build POST /api/predict endpoint with strict Pydantic schemas.",
+                phase_title="Minutes 15–30: Write the core logic and test queries",
+                objective="Write the core logic and test queries: Build POST /api/predict endpoint with strict Pydantic schemas and feature attribution.",
                 action_items=[
                     "Define StudentProfile schema with field constraints.",
                     "Write inference handler extracting top feature importances.",
@@ -307,8 +308,8 @@ def generate_build_contract_data(
             ),
             Plan60MinMilestone(
                 time_window="Minutes 30-45",
-                phase_title="Interactive Web Form UI",
-                objective="Build clean, responsive input form with instant visual score display.",
+                phase_title="Minutes 30–45: Connect a simple web user interface",
+                objective="Connect a simple web user interface: Build clean, responsive input form with instant visual score display.",
                 action_items=[
                     "Create modern cards for profile entry with sliders and dropdowns.",
                     "Render readiness badge and skill-gap checklist dynamically.",
@@ -318,8 +319,8 @@ def generate_build_contract_data(
             ),
             Plan60MinMilestone(
                 time_window="Minutes 45-60",
-                phase_title="Validation & Demo Rehearsal",
-                objective="Run boundary tests and rehearse 60-second student walkthrough.",
+                phase_title="Minutes 45–60: Run the stress test and verify it works",
+                objective="Run the stress test and verify it works: Run boundary tests and rehearse 60-second student walkthrough.",
                 action_items=[
                     "Submit test cases with low and high preparation.",
                     "Verify UI error highlights on invalid inputs.",
@@ -373,36 +374,37 @@ def generate_build_contract_data(
             "Visual output display with clear explanations and next steps."
         ]
         deferred_features = [
-            "User accounts, password reset, and OAuth login.",
-            "External third-party API integrations.",
-            "Multi-language localization."
+            "Fancy logins, user accounts, and OAuth (waste of Week 1 time; DO NOT build in Week 1).",
+            "Payment gateways or subscription billing (zero value for initial prototype).",
+            "Multi-language localization and voice interfaces.",
+            "External third-party paid API dependencies."
         ]
         plan_60min = [
             Plan60MinMilestone(
                 time_window="Minutes 00-15",
-                phase_title="Scaffolding & Configuration",
-                objective="Initialize project structure, environment configuration, and database models.",
+                phase_title="Minutes 0–15: Scaffold the code and load 1 document",
+                objective="Scaffold the code and load 1 sample input: Initialize project structure, environment configuration, and database models.",
                 action_items=["Create virtual environment.", "Define models and configuration.", "Verify server runs."],
                 deliverable="FastAPI server running with /health returning 200 OK."
             ),
             Plan60MinMilestone(
                 time_window="Minutes 15-30",
-                phase_title="Core Logic Implementation",
-                objective="Implement core processing rules and data transformation.",
+                phase_title="Minutes 15–30: Write the core logic and test queries",
+                objective="Write the core logic and test queries: Implement core processing rules and data transformation.",
                 action_items=["Write core service functions.", "Implement input validation.", "Write unit test."],
                 deliverable="Verified service returning correct output for sample input."
             ),
             Plan60MinMilestone(
                 time_window="Minutes 30-45",
-                phase_title="Web UI & API Integration",
-                objective="Connect frontend templates to API routes.",
+                phase_title="Minutes 30–45: Connect a simple web user interface",
+                objective="Connect a simple web user interface: Connect frontend templates to API routes.",
                 action_items=["Build HTML form.", "Connect fetch API handler.", "Render result card."],
                 deliverable="End-to-end working web experience in browser."
             ),
             Plan60MinMilestone(
                 time_window="Minutes 45-60",
-                phase_title="Verification & Polish",
-                objective="Execute edge case tests and rehearse demonstration.",
+                phase_title="Minutes 45–60: Run the stress test and verify it works",
+                objective="Run the stress test and verify it works: Execute edge case tests and rehearse demonstration.",
                 action_items=["Test edge cases.", "Add helpful validation hints.", "Prepare demo walkthrough."],
                 deliverable="Polished prototype ready for review."
             )

@@ -1,6 +1,8 @@
 import os
+import json
 from pathlib import Path
 from contextlib import asynccontextmanager
+from datetime import datetime
 from fastapi import FastAPI, Request, Depends, HTTPException, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -12,6 +14,11 @@ from app.database import init_db, get_db, SessionLocal
 from app.models import BuildContract, PeerChallenge
 from app.security import SecurityHeadersMiddleware
 from app.analytics import seed_sample_growth_data
+from app.supabase_client import (
+    supabase_get_contract,
+    supabase_get_challenges,
+    get_supabase,
+)
 
 # Import API Routers
 from app.routes.projects import router as projects_router
@@ -71,6 +78,7 @@ app.include_router(whatsapp_router)
 @app.get("/health", tags=["System Health"])
 def health_check():
     """Health status endpoint for monitoring and deployment verification."""
+    sb_ready = bool(get_supabase())
     return {
         "status": "healthy",
         "app": settings.APP_NAME,
@@ -78,8 +86,10 @@ def health_check():
         "version": settings.APP_VERSION,
         "environment": settings.APP_ENV,
         "zero_cost_local_mode": True,
-        "database": "sqlite_local",
+        "database": "supabase_postgresql" if sb_ready else "sqlite_local",
+        "supabase_connected": sb_ready,
         "optional_llm_enabled": settings.ENABLE_OPTIONAL_LLM,
+        "whatsapp_mode": settings.WHATSAPP_MODE,
         "whatsapp_dry_run": settings.WHATSAPP_DRY_RUN
     }
 
@@ -95,19 +105,62 @@ def page_compare(request: Request):
 
 @app.get("/contract/{contract_id}", response_class=HTMLResponse, tags=["Frontend Pages"])
 def page_build_contract(contract_id: str, request: Request, db: Session = Depends(get_db)):
-    """Stage 4: View Detailed Build Contract."""
+    """Stage 4: View Detailed Build Contract — Fetches from Supabase first."""
+    # 1. Check Supabase cloud database
+    supa = supabase_get_contract(contract_id)
+    if supa:
+        def parse_json_field(val, default):
+            if isinstance(val, str):
+                try:
+                    return json.loads(val)
+                except Exception:
+                    return default
+            return val or default
+
+        contract_dict = {
+            "contract_id": supa["contract_id"],
+            "project_title": supa["project_title"],
+            "original_idea": supa["original_idea"],
+            "category": supa["category"],
+            "difficulty": supa["difficulty"],
+            "frontend_rec": supa["frontend_rec"],
+            "backend_rec": supa["backend_rec"],
+            "ai_model_rec": supa["ai_model_rec"],
+            "db_rec": supa["db_rec"],
+            "tech_reasoning": supa["tech_reasoning"],
+            "required_data": supa["required_data"],
+            "critical_assumption": supa["critical_assumption"],
+            "failure_scenarios": parse_json_field(supa.get("failure_scenarios_json"), []),
+            "mvp_features": parse_json_field(supa.get("mvp_features_json"), []),
+            "deferred_features": parse_json_field(supa.get("deferred_features_json"), []),
+            "plan_60min": parse_json_field(supa.get("plan_60min_json"), []),
+            "immediate_action": supa["immediate_action"],
+            "peer_challenge_prompt": supa["peer_challenge_prompt"],
+            "created_at": supa.get("created_at"),
+        }
+        supa_challenges = supabase_get_challenges(contract_id)
+        return templates.TemplateResponse(
+            request=request,
+            name="contract.html",
+            context={
+                "contract": contract_dict,
+                "challenges": supa_challenges,
+                "settings": settings
+            }
+        )
+
+    # 2. Local DB fallback
     contract = db.query(BuildContract).filter(BuildContract.contract_id == contract_id).first()
     if not contract:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Build Contract '{contract_id}' not found.")
-        
+
     challenges = (
         db.query(PeerChallenge)
         .filter(PeerChallenge.contract_id == contract_id)
         .order_by(PeerChallenge.created_at.desc())
         .all()
     )
-    
-    # Unpack parsed lists for template
+
     contract_dict = {
         "contract_id": contract.contract_id,
         "project_title": contract.project_title,
@@ -129,7 +182,7 @@ def page_build_contract(contract_id: str, request: Request, db: Session = Depend
         "peer_challenge_prompt": contract.peer_challenge_prompt,
         "created_at": contract.created_at
     }
-    
+
     return templates.TemplateResponse(
         request=request,
         name="contract.html",
@@ -142,18 +195,52 @@ def page_build_contract(contract_id: str, request: Request, db: Session = Depend
 
 @app.get("/challenge/{contract_id}", response_class=HTMLResponse, tags=["Frontend Pages"])
 def page_peer_challenge(contract_id: str, request: Request, db: Session = Depends(get_db)):
-    """Stage 5: Break My Build — Peer Validation Page."""
+    """Stage 5: Break My Build — Peer Validation Page — Fetches from Supabase first."""
+    # 1. Check Supabase cloud database
+    supa = supabase_get_contract(contract_id)
+    if supa:
+        def parse_json_field(val, default):
+            if isinstance(val, str):
+                try:
+                    return json.loads(val)
+                except Exception:
+                    return default
+            return val or default
+
+        contract_dict = {
+            "contract_id": supa["contract_id"],
+            "project_title": supa["project_title"],
+            "original_idea": supa["original_idea"],
+            "category": supa["category"],
+            "difficulty": supa["difficulty"],
+            "critical_assumption": supa["critical_assumption"],
+            "failure_scenarios": parse_json_field(supa.get("failure_scenarios_json"), []),
+            "mvp_features": parse_json_field(supa.get("mvp_features_json"), []),
+            "peer_challenge_prompt": supa["peer_challenge_prompt"]
+        }
+        supa_challenges = supabase_get_challenges(contract_id)
+        return templates.TemplateResponse(
+            request=request,
+            name="challenge.html",
+            context={
+                "contract": contract_dict,
+                "challenges": supa_challenges,
+                "settings": settings
+            }
+        )
+
+    # 2. Local DB fallback
     contract = db.query(BuildContract).filter(BuildContract.contract_id == contract_id).first()
     if not contract:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Build Contract '{contract_id}' not found.")
-        
+
     challenges = (
         db.query(PeerChallenge)
         .filter(PeerChallenge.contract_id == contract_id)
         .order_by(PeerChallenge.created_at.desc())
         .all()
     )
-    
+
     contract_dict = {
         "contract_id": contract.contract_id,
         "project_title": contract.project_title,
@@ -165,7 +252,7 @@ def page_peer_challenge(contract_id: str, request: Request, db: Session = Depend
         "mvp_features": contract.get_mvp_features(),
         "peer_challenge_prompt": contract.peer_challenge_prompt
     }
-    
+
     return templates.TemplateResponse(
         request=request,
         name="challenge.html",

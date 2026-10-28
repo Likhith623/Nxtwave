@@ -66,3 +66,7 @@ frontend/.next/
 frontend/.vercel/
 *.tsbuildinfo
 next-env.d.ts
+
+*.db-shm
+*.db-wal
+
