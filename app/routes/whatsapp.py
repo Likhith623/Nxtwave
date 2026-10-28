@@ -141,6 +141,7 @@ class WhatsAppSimulateRequest(BaseModel):
 
 class WhatsAppSimulateResponse(BaseModel):
     reply_text: str
+    reply: Optional[str] = None
     contract_url: Optional[str] = None
     workshop_cta: str
     mode: str
@@ -240,6 +241,7 @@ def simulate_whatsapp_interaction(
 
     return WhatsAppSimulateResponse(
         reply_text=reply,
+        reply=reply,
         contract_url=f"{base_url}/contract/{db_contract.contract_id}",
         workshop_cta="Build Your First AI Project in 60 Minutes (NxtWave Free Workshop)",
         mode=settings.WHATSAPP_MODE,

@@ -1,7 +1,7 @@
 import json
 import re
 from datetime import datetime
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 from pydantic import BaseModel, Field, field_validator
 
 class CandidateIdeaInput(BaseModel):
@@ -157,14 +157,27 @@ class PeerChallengeResponse(BaseModel):
     created_at: datetime
 
 class WorkshopRegistrationRequest(BaseModel):
-    name: str = Field(..., min_length=2, max_length=100)
+    name: Optional[str] = Field(default=None, min_length=2, max_length=100)
+    full_name: Optional[str] = Field(default=None, min_length=2, max_length=100)
     email: str = Field(..., min_length=5, max_length=256)
     phone: Optional[str] = Field(default=None, max_length=20)
+    phone_whatsapp: Optional[str] = Field(default=None, max_length=20)
     contract_id: Optional[str] = None
     referral_source: Optional[str] = None
     utm_source: Optional[str] = None
     utm_medium: Optional[str] = None
     utm_campaign: Optional[str] = None
+    college: Optional[str] = None
+    track: Optional[str] = None
+    year_of_study: Optional[int] = None
+    github_handle: Optional[str] = None
+
+    @field_validator('name', mode='before')
+    @classmethod
+    def resolve_name(cls, v: Any, info) -> Any:
+        if not v:
+            return 'Engineering Student'
+        return v
 
     @field_validator("email")
     @classmethod
@@ -194,8 +207,8 @@ class AnalyticsEventRequest(BaseModel):
     utm_campaign: Optional[str] = None
     ref: Optional[str] = None
     session_id: Optional[str] = None
-    payload: Optional[Dict[str, Any]] = None
-    metadata: Optional[Dict[str, Any]] = None
+    payload: Optional[Any] = None
+    metadata: Optional[Any] = None
 
 class AdminMetricsResponse(BaseModel):
     total_comparisons: int

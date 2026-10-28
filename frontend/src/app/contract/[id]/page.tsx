@@ -780,7 +780,7 @@ export default function ContractPage({
             </span>
           </div>
           <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-indigo-500/10 border border-emerald-500/30">
-            <strong className="text-xs font-bold text-emerald-300 block mb-1">Your Day-1 First Step:</strong>
+            <strong className="text-xs font-bold text-emerald-300 block mb-1">Day-1 Launch Action:</strong>
             <p className="font-mono text-xs text-white leading-relaxed">{contract.immediate_action}</p>
           </div>
         </div>

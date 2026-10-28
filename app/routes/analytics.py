@@ -19,6 +19,10 @@ def track_event(
     client_ip = req.client.host if req.client else None
     effective_event_name = event_in.event_name or event_in.event_type or 'page_view'
     effective_metadata = event_in.metadata or event_in.payload
+    if isinstance(effective_metadata, str):
+        effective_metadata = {'detail': effective_metadata}
+    elif effective_metadata is not None and not isinstance(effective_metadata, dict):
+        effective_metadata = {'value': str(effective_metadata)}
     evt = record_event(
         db=db,
         event_name=sanitize_string(effective_event_name),

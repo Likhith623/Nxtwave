@@ -38,7 +38,7 @@ def register_for_workshop(
     """Registers a student for the NxtWave Workshop — persists to Supabase and local DB."""
     verify_rate_limit(req)
 
-    name = sanitize_string(reg_in.name)
+    name = sanitize_string(reg_in.name or reg_in.full_name or "Engineering Student")
     normalized_email = reg_in.email.lower().strip()
     phone = sanitize_string(reg_in.phone) if reg_in.phone else None
 

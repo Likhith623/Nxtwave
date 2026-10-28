@@ -258,3 +258,4 @@ def page_whatsapp_simulator(request: Request):
 def page_privacy(request: Request):
     """Privacy Notice & Data Handling."""
     return templates.TemplateResponse(request=request, name="privacy.html", context={"settings": settings})
+
