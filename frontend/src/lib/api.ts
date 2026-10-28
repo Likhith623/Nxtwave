@@ -117,8 +117,18 @@ export async function getContract(contractId: string) {
   return {
     contract_id: data.contract_id,
     project_name: data.project_title || data.project_name,
+    original_idea: data.original_idea || "",
     archetype: data.category || data.archetype || "RAG_PIPELINE",
+    category: data.category || "AI/ML",
+    difficulty: data.difficulty || "Intermediate",
     target_audience: data.target_audience || "Developers & Student Engineers",
+    critical_assumption: data.critical_assumption || "The user assumes core dependencies and APIs will operate with zero network latency and perfect schema compliance.",
+    failure_scenarios: data.failure_scenarios || [],
+    mvp_features: data.mvp_features || [],
+    deferred_features: data.deferred_features || [],
+    plan_60min: data.plan_60min || [],
+    immediate_action: data.immediate_action || "Create a new git repository and scaffold the FastAPI CPU endpoint.",
+    peer_challenge_prompt: data.peer_challenge_prompt || "Can you identify any architectural bottleneck or edge-case failure trap in this 48-hour build specification?",
     first_hour_milestone: data.immediate_action || data.first_hour_milestone || "Working API prototype verified with test",
     key_assumptions: data.failure_scenarios && data.failure_scenarios.length > 0
       ? data.failure_scenarios.map((f: any) => `${f.test_name}: ${f.what_is_tested}`)
@@ -133,7 +143,10 @@ export async function getContract(contractId: string) {
     suggested_stack: {
       frontend: data.frontend_rec || "Next.js 14 + Tailwind CSS",
       backend: data.backend_rec || "FastAPI + Pydantic v2",
+      ai_model: data.ai_model_rec || "Local CPU Embeddings (all-MiniLM-L6-v2)",
       database: data.db_rec || "SQLite / PostgreSQL",
+      tech_reasoning: data.tech_reasoning || "Zero cloud dependencies, runs natively on CPU with zero paid subscription costs.",
+      required_data: data.required_data || "Local sample dataset or public open-access corpus.",
     },
     challenges: data.challenges || [],
     created_at: data.created_at,
