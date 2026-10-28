@@ -3,112 +3,242 @@
 {% block title %}Register for Free Live AI Workshop — NxtWave{% endblock %}
 
 {% block content %}
-<div class="container container-narrow" style="padding-top: 3rem; padding-bottom: 5rem;">
-    <!-- Hero Header -->
-    <div style="text-align: center; margin-bottom: 2.5rem;" class="reveal">
-        <span class="badge badge-emerald" style="margin-bottom: 0.85rem;">100% FREE ONLINE MASTERCLASS</span>
-        <h1 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; line-height: 1.15;">
-            Build Your First AI Project in 60 Minutes
+<div class="container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+    <!-- Step 4 Header (Slide 5 of Growth Plan) -->
+    <div style="margin-bottom: 2.25rem;" class="reveal">
+        <div style="display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--font-mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-indigo); font-weight: 700; margin-bottom: 0.6rem;">
+            <span>04 / CONVERT &amp; SCALE</span>
+            <span>·</span>
+            <span>STEP 4 OF 4</span>
+        </div>
+        <h1 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; color: var(--text-main); letter-spacing: -0.025em; line-height: 1.15;">
+            Step 4 · <span style="color: var(--accent-indigo);">Then, they register.</span>
         </h1>
-        <p style="color: var(--text-secondary); font-size: 1.1rem; margin-top: 0.85rem; max-width: 640px; margin-left: auto; margin-right: auto; line-height: 1.6;">
-            Turn your Build Contract into a runnable prototype. Learn how to scaffold, integrate open models, and catch fatal bugs on your laptop with ₹0 budget.
+        <p style="color: var(--text-secondary); font-size: 1.05rem; margin-top: 0.6rem; max-width: 720px; line-height: 1.6;">
+            <strong>Build Your First AI Project in 60 Minutes</strong> — Turn your 60-minute Build Contract into a runnable prototype live with NxtWave mentors at ₹0 cloud cost.
         </p>
     </div>
 
-    <!-- Workshop Benefits Grid -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem;" class="reveal reveal-delay-1">
-        <div class="card" style="padding: 1.25rem; background: var(--bg-tertiary); border-color: var(--border-subtle); margin-bottom: 0;">
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚡</div>
-            <strong style="color: var(--text-main); font-size: 1rem; display: block; margin-bottom: 0.25rem;">Zero Cost & Local</strong>
-            <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5;">Run models directly on CPU using open-source tools without cloud billing.</p>
-        </div>
-        <div class="card" style="padding: 1.25rem; background: var(--bg-tertiary); border-color: var(--border-subtle); margin-bottom: 0;">
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🛡️</div>
-            <strong style="color: var(--text-main); font-size: 1rem; display: block; margin-bottom: 0.25rem;">Stress-Test First</strong>
-            <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5;">Write failure test scripts that catch bugs before viva evaluators see them.</p>
-        </div>
-        <div class="card" style="padding: 1.25rem; background: var(--bg-tertiary); border-color: var(--border-subtle); margin-bottom: 0;">
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🎯</div>
-            <strong style="color: var(--text-main); font-size: 1rem; display: block; margin-bottom: 0.25rem;">Live Demonstration</strong>
-            <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5;">Leave with a working, runnable repository you can demo immediately.</p>
-        </div>
-    </div>
+    <!-- Slide 5 Two-Column Layout: Left = Registration Card, Right = How We Reach 500 & ₹2,000 Budget -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2rem; align-items: start;">
 
-    <!-- Registration Card -->
-    <div class="card reveal reveal-delay-2" id="registrationCard" style="border-color: rgba(var(--accent-emerald-rgb), 0.4); padding: 2.25rem;">
-        <div class="card-header" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 1.25rem;">
-            <div>
-                <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main);">Reserve Your Free Workshop Spot</h3>
-                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.2rem;">
-                    {% if has_external_url %}
-                    Mode A: Official NxtWave Registration Page Configured
+        <!-- LEFT COLUMN: Workshop Registration Card -->
+        <div>
+            <div class="card reveal reveal-delay-1" id="registrationCard" style="background: linear-gradient(145deg, #0b1120 0%, #111827 100%); border: 1px solid rgba(99, 102, 241, 0.4); padding: 2.25rem; border-radius: 18px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <span style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: #34d399; font-weight: 700; display: block; margin-bottom: 0.35rem;">
+                            ● RESERVE YOUR WORKSHOP SEAT
+                        </span>
+                        <h2 style="font-size: 1.45rem; font-weight: 800; color: #ffffff; line-height: 1.25; margin: 0;">
+                            Build Your First AI Project in 60 Minutes
+                        </h2>
+                        <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.3rem;">
+                            Free live workshop · NxtWave ·
+                            {% if has_external_url %}
+                            Mode A: Official NxtWave Registration Portal
+                            {% else %}
+                            Mode B: Interactive Live Registration Form
+                            {% endif %}
+                        </div>
+                    </div>
+                    <span class="badge badge-emerald" style="flex-shrink: 0;">₹0 Free</span>
+                </div>
+
+                <!-- Linked Build Plan Context Pill (Slide 5) -->
+                {% if linked_contract %}
+                <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.35rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block; box-shadow: 0 0 8px #10b981;"></span>
+                        <div>
+                            <div style="font-size: 0.84rem; font-weight: 700; color: #ecfdf5;">
+                                Your plan: {{ linked_contract.feasibility_score }}/100 · 60-min build
+                            </div>
+                            <div style="font-size: 0.78rem; color: #a7f3d0;">
+                                {{ linked_contract.project_title }} ({{ linked_contract.domain }})
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="/contract/{{ linked_contract.contract_id }}" class="btn btn-secondary btn-sm" style="font-size: 0.74rem; padding: 0.3rem 0.65rem;">
+                            View 60-Min Plan
+                        </a>
+                        <a href="/compare?from_contract={{ linked_contract.contract_id }}" class="btn btn-secondary btn-sm" style="font-size: 0.74rem; padding: 0.3rem 0.65rem;">
+                            Remix Context
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <div style="background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 1.35rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 0.55rem; font-size: 0.84rem; color: #e0e7ff; font-weight: 600;">
+                        <span style="width: 9px; height: 9px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                        <span>Your plan: 88/100 · 60-min build blueprint ready</span>
+                    </div>
+                    <a href="/compare" style="font-size: 0.76rem; color: #a5b4fc; text-decoration: underline;">Score another idea →</a>
+                </div>
+                {% endif %}
+
+                {% if has_external_url %}
+                <!-- Mode A: External URL Button -->
+                <div style="text-align: center; padding: 2rem 1rem;">
+                    <p style="color: #cbd5e1; font-size: 0.95rem; margin-bottom: 1.5rem;">
+                        Click below to complete registration on the official NxtWave workshop portal:
+                    </p>
+                    <a href="{{ external_url }}" target="_blank" class="btn btn-emerald btn-lg" onclick="handleWorkshopCtaClick('external_registration_portal')">
+                        Proceed to NxtWave Workshop Registration →
+                    </a>
+                </div>
+                {% else %}
+                <!-- Mode B: Interactive Registration Form -->
+                <form id="registrationForm" style="margin-top: 0.5rem;">
+                    <div class="form-group">
+                        <label for="regName" class="form-label" style="color: #e2e8f0;">Name *</label>
+                        <input type="text" id="regName" class="form-control" placeholder="e.g. Aarav Kumar" required minlength="2">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regEmail" class="form-label" style="color: #e2e8f0;">College email *</label>
+                        <input type="email" id="regEmail" class="form-control" placeholder="e.g. aarav@college.ac.in" required>
+                        <small style="color: #94a3b8; font-size: 0.76rem;">Normalized &amp; deduplicated in Supabase PostgreSQL.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regPhone" class="form-label" style="color: #e2e8f0;">WhatsApp number (Optional)</label>
+                        <input type="tel" id="regPhone" class="form-control" placeholder="+91 98765 43210">
+                        <small style="color: #94a3b8; font-size: 0.76rem;">For your 60-minute build starter repo &amp; live session link.</small>
+                    </div>
+
+                    <button type="submit" id="submitRegBtn" class="btn btn-primary btn-lg btn-block" style="background: linear-gradient(135deg, #4f46e5, #6366f1); border: none; font-weight: 800; padding: 0.95rem 1.5rem; margin-top: 0.5rem;">
+                        Register free →
+                    </button>
+
+                    <div style="text-align: center; margin-top: 0.85rem; font-size: 0.78rem; color: #94a3b8;">
+                        Free · 60 mins · Live build + Q&amp;A · Stored in Supabase PostgreSQL
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+
+            <!-- Success Confirmation Box (Appears on submit) -->
+            <div id="confirmationBox" class="card" style="display: none; border-color: var(--accent-emerald); text-align: center; padding: 2.75rem 1.75rem; background: var(--bg-card);">
+                <div style="font-size: 3.2rem; margin-bottom: 0.75rem;">🎉</div>
+                <h2 style="color: var(--accent-emerald); font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem;">Registration Confirmed!</h2>
+                <p id="confirmMsg" style="color: var(--text-main); font-size: 1rem; margin-bottom: 1.5rem;"></p>
+
+                <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); max-width: 460px; margin: 0 auto 1.75rem; font-size: 0.9rem; text-align: left; border: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div><strong>Registered Name:</strong> <span id="confirmName" style="color: var(--text-main);"></span></div>
+                    <div><strong>Email:</strong> <span id="confirmEmail" style="color: var(--text-main);"></span></div>
+                    <div><strong>Registration ID:</strong> <span id="confirmId" style="font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 700;"></span></div>
+                    <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--accent-emerald); border-top: 1px solid var(--border-subtle); padding-top: 0.5rem;">
+                        ✓ Recorded in Supabase PostgreSQL analytics database for campaign attribution.
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 0.85rem; justify-content: center; flex-wrap: wrap;">
+                    {% if linked_contract %}
+                    <a href="/contract/{{ linked_contract.contract_id }}" class="btn btn-secondary">← Back to My 60-Min Build Plan</a>
                     {% else %}
-                    Mode B: Interactive Local Demonstration Form
+                    <a href="/compare" class="btn btn-secondary">← Score Another Idea</a>
                     {% endif %}
+                    <a href="/admin" class="btn btn-primary">View in Growth Analytics 📊</a>
                 </div>
             </div>
-            <span class="badge badge-emerald">₹0 Free</span>
         </div>
 
-        {% if has_external_url %}
-        <!-- Mode A: External URL Button -->
-        <div style="text-align: center; padding: 2.5rem 1rem;">
-            <p style="color: var(--text-secondary); font-size: 1rem; margin-bottom: 1.5rem;">
-                Click below to complete registration on the official NxtWave workshop portal:
-            </p>
-            <a href="{{ external_url }}" target="_blank" class="btn btn-emerald btn-lg" onclick="handleWorkshopCtaClick('external_registration_portal')">
-                Proceed to NxtWave Workshop Registration →
-            </a>
-        </div>
-        {% else %}
-        <!-- Mode B: Local Interactive Demonstration Form -->
-        <form id="registrationForm" style="margin-top: 1.5rem;">
-            <div class="form-group">
-                <label for="regName" class="form-label">Full Name *</label>
-                <input type="text" id="regName" class="form-control" placeholder="e.g. Nikita Sharma" required minlength="2">
+        <!-- RIGHT COLUMN: Slide 5 Growth Plan (How We Reach 500 + ₹2,000 Budget + 7-Day Sprint) -->
+        <div class="reveal reveal-delay-2" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <!-- HOW WE REACH 500 -->
+            <div class="card" style="padding: 1.5rem; margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <span style="font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700;">
+                        HOW WE REACH 500 (PLANNING TARGETS)
+                    </span>
+                    <span class="badge badge-indigo">~31% end-to-end</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.65rem;">
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.85rem 0.6rem; text-align: center;">
+                        <div style="font-size: 1.35rem; font-weight: 800; color: var(--text-main);">1,600</div>
+                        <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.2rem;">Compass runs</div>
+                    </div>
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.85rem 0.6rem; text-align: center;">
+                        <div style="font-size: 1.35rem; font-weight: 800; color: var(--text-main);">900</div>
+                        <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.2rem;">Build Plans</div>
+                    </div>
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.85rem 0.6rem; text-align: center;">
+                        <div style="font-size: 1.35rem; font-weight: 800; color: var(--text-main);">650</div>
+                        <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.2rem;">Register page</div>
+                    </div>
+                    <div style="background: rgba(16, 185, 129, 0.12); border: 1.5px solid rgba(16, 185, 129, 0.45); border-radius: 10px; padding: 0.85rem 0.6rem; text-align: center;">
+                        <div style="font-size: 1.35rem; font-weight: 800; color: var(--accent-emerald);">500</div>
+                        <div style="font-size: 0.72rem; color: var(--accent-emerald); font-weight: 700; margin-top: 0.2rem;">Registered</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="regEmail" class="form-label">College Email Address *</label>
-                <input type="email" id="regEmail" class="form-control" placeholder="e.g. nikita@engineering.edu" required>
-                <small style="color: var(--text-muted); font-size: 0.78rem;">We normalize emails and prevent duplicate demo entries.</small>
+            <!-- ₹2,000 BUDGET · ₹0 ON TECH AND CLOUD -->
+            <div class="card" style="padding: 1.5rem; margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <span style="font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700;">
+                        ₹2,000 · ₹0 ON TECH AND CLOUD
+                    </span>
+                    <span class="badge badge-emerald">₹4 CAC Target</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.85rem 1rem;">
+                        <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">₹800 club stipends</strong>
+                        <span style="color: var(--text-secondary); font-size: 0.78rem;">4 × ₹200 campus ambassadors</span>
+                    </div>
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.85rem 1rem;">
+                        <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">₹600 rewards</strong>
+                        <span style="color: var(--text-secondary); font-size: 0.78rem;">Top 3 peer challenge referrers</span>
+                    </div>
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.85rem 1rem;">
+                        <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">₹400 QR posters</strong>
+                        <span style="color: var(--text-secondary); font-size: 0.78rem;">40 A3 prints across hostels &amp; labs</span>
+                    </div>
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.85rem 1rem;">
+                        <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">₹200 reserve</strong>
+                        <span style="color: var(--text-secondary); font-size: 0.78rem;">Day 5–6 WhatsApp backup boost</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="regPhone" class="form-label">WhatsApp Phone Number (Optional)</label>
-                <input type="tel" id="regPhone" class="form-control" placeholder="+91 98765 43210">
-                <small style="color: var(--text-muted); font-size: 0.78rem;">For workshop link reminders and calendar invite.</small>
+            <!-- 7-DAY SPRINT -->
+            <div class="card" style="padding: 1.5rem; margin-bottom: 0;">
+                <div style="font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 700; margin-bottom: 0.9rem;">
+                    7-DAY SPRINT EXECUTION
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.4rem; text-align: center;">
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.6rem 0.25rem;">
+                        <div style="font-weight: 800; font-size: 0.8rem; color: var(--accent-indigo);">D1</div>
+                        <div style="font-size: 0.68rem; color: var(--text-secondary); margin-top: 0.15rem;">Build</div>
+                    </div>
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.6rem 0.25rem;">
+                        <div style="font-weight: 800; font-size: 0.8rem; color: var(--accent-indigo);">D2</div>
+                        <div style="font-size: 0.68rem; color: var(--text-secondary); margin-top: 0.15rem;">Seed 4 clubs</div>
+                    </div>
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.6rem 0.25rem;">
+                        <div style="font-weight: 800; font-size: 0.8rem; color: var(--accent-indigo);">D3</div>
+                        <div style="font-size: 0.68rem; color: var(--text-secondary); margin-top: 0.15rem;">WA waves</div>
+                    </div>
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.6rem 0.25rem;">
+                        <div style="font-weight: 800; font-size: 0.8rem; color: var(--accent-indigo);">D4</div>
+                        <div style="font-size: 0.68rem; color: var(--text-secondary); margin-top: 0.15rem;">QR posters</div>
+                    </div>
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.6rem 0.25rem;">
+                        <div style="font-weight: 800; font-size: 0.8rem; color: var(--accent-indigo);">D5</div>
+                        <div style="font-size: 0.68rem; color: var(--text-secondary); margin-top: 0.15rem;">Leaderboard</div>
+                    </div>
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.6rem 0.25rem;">
+                        <div style="font-weight: 800; font-size: 0.8rem; color: var(--accent-indigo);">D6</div>
+                        <div style="font-size: 0.68rem; color: var(--text-secondary); margin-top: 0.15rem;">48h push</div>
+                    </div>
+                    <div style="background: rgba(16, 185, 129, 0.14); border: 1px solid rgba(16, 185, 129, 0.45); border-radius: 8px; padding: 0.6rem 0.25rem;">
+                        <div style="font-weight: 800; font-size: 0.8rem; color: var(--accent-emerald);">D7</div>
+                        <div style="font-size: 0.68rem; color: var(--accent-emerald); font-weight: 700; margin-top: 0.15rem;">Close 500</div>
+                    </div>
+                </div>
             </div>
-
-            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-sm); font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.5rem; border: 1px solid var(--border-subtle);">
-                ℹ️ <strong>Presentation Disclosure:</strong> When no external URL is configured, registrations run in local demo mode and are recorded in the growth analytics dashboard with an explicit simulation tag.
-            </div>
-
-            <button type="submit" id="submitRegBtn" class="btn btn-emerald btn-lg btn-block">
-                Confirm Free Workshop Registration ⚡
-            </button>
-        </form>
-        {% endif %}
-    </div>
-
-    <!-- Success Confirmation Box (Appears on submit) -->
-    <div id="confirmationBox" class="card" style="display: none; border-color: var(--accent-emerald); text-align: center; padding: 3rem 1.75rem; background: var(--bg-card);">
-        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🎉</div>
-        <h2 style="color: var(--accent-emerald); font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem;">Registration Confirmed!</h2>
-        <p id="confirmMsg" style="color: var(--text-main); font-size: 1.05rem; margin-bottom: 1.5rem;"></p>
-        
-        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); max-width: 460px; margin: 0 auto 2rem; font-size: 0.9rem; text-align: left; border: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 0.5rem;">
-            <div><strong>Registered Name:</strong> <span id="confirmName" style="color: var(--text-main);"></span></div>
-            <div><strong>Email:</strong> <span id="confirmEmail" style="color: var(--text-main);"></span></div>
-            <div><strong>Registration ID:</strong> <span id="confirmId" style="font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 700;"></span></div>
-            <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--accent-amber); border-top: 1px solid var(--border-subtle); padding-top: 0.5rem;">
-                Recorded in local SQLite analytics database for campaign attribution.
-            </div>
-        </div>
-        
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="/" class="btn btn-secondary">← Back to Home</a>
-            <a href="/admin" class="btn btn-primary">View in Growth Analytics 📊</a>
         </div>
     </div>
 </div>
@@ -123,7 +253,7 @@ if (regForm) {
         const btn = document.getElementById("submitRegBtn");
         
         const params = new URLSearchParams(window.location.search);
-        const contractId = params.get("contract_id") || null;
+        const contractId = params.get("contract_id") || "{{ linked_contract.contract_id if linked_contract else '' }}" || null;
 
         const payload = {
             name: document.getElementById("regName").value.trim(),
@@ -166,7 +296,7 @@ if (regForm) {
             showToast(err.message, "error");
         } finally {
             btn.disabled = false;
-            btn.innerText = "Confirm Free Workshop Registration ⚡";
+            btn.innerText = "Register free →";
         }
     });
 }

@@ -6,26 +6,31 @@
 <div class="container container-narrow" style="padding-top: 2rem; padding-bottom: 4rem;">
     <!-- Breadcrumb & Header -->
     <div style="margin-bottom: 2rem;" class="reveal">
-        <span class="badge badge-purple" style="margin-bottom: 0.6rem;">BREAK MY BUILD • PEER STRESS-TEST</span>
+        <span class="badge badge-purple" style="margin-bottom: 0.6rem;">STEP 3 • BREAK MY BUILD • PEER STRESS-TEST & CONTEXT CONTINUATION</span>
         <h1 style="font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin-bottom: 0.5rem;">
             Can You Break This Engineering Design?
         </h1>
         <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6;">
-            A student generated this Build Contract for their final-year project. 
-            Help them identify unhandled edge cases, failure scenarios, and missing assumptions before their college viva!
+            Your classmate generated this 60-minute Build Contract for their final-year project. 
+            Inspect their plan, expose unhandled edge cases before their college viva, or <strong>continue with this document as context</strong> for your own project!
         </p>
     </div>
 
     <!-- Project Context Summary Card -->
-    <div class="card reveal" style="border-color: rgba(var(--accent-purple-rgb), 0.3); margin-bottom: 2rem;">
+    <div class="card reveal" style="border-color: rgba(var(--accent-purple-rgb), 0.35); margin-bottom: 2rem;">
         <div class="card-header" style="flex-wrap: wrap; gap: 0.75rem;">
             <div>
                 <span class="badge badge-cyan">{{ contract.category }}</span>
                 <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin-top: 0.35rem;">{{ contract.project_title }}</h2>
             </div>
-            <a href="/contract/{{ contract.contract_id }}" class="btn btn-secondary btn-sm">
-                View Full Build Contract 📋
-            </a>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <a href="/contract/{{ contract.contract_id }}" class="btn btn-secondary btn-sm">
+                    View Full 60-Min Build Plan & Pie Chart 📋
+                </a>
+                <a href="/compare?from_contract={{ contract.contract_id }}" class="btn btn-primary btn-sm">
+                    🔄 Continue With This Document as Context →
+                </a>
+            </div>
         </div>
 
         <div style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.6;">
@@ -126,13 +131,18 @@
             <p id="resWorkshopRelevance" style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.25rem; line-height: 1.5;"></p>
         </div>
 
-        <div style="display: flex; gap: 1rem; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <div style="display: flex; gap: 0.75rem; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <a href="/contract/{{ contract.contract_id }}" class="btn btn-secondary btn-sm">
                 ← Back to Updated Build Contract
             </a>
-            <a href="/compare" class="btn btn-primary btn-sm">
-                Evaluate Your Own Project Idea 🧭
-            </a>
+            <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+                <a href="/compare?from_contract={{ contract.contract_id }}" class="btn btn-primary btn-sm">
+                    🔄 Continue With This Document as Context →
+                </a>
+                <a href="/compare" class="btn btn-outline btn-sm">
+                    Wait… What Would MINE Score? 🧭
+                </a>
+            </div>
         </div>
     </div>
 
@@ -171,12 +181,12 @@
     <!-- Workshop Conversion Box for the Peer -->
     <div class="workshop-banner reveal" style="margin-top: 3.5rem;">
         <div class="workshop-content">
-            <h4>💡 Have your own final-year project to build?</h4>
-            <p>Join NxtWave's free masterclass: <strong>“Build Your First AI Project in 60 Minutes.”</strong> Learn how to build real prototypes with zero guesswork.</p>
+            <h4>💡 This build plan takes 60 minutes — and so does our free live workshop!</h4>
+            <p>Join your classmate at NxtWave's free masterclass: <strong>“Build Your First AI Project in 60 Minutes.”</strong> Build real prototypes together with zero guesswork.</p>
         </div>
         <div>
-            <a href="/register?ref=peer_challenge_page" class="btn btn-emerald btn-sm" onclick="handleWorkshopCtaClick('peer_challenge_banner', '{{ contract.contract_id }}')">
-                Register Free Workshop →
+            <a href="/register?contract_id={{ contract.contract_id }}&ref=peer_challenge_page" class="btn btn-emerald btn-sm" onclick="handleWorkshopCtaClick('peer_challenge_banner', '{{ contract.contract_id }}')">
+                Join 60-Min Workshop →
             </a>
         </div>
     </div>

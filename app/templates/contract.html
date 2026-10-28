@@ -1,87 +1,143 @@
 {% extends "base.html" %}
 
-{% block title %}Build Contract: {{ contract.project_title }} — Project Compass{% endblock %}
+{% block title %}60-Minute Build Plan & Contract: {{ contract.project_title }} — Project Compass{% endblock %}
 
 {% block head %}
-<!-- Chart.js for 3D-style Pie Chart -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<!-- html2canvas + jsPDF for PDF download -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-  .pie-wrapper {
+  .pie-stage-grid {
+    display: grid;
+    grid-template-columns: minmax(300px, 420px) 1fr;
+    gap: 2.25rem;
+    align-items: center;
+  }
+  @media (max-width: 860px) {
+    .pie-stage-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .pie-canvas-box {
     position: relative;
-    width: 300px;
-    height: 300px;
+    width: 100%;
+    max-width: 380px;
     margin: 0 auto;
-    filter: drop-shadow(0 12px 32px rgba(6,182,212,0.3));
-  }
-  @keyframes pie-spin-in {
-    from { opacity: 0; transform: scale(0.5) rotate(-90deg); }
-    to   { opacity: 1; transform: scale(1) rotate(0deg); }
-  }
-  .pie-wrapper canvas { animation: pie-spin-in 0.8s cubic-bezier(0.16,1,0.3,1) forwards; }
-
-  .big-quote-block {
     text-align: center;
-    padding: 3rem 2rem;
-    background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(139,92,246,0.1));
-    border: 1px solid rgba(6,182,212,0.3);
-    border-radius: 20px;
+  }
+  #plan60Chart {
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    cursor: pointer;
+    filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.45));
+    transition: transform 0.25s ease;
+  }
+  #plan60Chart:hover {
+    transform: translateY(-3px);
+  }
+  .pie-tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: rgba(13, 18, 34, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+    padding: 0.65rem 0.9rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 20;
+    max-width: 240px;
+    text-align: left;
+  }
+
+  .step2-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 2.25rem;
+  }
+  .step2-pill-card {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 14px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-subtle);
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+  .step2-pill-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-cyan);
+  }
+  .step2-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.95rem;
+    color: #ffffff;
+    flex-shrink: 0;
+  }
+
+  .workshop-60-banner {
+    background: linear-gradient(135deg, #131129 0%, #1e1b4b 55%, #0f172a 100%);
+    border: 2px solid rgba(244, 63, 94, 0.45);
+    border-radius: 24px;
+    padding: 2.25rem 2.25rem;
     margin: 2.5rem 0;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 0 0 40px rgba(244, 63, 94, 0.15);
     position: relative;
     overflow: hidden;
   }
-  .big-quote-block::before {
-    content: '"';
-    position: absolute;
-    top: -1rem;
-    left: 1.5rem;
-    font-size: 8rem;
-    color: rgba(6,182,212,0.12);
-    font-family: Georgia, serif;
-    line-height: 1;
-  }
-  .big-quote-block .quote-text {
-    font-size: clamp(1.3rem, 2.8vw, 1.9rem);
-    font-weight: 800;
-    color: var(--text-main);
-    line-height: 1.4;
-    letter-spacing: -0.02em;
-    position: relative;
-    z-index: 1;
-    margin-bottom: 0.75rem;
-  }
-  .big-quote-block .quote-sub {
-    font-size: 1rem;
-    color: var(--accent-cyan);
-    font-weight: 600;
-    position: relative;
-    z-index: 1;
-    line-height: 1.6;
-  }
 
-  .download-share-bar {
+  .wa-group-card {
+    background: #111b21;
+    border-radius: 24px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  }
+  .wa-group-header {
+    background: #1f2c34;
+    padding: 0.85rem 1.15rem;
+    color: #e9edef;
+    font-weight: 800;
+    font-size: 0.92rem;
+    border-bottom: 1px solid #2a3942;
     display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
-    margin: 1.5rem 0;
+    justify-content: space-between;
   }
-
-  @keyframes pulse-ring {
-    0%   { box-shadow: 0 0 0 0 rgba(16,185,129,0.5); }
-    70%  { box-shadow: 0 0 0 14px rgba(16,185,129,0); }
-    100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+  .wa-group-body {
+    padding: 1.15rem;
+    background: #0b141a;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    font-size: 0.84rem;
   }
-  .btn-register-final {
-    animation: pulse-ring 2s infinite;
-    font-size: 1.15rem;
-    padding: 0.9rem 2.2rem;
-    border-radius: 50px;
-    font-weight: 800;
-    letter-spacing: -0.01em;
+  .wa-bubble-out {
+    align-self: flex-end;
+    background: #d9fdd3;
+    color: #111b21;
+    padding: 0.55rem 0.85rem;
+    border-radius: 12px 0 12px 12px;
+    max-width: 85%;
+    font-weight: 500;
+  }
+  .wa-bubble-in {
+    align-self: flex-start;
+    background: #ffffff;
+    color: #111b21;
+    padding: 0.55rem 0.85rem;
+    border-radius: 0 12px 12px 12px;
+    max-width: 85%;
+    font-weight: 500;
   }
 
   .milestone-timeline {
@@ -110,19 +166,38 @@
   }
   .milestone-item {
     position: relative;
-    margin-bottom: 1.75rem;
+    margin-bottom: 1.5rem;
   }
 
-  /* Share link row */
   .share-input-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
   .share-input-row input { flex: 1; min-width: 200px; }
+
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.55); }
+    70%  { box-shadow: 0 0 0 14px rgba(244, 63, 94, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+  }
+  .btn-join-workshop-60 {
+    animation: pulse-ring 2s infinite;
+    background: linear-gradient(135deg, #f43f5e, #fb7185);
+    color: #ffffff !important;
+    font-size: 1.08rem;
+    padding: 0.9rem 2rem;
+    border-radius: 999px;
+    font-weight: 800;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
 
   /* Print Optimization: Clean Official Document Layout */
   @media print {
     body { background: #ffffff !important; color: #111827 !important; }
-    .navbar, .btn, .download-share-bar, .share-input-row, footer { display: none !important; }
+    .navbar, .no-print, footer { display: none !important; }
     #contractContent { padding: 0 !important; max-width: 100% !important; }
-    .card, .big-quote-block, .workshop-banner {
+    .card, .workshop-60-banner {
       background: #ffffff !important;
       color: #111827 !important;
       border: 1px solid #d1d5db !important;
@@ -131,7 +206,7 @@
     }
     h1, h2, h3, h4, h5, strong { color: #111827 !important; }
     .badge { border: 1px solid #9ca3af !important; color: #111827 !important; background: #f3f4f6 !important; }
-    .pie-wrapper { filter: none !important; }
+    #plan60Chart { filter: none !important; }
   }
 </style>
 {% endblock %}
@@ -139,82 +214,118 @@
 {% block content %}
 <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;" id="contractContent">
 
-    <!-- ⚡ TOP Workshop Conversion Banner: Prominent Workshop Solution -->
-    <div class="workshop-banner reveal" style="border: 2px solid var(--accent-emerald); background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(6,182,212,0.12)); margin-bottom: 2rem; padding: 1.5rem 2rem; border-radius: var(--radius-lg);">
-        <div class="workshop-content">
-            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
-                <span class="badge badge-emerald">FREE 60-MIN LIVE WORKSHOP</span>
-                <span style="font-size: 0.82rem; color: var(--accent-cyan); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">₹0 Cost • Standard Laptop • Zero Cloud Fees</span>
+    <!-- Step 2 Page Header -->
+    <div style="margin-bottom: 1.75rem;" class="reveal">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <span class="badge badge-cyan" style="margin-bottom: 0.5rem;">STEP 2 • A BUILD PLAN THAT LEAVES NOTHING OUT</span>
+                <h1 style="font-size: clamp(1.85rem, 3.8vw, 2.65rem); font-weight: 900; color: var(--text-main); letter-spacing: -0.02em; margin-bottom: 0.35rem;">
+                    {{ contract.project_title }}
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 1rem; margin: 0;">
+                    Complete printable technical blueprint: required ₹0 stack, hidden assumptions, failure tests, strict scope limitations, and your <strong>exact 60-minute build pie chart</strong>.
+                </p>
             </div>
-            <h3 style="font-size: clamp(1.15rem, 2.5vw, 1.45rem); font-weight: 800; color: var(--text-main); line-height: 1.35; margin-bottom: 0.35rem;">
-                ⚡ "Your plan is ready! Learn how to build this exact prototype in 60 minutes at NxtWave's free live workshop."
-            </h3>
-            <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 0;">
-                Look at the 60-minute roadmap below! The workshop is no longer an advertisement — it is the <strong>solution</strong> to building your contract.
-            </p>
-        </div>
-        <div style="flex-shrink: 0;">
-            <a href="/register?contract_id={{ contract.contract_id }}" class="btn btn-emerald btn-md" onclick="handleWorkshopCtaClick('contract_top_banner', '{{ contract.contract_id }}')">
-                Register Free Workshop (₹0) →
-            </a>
+            <div class="no-print" style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="downloadContractPDF()">
+                    ↓ Download PDF report
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="copyShareLink()">
+                    Copy share link 🔗
+                </button>
+                <button type="button" class="btn btn-emerald btn-sm" onclick="shareToWhatsApp()">
+                    📱 Share to WhatsApp Group
+                </button>
+                <a href="/compare?from_contract={{ contract.contract_id }}" class="btn btn-primary btn-sm">
+                    🔄 Continue / Remix With Context
+                </a>
+            </div>
         </div>
     </div>
 
     <!-- Contract Master Card (Official Printable Technical Document) -->
-    <div class="card reveal" style="padding: 2.5rem; background: var(--bg-card); border-color: rgba(var(--accent-emerald-rgb), 0.3);">
-        <!-- Contract Header -->
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 2rem; margin-bottom: 2rem;">
-            <div>
-                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
-                    <span class="badge badge-emerald">OFFICIAL BUILD CONTRACT</span>
-                    <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-cyan); background: var(--bg-tertiary); padding: 0.2rem 0.6rem; border-radius: var(--radius-sm);">
-                        ID: {{ contract.contract_id }}
-                    </span>
-                    <span class="badge badge-purple">The Action Blueprint</span>
-                </div>
-                <h1 style="font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin-bottom: 0.5rem;">
-                    {{ contract.project_title }}
-                </h1>
-                <div style="font-size: 0.9rem; color: var(--text-secondary); display: flex; gap: 1.25rem; flex-wrap: wrap;">
-                    <span>Category: <strong style="color: var(--accent-cyan);">{{ contract.category }}</strong></span>
-                    <span>•</span>
-                    <span>Difficulty: <strong style="color: var(--accent-amber);">{{ contract.difficulty|title }}</strong></span>
-                    <span>•</span>
-                    <span>Engine: <strong style="color: var(--accent-emerald);">Deterministic Rules-Based Analysis</strong></span>
-                </div>
+    <div class="card reveal" style="padding: 2.25rem; background: var(--bg-card); border-color: rgba(var(--accent-cyan-rgb), 0.35);">
+        <!-- Contract Metadata Strip -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1.25rem; margin-bottom: 1.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <span class="badge badge-emerald">OFFICIAL BUILD CONTRACT</span>
+                <span style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent-cyan); background: var(--bg-tertiary); padding: 0.25rem 0.65rem; border-radius: var(--radius-sm);">
+                    ID: {{ contract.contract_id }}
+                </span>
+                <span style="font-size: 0.88rem; color: var(--text-secondary);">
+                    Category: <strong style="color: var(--accent-cyan);">{{ contract.category }}</strong> •
+                    Difficulty: <strong style="color: var(--accent-amber);">{{ contract.difficulty|title }}</strong> •
+                    Total Prototype Time: <strong style="color: var(--accent-emerald);">Exactly 60 Minutes</strong>
+                </span>
             </div>
-
-            <!-- Action buttons at top -->
-            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="downloadContractPDF()">
-                    📥 Download Printable PDF
-                </button>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="copyToClipboard(window.location.href, 'Build Contract link copied!')">
-                    Copy Contract Link 🔗
-                </button>
-                <a href="/challenge/{{ contract.contract_id }}" class="btn btn-primary btn-sm">
-                    Invite Peer to Break My Build 🛡️
-                </a>
-            </div>
+            <a href="#pieChartAnchor" class="badge badge-purple no-print" style="text-decoration: none; cursor: pointer;">
+                📊 Jump to 60-Min Pie Chart ↓
+            </a>
         </div>
 
-        <!-- Section: Concept & Scope -->
-        <div style="margin-bottom: 2.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem;">
-                <span>🎯</span> Scope & Original Concept
+        <!-- Original Idea & Concept -->
+        <div style="margin-bottom: 2rem;">
+            <div style="font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.45rem;">
+                PROJECT CONCEPT & PROBLEM STATEMENT
             </div>
-            <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent-cyan); color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+            <div style="background: var(--bg-tertiary); padding: 1.15rem 1.35rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent-cyan); color: var(--text-main); font-size: 0.96rem; line-height: 1.6;">
                 {{ contract.original_idea }}
             </div>
         </div>
 
+        <!-- 6-Pillar Quick Overview (Matches Slide 3 Left Column 1-6) -->
+        <div class="step2-summary-grid no-print">
+            <a href="#sec1-stack" class="step2-pill-card">
+                <span class="step2-num" style="background: #f43f5e;">1</span>
+                <div>
+                    <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">₹0 Tech Stack</strong>
+                    <span style="color: var(--text-secondary); font-size: 0.78rem;">FastAPI + SQLite + free models. No cloud bill.</span>
+                </div>
+            </a>
+            <a href="#sec2-assumption" class="step2-pill-card">
+                <span class="step2-num" style="background: #6366f1;">2</span>
+                <div>
+                    <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">Load-Bearing Assumption</strong>
+                    <span style="color: var(--text-secondary); font-size: 0.78rem;">The one hidden risk that sinks the project.</span>
+                </div>
+            </a>
+            <a href="#sec3-tests" class="step2-pill-card">
+                <span class="step2-num" style="background: #f59e0b;">3</span>
+                <div>
+                    <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">Failure Tests</strong>
+                    <span style="color: var(--text-secondary); font-size: 0.78rem;">2–3 tests: what, expect, accept, fix. Labelled "Proposed".</span>
+                </div>
+            </a>
+            <a href="#sec4-scope" class="step2-pill-card">
+                <span class="step2-num" style="background: #10b981;">4</span>
+                <div>
+                    <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">Scope Boundary</strong>
+                    <span style="color: var(--text-secondary); font-size: 0.78rem;">What NOT to build in Week 1.</span>
+                </div>
+            </a>
+            <a href="#sec5-plan60" class="step2-pill-card">
+                <span class="step2-num" style="background: #8b5cf6;">5</span>
+                <div>
+                    <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">60-Minute Prototype Plan</strong>
+                    <span style="color: var(--text-secondary); font-size: 0.78rem;">Milestones + 60-Min Pie Chart adding up to an hour.</span>
+                </div>
+            </a>
+            <a href="#sec6-action" class="step2-pill-card">
+                <span class="step2-num" style="background: #ec4899;">6</span>
+                <div>
+                    <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">5-Minute Next Action</strong>
+                    <span style="color: var(--text-secondary); font-size: 0.78rem;">One task you can do right now.</span>
+                </div>
+            </a>
+        </div>
+
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 1. THE ₹0 TECH STACK                                               -->
+        <!-- 1. THE ₹0 TECH STACK (ALL REQUIRED TOOLS, TEXT & DEPENDENCIES)     -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div style="margin-bottom: 2.5rem;">
+        <div id="sec1-stack" style="margin-bottom: 2.5rem; padding-top: 0.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
-                    <span>⚙️</span> 1. The ₹0 Tech Stack
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 800; color: var(--text-main);">
+                    <span>⚙️</span> 1. The ₹0 Tech Stack (Everything Required to Build)
                 </div>
                 <span class="badge badge-emerald">₹0 Cloud Fees • Runs on Standard Laptop</span>
             </div>
@@ -223,11 +334,11 @@
             </p>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
                 <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">Frontend</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">Frontend UI</div>
                     <strong style="color: var(--accent-cyan); font-size: 1rem;">{{ contract.frontend_rec }}</strong>
                 </div>
                 <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">Backend</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">Backend Server</div>
                     <strong style="color: var(--accent-blue); font-size: 1rem;">{{ contract.backend_rec }}</strong>
                 </div>
                 <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
@@ -235,7 +346,7 @@
                     <strong style="color: var(--accent-purple); font-size: 1rem;">{{ contract.ai_model_rec }}</strong>
                 </div>
                 <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">Database</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">Local Database</div>
                     <strong style="color: var(--accent-emerald); font-size: 1rem;">{{ contract.db_rec }}</strong>
                 </div>
             </div>
@@ -243,22 +354,22 @@
                 <strong style="color: var(--text-main);">Architectural Rationale:</strong> <span style="color: var(--text-secondary);">{{ contract.tech_reasoning }}</span>
             </div>
             <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); font-size: 0.9rem; line-height: 1.6; border: 1px solid var(--border-subtle);">
-                <strong style="color: var(--text-main);">Data & Dependencies:</strong> <span style="color: var(--text-secondary);">{{ contract.required_data }}</span>
+                <strong style="color: var(--text-main);">Required Data, Text & Dependencies:</strong> <span style="color: var(--text-secondary);">{{ contract.required_data }}</span>
             </div>
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 2. THE "LOAD-BEARING ASSUMPTION" (THE TRAP)                         -->
+        <!-- 2. THE "LOAD-BEARING ASSUMPTION" (THE TRAP & KEY LIMITATION)       -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div style="margin-bottom: 2.5rem;">
+        <div id="sec2-assumption" style="margin-bottom: 2.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
-                    <span>⚠️</span> 2. The "Load-Bearing Assumption" (The Trap)
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 800; color: var(--text-main);">
+                    <span>⚠️</span> 2. The "Load-Bearing Assumption" (The Trap & Key Limitation)
                 </div>
                 <span class="badge badge-amber">Critical Hidden Risk</span>
             </div>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
-                Identifies the single biggest hidden risk that could make the project fail.
+                Identifies the single biggest hidden risk and technical limitation that could make the project fail during viva evaluation.
             </p>
             <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid var(--accent-amber); border-radius: var(--radius-md); padding: 1.5rem;">
                 <h5 style="color: var(--accent-amber); font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
@@ -268,7 +379,7 @@
                     "{{ contract.critical_assumption }}"
                 </p>
                 <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; border-top: 1px dashed rgba(245, 158, 11, 0.3); padding-top: 0.75rem;">
-                    <strong style="color: var(--accent-amber);">Why this matters:</strong> If this assumption fails, the entire project collapses during the college viva review regardless of how much UI code you write. The failure tests below verify this risk before your professor does.
+                    <strong style="color: var(--accent-amber);">Why this limitation matters:</strong> If this assumption fails, the entire project collapses during the college viva review regardless of how much UI code you write. The failure tests below verify this risk before your professor does.
                 </div>
             </div>
         </div>
@@ -276,9 +387,9 @@
         <!-- ═══════════════════════════════════════════════════════════════════ -->
         <!-- 3. CONCRETE FAILURE TESTS                                          -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div style="margin-bottom: 2.5rem;">
+        <div id="sec3-tests" style="margin-bottom: 2.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 800; color: var(--text-main);">
                     <span>🧪</span> 3. Concrete Failure Tests
                 </div>
                 <span class="badge badge-amber">Proposed Tests — Not Yet Executed</span>
@@ -289,12 +400,13 @@
 
             <div style="display: flex; flex-direction: column; gap: 1.25rem;">
                 {% for test in contract.failure_scenarios %}
-                <div class="card" style="padding: 1.5rem; background: var(--bg-tertiary); border-color: var(--border-subtle);">
+                <div class="card" style="padding: 1.5rem; background: var(--bg-tertiary); border-color: var(--border-subtle); margin-bottom: 0;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
                         <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-main);">
                             <span class="badge badge-amber" style="margin-right: 0.5rem;">{{ test.test_id }}</span>
                             {{ test.test_name }}
                         </div>
+                        <span style="font-size: 0.75rem; color: var(--accent-amber); font-weight: 700;">PROPOSED STRESS TEST</span>
                     </div>
                     <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5;">
                         <strong style="color: var(--text-main);">What is Tested:</strong> {{ test.what_is_tested }}<br>
@@ -324,14 +436,14 @@
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 4. STRICT SCOPE BOUNDARY (WHAT NOT TO BUILD)                       -->
+        <!-- 4. STRICT SCOPE BOUNDARY (WHAT NOT TO BUILD & LIMITATIONS)         -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div style="margin-bottom: 2.5rem;">
+        <div id="sec4-scope" style="margin-bottom: 2.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 800; color: var(--text-main);">
                     <span>🎯</span> 4. Strict Scope Boundary (What NOT to Build in Week 1)
                 </div>
-                <span class="badge badge-rose">Save 80% Time</span>
+                <span class="badge badge-rose">Prevent Scope Creep</span>
             </div>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
                 Students always waste time on things they don't need (like fancy logins, payment gateways, or multi-language support). The contract explicitly says: <strong>"DO NOT build these in Week 1."</strong>
@@ -361,31 +473,29 @@
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 5. THE 60-MINUTE PROTOTYPE PLAN + 3D PIE CHART                     -->
+        <!-- 5. THE 60-MINUTE PROTOTYPE PLAN (STEP-BY-STEP + 60-MIN PIE CHART)  -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div style="margin-bottom: 2.5rem;" id="plan60Section">
+        <div id="sec5-plan60" style="margin-bottom: 2.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 800; color: var(--text-main);">
                     <span>⏱️</span> 5. The 60-Minute Prototype Plan
                 </div>
-                <span class="badge badge-cyan">Four 15-Minute Milestones</span>
+                <span class="badge badge-cyan">Milestones Add Up to Exactly 60 Minutes</span>
             </div>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.75rem;">
                 Breaks down the first working prototype into four 15-minute milestones:
-                <strong>Minutes 0–15</strong> (Scaffold & load 1 document),
-                <strong>Minutes 15–30</strong> (Write core logic & test queries),
-                <strong>Minutes 30–45</strong> (Connect simple web UI), and
-                <strong>Minutes 45–60</strong> (Run stress test & verify).
+                <strong>Minutes 00-15</strong> (Scaffold & load 1 document),
+                <strong>Minutes 15-30</strong> (Write core logic & test queries),
+                <strong>Minutes 30-45</strong> (Connect simple web UI), and
+                <strong>Minutes 45-60</strong> (Run stress test & verify).
             </p>
 
-            <!-- Timeline View -->
-            <div class="milestone-timeline" style="margin-bottom: 2.5rem;">
-                {% set milestone_colors = ['var(--accent-cyan)', 'var(--accent-blue)', 'var(--accent-purple)', 'var(--accent-emerald)'] %}
+            <!-- Step-by-Step Timeline View -->
+            <div class="milestone-timeline" style="margin-bottom: 2.25rem;">
                 {% for milestone in contract.plan_60min %}
-                {% set idx = loop.index0 %}
                 <div class="milestone-item">
                     <div class="milestone-dot"></div>
-                    <div class="card" style="padding: 1.25rem; background: var(--bg-tertiary); border-color: var(--border-subtle);">
+                    <div class="card" style="padding: 1.25rem; background: var(--bg-tertiary); border-color: var(--border-subtle); margin-bottom: 0;">
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
                             <span class="badge badge-cyan" style="font-family: var(--font-mono);">{{ milestone.time_window }}</span>
                             <strong style="color: var(--text-main); font-size: 1rem;">{{ milestone.phase_title }}</strong>
@@ -403,188 +513,328 @@
                 </div>
                 {% endfor %}
             </div>
-
-            <!-- 3D Pie Chart Section -->
-            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 2rem; text-align: center;">
-                <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">
-                    ⏰ Your 60 Minutes — Visualized
-                </h3>
-                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
-                    Each phase = 15 minutes of focused building. Total = exactly 60 minutes.
-                </p>
-                <div class="pie-wrapper">
-                    <canvas id="plan60Chart" width="300" height="300"></canvas>
-                </div>
-                <!-- Legend -->
-                <div id="pieChartLegend" style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-top: 1.25rem;"></div>
-            </div>
-        </div>
-
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 💬 BIG QUOTE: Workshop Solution Connection                         -->
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div class="big-quote-block reveal">
-            <div class="quote-text">
-                "Your plan is ready! Learn how to build this exact prototype in 60 minutes at NxtWave's free live workshop."
-            </div>
-            <div class="quote-sub">
-                Look at the 60-minute roadmap! The contract naturally prepares the student for the workshop.<br>
-                <strong>The workshop is no longer an advertisement — it is the solution to building your contract.</strong>
-            </div>
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════════════ -->
         <!-- 6. 5-MINUTE IMMEDIATE NEXT ACTION                                  -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div style="margin-bottom: 2.5rem;">
+        <div id="sec6-action" style="margin-bottom: 2.75rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 800; color: var(--text-main);">
                     <span>🚀</span> 6. 5-Minute Immediate Next Action
                 </div>
                 <span class="badge badge-emerald">Start Right Now</span>
             </div>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem;">
-                One simple task the student can do right now.
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.85rem;">
+                One simple task the student can do right now before joining the 60-minute build session:
             </p>
-            <div style="background: linear-gradient(135deg, rgba(var(--accent-cyan-rgb), 0.15), rgba(var(--accent-blue-rgb), 0.15)); border: 1px solid var(--accent-cyan); border-radius: var(--radius-md); padding: 1.5rem;">
-                <div style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); line-height: 1.5;">
+            <div style="background: linear-gradient(135deg, rgba(var(--accent-cyan-rgb), 0.14), rgba(var(--accent-blue-rgb), 0.14)); border: 1px solid var(--accent-cyan); border-radius: var(--radius-md); padding: 1.35rem 1.5rem;">
+                <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); line-height: 1.5;">
                     {{ contract.immediate_action }}
                 </div>
             </div>
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 📥 DOWNLOAD + 🔗 SHARE BAR                                        -->
+        <!-- 📊 THE SHOWSTOPPER: BEAUTIFUL 3D 60-MINUTE PIE CHART AT END OF DOC -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div class="card reveal" style="padding: 2rem; background: var(--bg-tertiary); border-color: rgba(var(--accent-purple-rgb), 0.3); margin-bottom: 2.5rem;">
-            <div style="text-align: center; margin-bottom: 1.5rem;">
-                <span class="badge badge-purple" style="margin-bottom: 0.5rem;">SHARE & SAVE</span>
-                <h3 style="font-size: 1.35rem; font-weight: 700; color: var(--text-main);">Share Your Build Contract → Get Free Peer Feedback</h3>
-                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">
-                    When classmates open your shared link, they'll see your plan AND discover Project Compass for their own project — free organic growth! 🚀
-                </p>
-            </div>
-
-            <!-- Shareable Link Input -->
-            <div class="share-input-row" style="margin-bottom: 1.25rem;">
-                <input type="text" readonly id="shareUrlInput"
-                    value="{{ request.base_url }}contract/{{ contract.contract_id }}"
-                    class="form-control"
-                    style="font-family: var(--font-mono); font-size: 0.85rem; background: var(--bg-card);">
-                <button type="button" class="btn btn-secondary btn-sm"
-                    onclick="copyShareLink()">
-                    📋 Copy Link
-                </button>
-                <button type="button" class="btn btn-outline btn-sm"
-                    onclick="shareToWhatsApp()">
-                    📱 Share to WhatsApp
-                </button>
-            </div>
-
-            <!-- Download & Action Buttons -->
-            <div class="download-share-bar">
-                <button type="button" class="btn btn-secondary" onclick="downloadContractPDF()">
-                    📥 Download Printable PDF
-                </button>
-                <a href="/challenge/{{ contract.contract_id }}" class="btn btn-primary">
-                    🛡️ Invite Peers: Break My Build →
-                </a>
-            </div>
-
-            <!-- WhatsApp share message preview -->
-            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
-                <strong style="color: var(--accent-emerald);">📱 Ready-to-Paste WhatsApp Message:</strong><br>
-                <span id="waMsg">Hey! I built my final-year project plan using Project Compass 🧭. Can you find any flaws before my professor does? 😅
-Here's my plan: {{ request.base_url }}contract/{{ contract.contract_id }}
-Also try this free tool — I got my full tech stack in 60 seconds! 🔥</span>
-                <br><br>
-                <button type="button" class="btn btn-outline btn-sm" onclick="copyToClipboard(document.getElementById('waMsg').innerText, '📱 WhatsApp message copied!')">Copy This Message 📋</button>
-            </div>
-        </div>
-
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 🛡️ PEER VALIDATION / BREAK MY BUILD                               -->
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div style="border-top: 1px dashed var(--border-light); padding-top: 2.5rem; margin-top: 2.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+        <div id="pieChartAnchor" style="background: linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(13, 18, 34, 0.98)); border: 2px solid rgba(99, 102, 241, 0.4); border-radius: 22px; padding: 2.25rem; margin-bottom: 2.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
                 <div>
-                    <span class="badge badge-purple">PEER VALIDATION</span>
-                    <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-top: 0.4rem;">Break My Build: Challenge This Project</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-secondary);">
-                        Share this link with classmates. When they submit failure edge cases, Project Compass recommends architectural fixes — and shows them Project Compass for their own projects!
+                    <span class="badge badge-purple" style="margin-bottom: 0.4rem;">EXACTLY 60 MINUTES • VISUAL TIME ALLOCATION</span>
+                    <h2 style="font-size: clamp(1.4rem, 2.8vw, 1.9rem); font-weight: 900; color: #ffffff; margin: 0;">
+                        ⏰ Your 60-Minute Build Plan — Pie Chart Breakdown
+                    </h2>
+                    <p style="font-size: 0.9rem; color: #cbd5e1; margin-top: 0.25rem;">
+                        Every single task in your prototype plan is accounted for inside a single 60-minute clock. Hover or click any slice to inspect its exact deliverables.
                     </p>
                 </div>
-                <a href="/challenge/{{ contract.contract_id }}" class="btn btn-purple">
-                    Open Peer Challenge Arena 🛡️ →
-                </a>
-            </div>
-
-            <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); margin-bottom: 1.5rem;">
-                <strong style="color: var(--accent-purple); font-size: 0.95rem;">Peer Prompt to Share:</strong>
-                <p style="font-size: 1.05rem; font-weight: 600; color: var(--text-main); margin: 0.5rem 0 1rem; line-height: 1.5;">
-                    "{{ contract.peer_challenge_prompt }}"
-                </p>
-                <div class="share-input-row">
-                    <input type="text" readonly value="{{ request.base_url }}challenge/{{ contract.contract_id }}" class="form-control" style="max-width: 480px; font-family: var(--font-mono); font-size: 0.85rem;" id="challengeUrlInput">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="copyToClipboard(document.getElementById('challengeUrlInput').value, 'Peer challenge link copied!')">
-                        Copy Challenge Link 📋
+                <!-- View Mode Toggle: Granular 8-Slice vs Slide-3 5-Slice -->
+                <div class="no-print" style="display: inline-flex; background: rgba(255,255,255,0.06); padding: 0.3rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); gap: 0.35rem;">
+                    <button type="button" id="btnMode8" class="btn btn-sm" style="background: #6366f1; color: #fff; font-size: 0.78rem; padding: 0.4rem 0.85rem; border-radius: 9px;" onclick="setPieMode('granular8')">
+                        8-Step Detailed (60m)
+                    </button>
+                    <button type="button" id="btnMode5" class="btn btn-sm" style="background: transparent; color: #cbd5e1; font-size: 0.78rem; padding: 0.4rem 0.85rem; border-radius: 9px;" onclick="setPieMode('classic5')">
+                        5-Stage Classic (60m)
                     </button>
                 </div>
             </div>
 
-            <!-- Existing Peer Challenges -->
-            {% if challenges and challenges|length > 0 %}
-            <div style="margin-top: 2rem;">
-                <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 1rem;">
-                    Community Stress Challenges ({{ challenges|length }} submitted):
-                </h4>
-                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    {% for ch in challenges %}
-                    <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent-purple); border: 1px solid var(--border-subtle);">
-                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem;">
-                            <strong style="color: var(--accent-purple);">From: {{ ch.peer_name }}</strong>
-                            <span style="color: var(--text-muted); font-size: 0.8rem;">{{ ch.created_at[:16]|replace('T', ' ') if (ch.created_at is string) else (ch.created_at.strftime('%Y-%m-%d %H:%M') if ch.created_at else '') }}</span>
-                        </div>
-                        <div style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 0.4rem; font-weight: 600;">
-                            Challenge: {{ ch.challenge_text }}
-                        </div>
-                        <div style="font-size: 0.85rem; color: var(--text-secondary);">
-                            <strong>Why it matters:</strong> {{ ch.why_it_matters }}
-                        </div>
+            <div class="pie-stage-grid">
+                <!-- Left: 3D Extruded Pie Chart Canvas -->
+                <div class="pie-canvas-box">
+                    <div style="font-size: 0.8rem; font-weight: 900; letter-spacing: 0.12em; color: #94a3b8; text-transform: uppercase; margin-bottom: 0.5rem;">
+                        EXACTLY 60 MINUTES
                     </div>
-                    {% endfor %}
+                    <canvas id="plan60Chart" width="420" height="360"></canvas>
+                    <div id="pieTooltip" class="pie-tooltip"></div>
+
+                    <!-- Compact Legend Under Pie (Matches Slide 3) -->
+                    <div id="pieChartLegend" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.55rem 1rem; text-align: left; margin-top: 1rem; padding: 0.85rem 1rem; background: rgba(255,255,255,0.04); border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);"></div>
+                </div>
+
+                <!-- Right: Complete Minute-by-Minute Breakdown List -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <strong style="color: #ffffff; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                            Minute-by-Minute Allocation (Total = 60 Mins)
+                        </strong>
+                        <span style="font-family: var(--font-mono); font-size: 0.8rem; color: #10b981; font-weight: 800;">
+                            ∑ = 60 / 60 MIN (100%)
+                        </span>
+                    </div>
+                    <div id="pieBreakdownCards" style="display: flex; flex-direction: column; gap: 0.6rem;"></div>
                 </div>
             </div>
-            {% endif %}
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 🎯 BOTTOM PROMINENT BANNER: Solution to Building Their Contract     -->
+        <!-- 🎯 IMMEDIATELY AFTER PIE CHART: "60 MINS = 60 MINS" WORKSHOP CTA   -->
+        <!-- (Matches Slide 3 Bottom Bar + User's Exact Prompt Specification!)   -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div class="workshop-banner reveal" style="border: 2px solid var(--accent-emerald); background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(6,182,212,0.15)); margin-top: 3.5rem; padding: 2.5rem 2rem; border-radius: var(--radius-lg); text-align: center; display: block;">
-            <div style="display: inline-block; margin-bottom: 0.75rem;">
-                <span class="badge badge-emerald" style="font-size: 0.85rem; padding: 0.35rem 0.9rem;">🎓 FREE LIVE WORKSHOP — ₹0</span>
+        <div class="workshop-60-banner reveal">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.75rem;">
+                <div style="display: flex; align-items: center; gap: 1.35rem; flex: 1; min-width: 280px;">
+                    <!-- Glowing "60" Circle from Slide 3 -->
+                    <div style="width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #111827; font-weight: 900; font-size: 1.65rem; font-family: var(--font-mono); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 28px rgba(245, 158, 11, 0.5);">
+                        <span style="line-height: 1;">60</span>
+                        <span style="font-size: 0.55rem; font-weight: 800; letter-spacing: 0.05em;">MINS</span>
+                    </div>
+
+                    <div>
+                        <div style="display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
+                            <span class="badge badge-emerald">THIS PLAN = 60 MINS</span>
+                            <span class="badge badge-cyan">OUR LIVE WORKSHOP = 60 MINS</span>
+                        </div>
+                        <h3 style="font-size: clamp(1.3rem, 2.6vw, 1.75rem); font-weight: 900; color: #ffffff; line-height: 1.3; margin-bottom: 0.4rem;">
+                            “This plan takes exactly 60 minutes. So does our workshop. Come build it live — let’s build it together!”
+                        </h3>
+                        <p style="color: #cbd5e1; font-size: 0.94rem; margin: 0; line-height: 1.55;">
+                            Your plan is ready! Learn how to build this exact prototype in 60 minutes at NxtWave's free live workshop. Instead of struggling alone, join our 60-minute hands-on session and follow every slice of your 60-minute pie chart live with a mentor.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                    <a href="/register?contract_id={{ contract.contract_id }}"
+                       class="btn-join-workshop-60"
+                       onclick="handleWorkshopCtaClick('contract_after_pie_chart', '{{ contract.contract_id }}')">
+                        <span>Join the 60-Min Workshop →</span>
+                    </a>
+                    <span style="font-size: 0.76rem; color: #94a3b8;">
+                        100% Free (₹0) • Standard Laptop • Live Code Walkthrough
+                    </span>
+                </div>
             </div>
-            <h2 style="font-size: clamp(1.5rem, 3.5vw, 2.3rem); font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem; letter-spacing: -0.02em; line-height: 1.35;">
-                ⚡ "Your plan is ready! Learn how to build this exact prototype in 60 minutes at NxtWave's free live workshop."
-            </h2>
-            <p style="color: var(--text-secondary); max-width: 680px; margin: 0 auto 1.75rem; font-size: 1.05rem; line-height: 1.6;">
-                The workshop is no longer an advertisement — it is the <strong style="color: var(--accent-cyan);">solution</strong> to building your contract.
-                A senior mentor guides you through building this exact prototype on your laptop in four 15-minute milestones. Zero guessing. 100% working code.
-            </p>
-            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; align-items: center; margin-bottom: 1rem;">
-                <a href="/register?contract_id={{ contract.contract_id }}"
-                   class="btn btn-emerald btn-register-final"
-                   onclick="handleWorkshopCtaClick('contract_bottom_banner', '{{ contract.contract_id }}')">
-                    🚀 Register Free for the 60-Min AI Workshop
-                </a>
-                <button type="button" class="btn btn-secondary btn-lg" onclick="downloadContractPDF()">
-                    📥 Download Printable PDF
-                </button>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- 📱 STEP 3: UNLIMITED FREE PUBLICITY IN ONE LINK (SLIDE 4 OF PDF)    -->
+        <!-- Share to WhatsApp Group + Friend Sees & Continues With Context!     -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 2.5rem; margin-top: 2.5rem;" class="reveal">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                        <span class="badge badge-amber">STEP 3 • UNLIMITED FREE PUBLICITY, IN ONE LINK</span>
+                        <span class="badge badge-purple">SOCIAL STAKES & CHALLENGE INSTINCT</span>
+                        <span class="badge badge-emerald">RECIPROCITY</span>
+                    </div>
+                    <h3 style="font-size: clamp(1.45rem, 3vw, 2rem); font-weight: 900; color: var(--text-main); margin-bottom: 0.35rem;">
+                        Share This Link to Your WhatsApp Group — Friends Review & Continue With Your Context
+                    </h3>
+                    <p style="font-size: 0.95rem; color: var(--text-secondary); max-width: 780px; line-height: 1.6; margin: 0;">
+                        When you share your link in your class WhatsApp group, your friends can inspect what you are building, stress-test your plan ("Break My Build"), or <strong>continue with this exact document as context</strong> to test or compare their own ideas!
+                    </p>
+                </div>
             </div>
-            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0;">
-                ✅ Completely free • Standard laptop • ₹0 cloud costs • Instant workshop seat confirmation
-            </p>
+
+            <!-- Shareable Link Input + Primary Share Buttons (Matches Slide 4 Bottom Buttons) -->
+            <div class="card" style="padding: 1.5rem; background: var(--bg-tertiary); border-color: rgba(var(--accent-cyan-rgb), 0.35); margin-bottom: 2rem;">
+                <div style="font-size: 0.8rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
+                    🔗 Your Unique Shareable Build Plan & Context Link:
+                </div>
+                <div class="share-input-row" style="margin-bottom: 1.15rem;">
+                    <input type="text" readonly id="shareUrlInput"
+                        value="{{ request.base_url }}contract/{{ contract.contract_id }}"
+                        class="form-control"
+                        style="font-family: var(--font-mono); font-size: 0.88rem; background: var(--bg-card); font-weight: 600;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="copyShareLink()">
+                        📋 Copy share link
+                    </button>
+                    <button type="button" class="btn btn-emerald btn-sm" onclick="shareToWhatsApp()">
+                        📱 Share to WhatsApp Group
+                    </button>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="downloadContractPDF()">
+                        ↓ Download PDF report
+                    </button>
+                </div>
+
+                <!-- Ready-to-Paste WhatsApp Group Message -->
+                <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem 1.25rem; font-size: 0.86rem; color: var(--text-secondary); line-height: 1.65; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div style="flex: 1; min-width: 240px;">
+                        <strong style="color: var(--accent-emerald);">💬 Ready-to-Paste WhatsApp Group Message:</strong><br>
+                        <span id="waMsg">Guys, break my final-year project plan ("{{ contract.project_title }}") before my professor does! 😅
+Check my 60-minute build plan & pie chart here: {{ request.base_url }}contract/{{ contract.contract_id }}
+You can drop a critique on my plan OR click "Continue with Context" to score your own project idea! 🔥</span>
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="copyToClipboard(document.getElementById('waMsg').innerText, '📱 WhatsApp group message copied!')">
+                        Copy WhatsApp Text 📋
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 4 Visual Layout: WhatsApp Group Preview + 4-Step Friend Viral Loop -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.75rem; align-items: stretch; margin-bottom: 2.25rem;">
+                <!-- Left: CSE Final Year WhatsApp Group Mockup (From Slide 4) -->
+                <div class="wa-group-card">
+                    <div class="wa-group-header">
+                        <span>📱 CSE Final Year · Group</span>
+                        <span style="font-size: 0.72rem; color: #10b981;">● 64 classmates online</span>
+                    </div>
+                    <div class="wa-group-body">
+                        <div class="wa-bubble-out">
+                            Guys, break my project plan before my professor does.<br>
+                            <span style="color: #0284c7; text-decoration: underline; font-family: var(--font-mono); font-size: 0.78rem;">{{ request.base_url }}contract/{{ contract.contract_id }}</span>
+                        </div>
+                        <div class="wa-bubble-in">
+                            <strong style="color: #7c3aed; font-size: 0.75rem; display: block;">Rahul (CSE-A)</strong>
+                            No login? Opened! Wait — if rules change in the 2026 circular, your bot breaks. Added that critique to your doc!
+                        </div>
+                        <div class="wa-bubble-out">
+                            Ouch. Project Compass just auto-added a safeguard for that! Now click <strong>"Continue with Context"</strong> on my link and test yours →
+                        </div>
+                        <div class="wa-bubble-in">
+                            <strong style="color: #059669; font-size: 0.75rem; display: block;">Priya (CSE-B)</strong>
+                            Wait… what would MINE score?! Looking at your 60-minute pie chart right now, I'm joining the 60-min workshop too! 🔥
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: The 4-Step Viral Loop (From Slide 4) + Friend Continuation Actions -->
+                <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 0.85rem;">
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 1rem 1.25rem; display: flex; gap: 1rem; align-items: center;">
+                        <span class="step2-num" style="background: #f43f5e;">1</span>
+                        <div>
+                            <strong style="color: var(--text-main); font-size: 0.95rem;">Friend taps your WhatsApp link</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.84rem;">Lands directly on this Build Plan & 60-Minute Pie Chart. No login, no app install.</div>
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 1rem 1.25rem; display: flex; gap: 1rem; align-items: center;">
+                        <span class="step2-num" style="background: #6366f1;">2</span>
+                        <div>
+                            <strong style="color: var(--text-main); font-size: 0.95rem;">Sees what you're doing & drops a critique</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.84rem;">Hunts errors in your assumptions, tests feasibility, and adds edge cases below.</div>
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 1rem 1.25rem; display: flex; gap: 1rem; align-items: center;">
+                        <span class="step2-num" style="background: #f59e0b;">3</span>
+                        <div>
+                            <strong style="color: var(--text-main); font-size: 0.95rem;">Continues this document as context</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.84rem;">Clicks <strong>"Continue With This Document as Context"</strong> to remix your plan or score their own idea.</div>
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 1rem 1.25rem; display: flex; gap: 1rem; align-items: center;">
+                        <span class="step2-num" style="background: #10b981;">4</span>
+                        <div>
+                            <strong style="color: var(--text-main); font-size: 0.95rem;">The loop restarts + Both join the 60-Min Workshop</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.84rem;">New plan, new link, a new group chat. Every friend becomes an active builder.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════════════ -->
+            <!-- 🤝 FRIEND CONTEXT CONTINUATION HUB (For Friends Opening the Link!)  -->
+            <!-- ═══════════════════════════════════════════════════════════════════ -->
+            <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(6, 182, 212, 0.12)); border: 2px solid rgba(139, 92, 246, 0.45); border-radius: 20px; padding: 1.85rem; margin-bottom: 2.25rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem; margin-bottom: 1.25rem;">
+                    <div>
+                        <span class="badge badge-purple" style="margin-bottom: 0.4rem;">👋 OPENED YOUR FRIEND'S SHARED LINK?</span>
+                        <h4 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin: 0;">
+                            Continue This Document as Context — Stress-Test It or Remix It!
+                        </h4>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.3rem; margin-bottom: 0;">
+                            You are viewing Build Contract <code style="color: var(--accent-cyan);">{{ contract.contract_id }}</code> (<strong>{{ contract.project_title }}</strong>). Choose how you want to continue with this document:
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <a href="/compare?from_contract={{ contract.contract_id }}" class="btn btn-primary btn-sm">
+                            🔄 Continue / Remix This Plan as My Context →
+                        </a>
+                        <a href="/challenge/{{ contract.contract_id }}" class="btn btn-purple btn-sm">
+                            🛡️ Open Full "Break My Build" Arena →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Inline Quick Peer Challenge Form (So Friends Can Contribute Right Inside the Document!) -->
+                <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 1.35rem;">
+                    <div style="font-size: 0.92rem; font-weight: 700; color: var(--accent-purple); margin-bottom: 0.35rem;">
+                        💡 Peer Prompt for Classmates: "{{ contract.peer_challenge_prompt }}"
+                    </div>
+                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                        Spot a flaw or edge case in your friend's plan? Add it below — Project Compass will immediately append a new <strong>Failure Test & Architectural Safeguard</strong> to this contract!
+                    </p>
+                    <form id="inlineChallengeForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; align-items: end;">
+                        <div>
+                            <label class="form-label" style="font-size: 0.78rem;">Your Name (Friend / Classmate)</label>
+                            <input type="text" id="inlinePeerName" class="form-control" placeholder="e.g. Karthik (CSE Final Year)" required>
+                        </div>
+                        <div>
+                            <label class="form-label" style="font-size: 0.78rem;">What Edge Case Breaks This Plan? *</label>
+                            <input type="text" id="inlineChallengeText" class="form-control" placeholder="e.g. What if the PDF circular has scanned tables or updated 2026 rules?" required minlength="10">
+                        </div>
+                        <div>
+                            <label class="form-label" style="font-size: 0.78rem;">Why Does It Matter in Viva? *</label>
+                            <input type="text" id="inlineWhyMatters" class="form-control" placeholder="e.g. Bot will give wrong attendance rules to students" required minlength="5">
+                        </div>
+                        <div>
+                            <button type="submit" id="inlineChallengeBtn" class="btn btn-purple btn-block" style="height: 44px;">
+                                + Add Critique to Document 🛡️
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Existing Peer Challenges Feed -->
+            <div style="margin-top: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                    <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin: 0;">
+                        🛡️ Friend & Classmate Stress-Test Critiques on This Document ({{ challenges|length if challenges else 0 }}):
+                    </h4>
+                    <div class="share-input-row" style="max-width: 420px;">
+                        <input type="text" readonly value="{{ request.base_url }}challenge/{{ contract.contract_id }}" class="form-control" style="font-family: var(--font-mono); font-size: 0.78rem; padding: 0.35rem 0.65rem;" id="challengeUrlInput">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="copyToClipboard(document.getElementById('challengeUrlInput').value, 'Peer challenge link copied!')">
+                            Copy Challenge Link 📋
+                        </button>
+                    </div>
+                </div>
+
+                <div id="inlineChallengesList" style="display: flex; flex-direction: column; gap: 0.85rem;">
+                    {% if challenges and challenges|length > 0 %}
+                        {% for ch in challenges %}
+                        <div style="background: var(--bg-tertiary); padding: 1.15rem 1.35rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent-purple); border: 1px solid var(--border-subtle);">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.4rem;">
+                                <strong style="color: var(--accent-purple);">From Classmate: {{ ch.peer_name }}</strong>
+                                <span style="color: var(--text-muted);">{{ ch.created_at[:16]|replace('T', ' ') if (ch.created_at is string) else (ch.created_at.strftime('%Y-%m-%d %H:%M') if ch.created_at else '') }}</span>
+                            </div>
+                            <div style="font-size: 0.94rem; color: var(--text-main); margin-bottom: 0.3rem; font-weight: 600;">
+                                Challenge: "{{ ch.challenge_text }}"
+                            </div>
+                            <div style="font-size: 0.84rem; color: var(--text-secondary);">
+                                <strong>Why it matters:</strong> {{ ch.why_it_matters }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px dashed var(--border-subtle); text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                            No friend critiques yet — share your link on WhatsApp or add the first stress-test above!
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
 
     </div><!-- end card -->
@@ -593,138 +843,458 @@ Also try this free tool — I got my full tech stack in 60 seconds! 🔥</span>
 
 {% block scripts %}
 <script>
-// ─── Chart.js 3D-style Pie Chart ─────────────────────────────────────────────
-const milestones = [
+// ─── 100% Native Zero-Dependency 3D-Extruded 60-Minute Pie Chart Engine ──────
+// Works instantaneously with zero external CDN dependencies!
+const MILESTONES_FROM_BACKEND = [
     {% for m in contract.plan_60min %}
-    { label: "{{ m.phase_title }}", window: "{{ m.time_window }}", minutes: 15 }{% if not loop.last %},{% endif %}
+    {
+        window: {{ m.time_window | tojson }},
+        title: {{ m.phase_title | tojson }},
+        objective: {{ m.objective | tojson }},
+        deliverable: {{ m.deliverable | tojson }},
+        actions: {{ m.action_items | tojson }}
+    }{% if not loop.last %},{% endif %}
     {% endfor %}
 ];
 
-const PIE_COLORS = ['#06b6d4', '#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#f43f5e'];
+// Mode 1: Detailed 8-Slice 60-Minute Breakdown (Divided into many rich slices totaling 60 mins)
+const SLICES_GRANULAR_8 = [
+    {
+        shortLabel: "Env & FastAPI Scaffold",
+        window: "Min 00–08",
+        minutes: 8,
+        color: "#f43f5e",
+        darkColor: "#be123c",
+        task: (MILESTONES_FROM_BACKEND[0]?.actions?.[0]) || "Initialize Python virtual environment, FastAPI app structure & dependencies."
+    },
+    {
+        shortLabel: "Load & Parse 1 Sample Doc",
+        window: "Min 08–15",
+        minutes: 7,
+        color: "#fb923c",
+        darkColor: "#c2410c",
+        task: (MILESTONES_FROM_BACKEND[0]?.actions?.[1]) || "Load 1 real sample document/dataset and verify clean text/tensor extraction."
+    },
+    {
+        shortLabel: "Core AI Model / Embeddings",
+        window: "Min 15–25",
+        minutes: 10,
+        color: "#6366f1",
+        darkColor: "#4338ca",
+        task: (MILESTONES_FROM_BACKEND[1]?.actions?.[0]) || "Initialize local CPU AI model (Sentence-Transformers / MobileNet / Scikit-Learn)."
+    },
+    {
+        shortLabel: "Similarity & Guardrail Logic",
+        window: "Min 25–30",
+        minutes: 5,
+        color: "#3b82f6",
+        darkColor: "#1d4ed8",
+        task: (MILESTONES_FROM_BACKEND[1]?.actions?.[2]) || "Set strict confidence / similarity threshold to block hallucinations."
+    },
+    {
+        shortLabel: "Test Queries & API Endpoint",
+        window: "Min 30–40",
+        minutes: 10,
+        color: "#eab308",
+        darkColor: "#a16207",
+        task: (MILESTONES_FROM_BACKEND[2]?.actions?.[0]) || "Wrap core inference logic in a validated FastAPI POST endpoint and test queries."
+    },
+    {
+        shortLabel: "Connect Simple Web UI",
+        window: "Min 40–50",
+        minutes: 10,
+        color: "#10b981",
+        darkColor: "#047857",
+        task: (MILESTONES_FROM_BACKEND[2]?.actions?.[1]) || "Connect clean single-page browser UI with instant results & source citations."
+    },
+    {
+        shortLabel: "Out-of-Domain Stress Test",
+        window: "Min 50–55",
+        minutes: 5,
+        color: "#a855f7",
+        darkColor: "#7e22ce",
+        task: (MILESTONES_FROM_BACKEND[3]?.actions?.[0]) || "Execute proposed failure test with tricky/unlisted input to verify refusal guardrail."
+    },
+    {
+        shortLabel: "Latency Check & Viva Demo",
+        window: "Min 55–60",
+        minutes: 5,
+        color: "#06b6d4",
+        darkColor: "#0e7490",
+        task: (MILESTONES_FROM_BACKEND[3]?.actions?.[2]) || "Verify <250ms local CPU latency and lock 60-second viva demo walkthrough."
+    }
+];
 
-function buildPieChart() {
-    const ctx = document.getElementById('plan60Chart');
-    if (!ctx || typeof Chart === 'undefined') return;
+// Mode 2: Slide-3 Classic 5-Slice 60-Minute Breakdown (10m + 15m + 10m + 15m + 10m = 60m)
+const SLICES_CLASSIC_5 = [
+    {
+        shortLabel: "Scaffold + load 1 doc (10')",
+        window: "Min 00–10",
+        minutes: 10,
+        color: "#f43f5e",
+        darkColor: "#be123c",
+        task: MILESTONES_FROM_BACKEND[0]?.objective || "Scaffold FastAPI project structure and ingest 1 sample document."
+    },
+    {
+        shortLabel: "Core logic (15')",
+        window: "Min 10–25",
+        minutes: 15,
+        color: "#4f46e5",
+        darkColor: "#3730a3",
+        task: MILESTONES_FROM_BACKEND[1]?.objective || "Build the local embedding/model pipeline and core scoring/retrieval logic."
+    },
+    {
+        shortLabel: "Test queries (10')",
+        window: "Min 25–35",
+        minutes: 10,
+        color: "#f59e0b",
+        darkColor: "#b45309",
+        task: "Run test queries against the core pipeline and calibrate threshold guardrails."
+    },
+    {
+        shortLabel: "Simple web UI (15')",
+        window: "Min 35–50",
+        minutes: 15,
+        color: "#10b981",
+        darkColor: "#047857",
+        task: MILESTONES_FROM_BACKEND[2]?.objective || "Connect a clean, responsive web interface to your FastAPI backend."
+    },
+    {
+        shortLabel: "Stress test + verify (10')",
+        window: "Min 50–60",
+        minutes: 10,
+        color: "#8b5cf6",
+        darkColor: "#6d28d9",
+        task: MILESTONES_FROM_BACKEND[3]?.objective || "Execute failure stress tests and verify the prototype works end-to-end."
+    }
+];
 
-    const labels  = milestones.map(m => m.window + ': ' + m.label);
-    const data    = milestones.map(() => 15); // each = 15 min
-    const colors  = PIE_COLORS.slice(0, milestones.length);
+let currentPieMode = 'granular8';
+let activeSliceIndex = -1;
 
-    // Build Legend
+function getCurrentSlices() {
+    return currentPieMode === 'granular8' ? SLICES_GRANULAR_8 : SLICES_CLASSIC_5;
+}
+
+function setPieMode(mode) {
+    currentPieMode = mode;
+    activeSliceIndex = -1;
+    const b8 = document.getElementById('btnMode8');
+    const b5 = document.getElementById('btnMode5');
+    if (b8 && b5) {
+        if (mode === 'granular8') {
+            b8.style.background = '#6366f1';
+            b8.style.color = '#ffffff';
+            b5.style.background = 'transparent';
+            b5.style.color = '#cbd5e1';
+        } else {
+            b5.style.background = '#6366f1';
+            b5.style.color = '#ffffff';
+            b8.style.background = 'transparent';
+            b8.style.color = '#cbd5e1';
+        }
+    }
+    render3DPieChart();
+    renderLegendAndBreakdown();
+}
+
+function render3DPieChart() {
+    const canvas = document.getElementById('plan60Chart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const cssW = 420;
+    const cssH = 340;
+    canvas.width = cssW * dpr;
+    canvas.height = cssH * dpr;
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, cssW, cssH);
+
+    const slices = getCurrentSlices();
+    const totalMinutes = slices.reduce((acc, s) => acc + s.minutes, 0); // Always 60
+    const cx = cssW / 2;
+    const cy = cssH / 2 - 14;
+    const rx = 152;
+    const ry = 112; // Elliptical tilt for true 3D perspective (like Slide 3!)
+    const depth = 26; // 3D extrusion height
+
+    // 1. Draw 3D extruded cylinder side walls (from bottom layer up to top surface)
+    let startAngle = -Math.PI / 2;
+    slices.forEach((slice, idx) => {
+        const sweep = (slice.minutes / totalMinutes) * (Math.PI * 2);
+        const endAngle = startAngle + sweep;
+        const midAngle = startAngle + sweep / 2;
+        const isHovered = idx === activeSliceIndex;
+        const offsetDist = isHovered ? 10 : 0;
+        const ox = Math.cos(midAngle) * offsetDist;
+        const oy = Math.sin(midAngle) * offsetDist * (ry / rx);
+
+        for (let d = depth; d >= 1; d--) {
+            ctx.beginPath();
+            ctx.ellipse(cx + ox, cy + oy + d, rx, ry, 0, startAngle, endAngle);
+            ctx.lineTo(cx + ox, cy + oy + d);
+            ctx.closePath();
+            ctx.fillStyle = slice.darkColor;
+            ctx.fill();
+        }
+        startAngle = endAngle;
+    });
+
+    // 2. Draw top tilted pie surface slices + crisp white separators + direct minute labels
+    startAngle = -Math.PI / 2;
+    slices.forEach((slice, idx) => {
+        const sweep = (slice.minutes / totalMinutes) * (Math.PI * 2);
+        const endAngle = startAngle + sweep;
+        const midAngle = startAngle + sweep / 2;
+        const isHovered = idx === activeSliceIndex;
+        const offsetDist = isHovered ? 10 : 0;
+        const ox = Math.cos(midAngle) * offsetDist;
+        const oy = Math.sin(midAngle) * offsetDist * (ry / rx);
+
+        ctx.beginPath();
+        ctx.moveTo(cx + ox, cy + oy);
+        ctx.ellipse(cx + ox, cy + oy, rx, ry, 0, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = slice.color;
+        ctx.fill();
+
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = '#ffffff';
+        ctx.stroke();
+
+        // Direct label on the slice ("10 min", "15 min", etc.)
+        const labelRadiusX = rx * 0.63;
+        const labelRadiusY = ry * 0.63;
+        const lx = cx + ox + Math.cos(midAngle) * labelRadiusX;
+        const ly = cy + oy + Math.sin(midAngle) * labelRadiusY;
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 13px "Plus Jakarta Sans", Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0,0,0,0.45)';
+        ctx.shadowBlur = 4;
+        ctx.fillText(slice.minutes + ' min', lx, ly);
+        ctx.shadowBlur = 0;
+
+        startAngle = endAngle;
+    });
+
+    ctx.restore();
+}
+
+function renderLegendAndBreakdown() {
+    const slices = getCurrentSlices();
     const legendEl = document.getElementById('pieChartLegend');
+    const breakdownEl = document.getElementById('pieBreakdownCards');
+
     if (legendEl) {
-        legendEl.innerHTML = milestones.map((m, i) => `
-            <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.82rem;color:var(--text-secondary);">
-                <span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${colors[i]};flex-shrink:0;"></span>
-                <span>${m.window} <strong style="color:var(--text-main);">(15 min)</strong></span>
-            </div>`).join('');
+        legendEl.innerHTML = slices.map((s, idx) => `
+            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;color:#e2e8f0;cursor:pointer;padding:0.2rem 0.35rem;border-radius:6px;background:${activeSliceIndex === idx ? 'rgba(255,255,255,0.12)' : 'transparent'};"
+                 onmouseenter="highlightSlice(${idx})" onmouseleave="highlightSlice(-1)">
+                <span style="width:11px;height:11px;border-radius:50%;background:${s.color};flex-shrink:0;display:inline-block;"></span>
+                <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.shortLabel}</span>
+            </div>
+        `).join('');
     }
 
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: labels,
-            datasets: [{
-                data: data,
-                backgroundColor: colors,
-                hoverBackgroundColor: colors,
-                borderColor: 'rgba(7,10,19,0.8)',
-                borderWidth: 3,
-                hoverOffset: 18,
-            }]
-        },
-        options: {
-            responsive: false,
-            cutout: '35%',
-            rotation: -90,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: 'rgba(13,18,34,0.96)',
-                    borderColor: 'rgba(255,255,255,0.12)',
-                    borderWidth: 1,
-                    padding: 12,
-                    titleFont: { family: 'JetBrains Mono', weight: '700', size: 12 },
-                    bodyFont: { family: 'Inter', size: 13 },
-                    callbacks: {
-                        label: function(ctx) {
-                            return ' ' + ctx.parsed + ' minutes (25% of total build time)';
-                        }
-                    }
+    if (breakdownEl) {
+        breakdownEl.innerHTML = slices.map((s, idx) => {
+            const pct = Math.round((s.minutes / 60) * 100);
+            const isHi = activeSliceIndex === idx;
+            return `
+            <div style="background:${isHi ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.04)'};border:1px solid ${isHi ? s.color : 'rgba(255,255,255,0.09)'};border-left:4px solid ${s.color};border-radius:10px;padding:0.65rem 0.9rem;transition:all 0.15s ease;cursor:pointer;"
+                 onmouseenter="highlightSlice(${idx})" onmouseleave="highlightSlice(-1)">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;margin-bottom:0.2rem;">
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <span style="font-family:var(--font-mono);font-size:0.74rem;font-weight:800;color:${s.color};background:rgba(255,255,255,0.07);padding:0.12rem 0.45rem;border-radius:5px;">
+                            ${s.window}
+                        </span>
+                        <strong style="color:#ffffff;font-size:0.88rem;">${s.shortLabel}</strong>
+                    </div>
+                    <span style="font-family:var(--font-mono);font-size:0.8rem;font-weight:800;color:#ffffff;">
+                        ${s.minutes} min <span style="color:#94a3b8;font-weight:500;">(${pct}%)</span>
+                    </span>
+                </div>
+                <div style="font-size:0.78rem;color:#cbd5e1;line-height:1.4;">${s.task}</div>
+            </div>
+            `;
+        }).join('');
+    }
+}
+
+function highlightSlice(idx) {
+    activeSliceIndex = idx;
+    render3DPieChart();
+    renderLegendAndBreakdown();
+}
+
+// Mouse hover hit-testing on the 3D elliptical pie canvas
+function initPieHoverEvents() {
+    const canvas = document.getElementById('plan60Chart');
+    const tooltip = document.getElementById('pieTooltip');
+    if (!canvas) return;
+
+    canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = 420 / rect.width;
+        const scaleY = 340 / rect.height;
+        const mx = (e.clientX - rect.left) * scaleX;
+        const my = (e.clientY - rect.top) * scaleY;
+
+        const cx = 210;
+        const cy = 170 - 14;
+        const rx = 152;
+        const ry = 112;
+
+        const dx = (mx - cx) / rx;
+        const dy = (my - cy) / ry;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist <= 1.05) {
+            let angle = Math.atan2(dy, dx);
+            // Normalize relative to -PI/2 start
+            let rel = angle - (-Math.PI / 2);
+            while (rel < 0) rel += Math.PI * 2;
+            while (rel >= Math.PI * 2) rel -= Math.PI * 2;
+
+            const slices = getCurrentSlices();
+            let accum = 0;
+            let found = -1;
+            for (let i = 0; i < slices.length; i++) {
+                const sweep = (slices[i].minutes / 60) * (Math.PI * 2);
+                if (rel >= accum && rel < accum + sweep) {
+                    found = i;
+                    break;
                 }
-            },
-            animation: { animateRotate: true, animateScale: true, duration: 1000 }
+                accum += sweep;
+            }
+            if (found !== activeSliceIndex) {
+                activeSliceIndex = found;
+                render3DPieChart();
+                renderLegendAndBreakdown();
+            }
+            if (found >= 0 && tooltip) {
+                const s = slices[found];
+                tooltip.style.display = 'block';
+                tooltip.style.left = Math.min(rect.width - 220, Math.max(10, e.clientX - rect.left + 12)) + 'px';
+                tooltip.style.top = Math.max(10, e.clientY - rect.top - 40) + 'px';
+                tooltip.innerHTML = `
+                    <strong style="color:${s.color};">${s.window} (${s.minutes} min)</strong><br>
+                    <strong>${s.shortLabel}</strong><br>
+                    <span style="color:#cbd5e1;font-size:0.75rem;">${s.task}</span>
+                `;
+            }
+        } else {
+            if (activeSliceIndex !== -1) {
+                activeSliceIndex = -1;
+                render3DPieChart();
+                renderLegendAndBreakdown();
+            }
+            if (tooltip) tooltip.style.display = 'none';
         }
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+        activeSliceIndex = -1;
+        render3DPieChart();
+        renderLegendAndBreakdown();
+        if (tooltip) tooltip.style.display = 'none';
     });
 }
 
-window.addEventListener('load', buildPieChart);
+document.addEventListener('DOMContentLoaded', () => {
+    render3DPieChart();
+    renderLegendAndBreakdown();
+    initPieHoverEvents();
+});
 
-// ─── Shareable link helpers ───────────────────────────────────────────────────
+// ─── Shareable link & WhatsApp Group helpers ──────────────────────────────────
 function copyShareLink() {
     const url = document.getElementById('shareUrlInput').value;
-    copyToClipboard(url, '🔗 Build Contract link copied! Share it with classmates.');
+    copyToClipboard(url, '🔗 Build Plan link copied! Paste it in your WhatsApp group.');
+    trackEvent('share_link_copied', '{{ contract.contract_id }}');
 }
 
 function shareToWhatsApp() {
     const contractUrl = document.getElementById('shareUrlInput').value;
     const text = encodeURIComponent(
-        "Hey! I built my final-year project plan using Project Compass 🧭\n" +
-        "Can you find any flaws before my professor does? 😅\n" +
-        "My plan: " + contractUrl + "\n" +
-        "It's a free tool — try it for your project too! 🔥"
+        "Guys, break my final-year project plan (\"{{ contract.project_title }}\") before my professor does! 😅\n\n" +
+        "Check my 60-minute build plan & 60-min pie chart here:\n" + contractUrl + "\n\n" +
+        "You can drop a critique on my plan OR click 'Continue with Context' to score your own project idea! 🔥"
     );
+    trackEvent('whatsapp_group_share_clicked', '{{ contract.contract_id }}');
     window.open('https://wa.me/?text=' + text, '_blank');
 }
 
-// ─── PDF Download using jsPDF + html2canvas ───────────────────────────────────
-async function downloadContractPDF() {
-    const trigger = event && event.target ? event.target : document.querySelector('[onclick*="downloadContractPDF"]');
-    const origText = trigger ? trigger.innerText : '';
-    if (trigger) { trigger.innerText = '⏳ Generating PDF...'; trigger.disabled = true; }
+// ─── Inline Friend Critique Submission ("Break My Build" directly on Contract) ─
+const inlineForm = document.getElementById('inlineChallengeForm');
+if (inlineForm) {
+    inlineForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('inlineChallengeBtn');
+        const peerName = document.getElementById('inlinePeerName').value.trim() || 'Classmate Peer';
+        const challengeText = document.getElementById('inlineChallengeText').value.trim();
+        const whyMatters = document.getElementById('inlineWhyMatters').value.trim();
 
-    try {
-        const { jsPDF } = window.jspdf;
-        const element = document.getElementById('contractContent');
+        try {
+            btn.disabled = true;
+            btn.innerText = 'Adding Critique...';
 
-        showToast('📄 Preparing your printable PDF... this takes a few seconds.', 'info');
+            const res = await fetch('/api/contracts/{{ contract.contract_id }}/challenges', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    peer_name: peerName,
+                    challenge_text: challengeText,
+                    why_it_matters: whyMatters
+                })
+            });
 
-        const canvas = await html2canvas(element, {
-            scale: 1.5,
-            useCORS: true,
-            backgroundColor: '#070a13',
-            logging: false,
-            windowWidth: 1100
-        });
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.detail || 'Could not submit critique');
+            }
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.9);
-        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-        const pdfW = pdf.internal.pageSize.getWidth();
-        const pdfH = pdf.internal.pageSize.getHeight();
-        const canvasRatio = canvas.height / canvas.width;
-        const imgW = pdfW;
-        const imgH = imgW * canvasRatio;
-
-        let yOffset = 0;
-        let remainingH = imgH;
-
-        while (remainingH > 0) {
-            pdf.addImage(imgData, 'JPEG', 0, -yOffset, imgW, imgH);
-            remainingH -= pdfH;
-            yOffset += pdfH;
-            if (remainingH > 0) pdf.addPage();
+            const data = await res.json();
+            const listEl = document.getElementById('inlineChallengesList');
+            const cardHtml = `
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 1.15rem 1.35rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent-emerald); border: 1px solid rgba(16, 185, 129, 0.35);">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.4rem;">
+                        <strong style="color: var(--accent-emerald);">✅ Added Just Now by: ${data.peer_name}</strong>
+                        <span class="badge badge-amber">${data.recommendation.risk_level} Risk</span>
+                    </div>
+                    <div style="font-size: 0.94rem; color: var(--text-main); margin-bottom: 0.3rem; font-weight: 600;">
+                        Challenge: "${data.challenge_text}"
+                    </div>
+                    <div style="font-size: 0.84rem; color: var(--text-secondary); margin-bottom: 0.4rem;">
+                        <strong>Why it matters:</strong> ${data.why_it_matters}
+                    </div>
+                    <div style="font-size: 0.82rem; color: var(--accent-cyan); background: rgba(6,182,212,0.08); padding: 0.5rem 0.75rem; border-radius: 6px;">
+                        <strong>🛡️ Auto-Generated Safeguard Added to Plan:</strong> ${data.recommendation.architectural_safeguard}
+                    </div>
+                </div>
+            `;
+            listEl.insertAdjacentHTML('afterbegin', cardHtml);
+            inlineForm.reset();
+            showToast('Critique added! Architectural safeguard appended to this Build Contract.', 'success');
+        } catch (err) {
+            showToast(err.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = '+ Add Critique to Document 🛡️';
         }
+    });
+}
 
-        const title = '{{ contract.project_title }}'.substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
-        pdf.save('BuildContract_{{ contract.contract_id }}_' + title + '.pdf');
-        showToast('📥 PDF downloaded! Official printable document ready for your review.', 'success');
-    } catch (err) {
-        console.error('PDF error:', err);
-        showToast('PDF generation failed. Try right-click → Print → Save as PDF.', 'error');
-    } finally {
-        if (trigger) { trigger.innerText = origText; trigger.disabled = false; }
-    }
+// ─── Printable PDF Report Download (Zero-Dependency Native Print + Optional jsPDF) ─
+function downloadContractPDF() {
+    showToast('📄 Opening printable PDF view — choose "Save as PDF" to download crisp vector report!', 'info');
+    trackEvent('contract_pdf_downloaded', '{{ contract.contract_id }}');
+    setTimeout(() => {
+        window.print();
+    }, 250);
 }
 </script>
 {% endblock %}
