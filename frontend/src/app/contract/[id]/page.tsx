@@ -3,22 +3,18 @@
 import React, { useEffect, useState, useRef, use } from "react";
 import Link from "next/link";
 import {
-  FileCheck2,
   Copy,
   CheckCircle2,
   AlertTriangle,
   Clock,
   ShieldAlert,
-  ArrowRight,
   Cpu,
   RefreshCw,
   Ban,
-  Sparkles,
   Target,
   ListChecks,
   Share2,
   Download,
-  Terminal,
   Zap,
 } from "lucide-react";
 import { getContract, trackAnalyticsEvent } from "@/lib/api";

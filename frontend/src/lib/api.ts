@@ -116,7 +116,9 @@ export async function getContract(contractId: string) {
 
   return {
     contract_id: data.contract_id,
-    project_name: data.project_title || data.project_name,
+    project_name: data.project_title || data.project_name || "AI Build Blueprint",
+    project_title: data.project_title || data.project_name || "AI Build Blueprint",
+    feasibility_score: data.feasibility_score || 88,
     original_idea: data.original_idea || "",
     archetype: data.category || data.archetype || "RAG_PIPELINE",
     category: data.category || "AI/ML",
@@ -148,6 +150,10 @@ export async function getContract(contractId: string) {
       tech_reasoning: data.tech_reasoning || "Zero cloud dependencies, runs natively on CPU with zero paid subscription costs.",
       required_data: data.required_data || "Local sample dataset or public open-access corpus.",
     },
+    frontend_rec: data.frontend_rec || "Next.js / HTML5 Chat Interface",
+    backend_rec: data.backend_rec || "FastAPI + Pydantic v2",
+    ai_model_rec: data.ai_model_rec || "Sentence-Transformers on CPU",
+    db_rec: data.db_rec || "SQLite (Local ₹0)",
     challenges: data.challenges || [],
     created_at: data.created_at,
   };

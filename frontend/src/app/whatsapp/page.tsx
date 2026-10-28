@@ -9,19 +9,13 @@ import {
   Video,
   MoreVertical,
   CheckCheck,
-  Sparkles,
-  ShieldCheck,
   RefreshCw,
-  ExternalLink,
-  QrCode,
   Terminal,
-  Cpu,
   Smartphone,
   CheckCircle2,
   Paperclip,
   Smile,
   Mic,
-  Zap,
 } from "lucide-react";
 import { simulateWhatsAppMessage, getWhatsAppStatus, trackAnalyticsEvent } from "@/lib/api";
 import { useToast } from "@/components/ui/ToastContext";

@@ -3,20 +3,10 @@
 import React, { useEffect, useState, useRef, use } from "react";
 import Link from "next/link";
 import {
-  ShieldAlert,
-  ArrowRight,
-  Flame,
-  CheckCircle2,
-  AlertTriangle,
   User,
   Send,
   RefreshCw,
-  FileCheck2,
-  Sparkles,
-  Zap,
   Cpu,
-  Clock,
-  MessageSquare,
   Bot,
 } from "lucide-react";
 import { getContract, trackAnalyticsEvent } from "@/lib/api";
@@ -53,13 +43,13 @@ export default function ChallengePage({
     async function loadData() {
       try {
         setLoadingContract(true);
-        const data: any = await getContract(contractId);
+        const data = await getContract(contractId);
         setContract(data);
-        
+
         // Initial AI greeting message
-        const title = data?.project_name || data?.project_title || "Academic Document RAG Assistant";
-        const score = data?.feasibility_score || 88;
-        const assumption = data?.critical_assumption || "Students will primarily query policies explicitly stated in the indexed PDF handbook.";
+        const title = data.project_name || data.project_title || "Academic Document RAG Assistant";
+        const score = data.feasibility_score || 88;
+        const assumption = data.critical_assumption || "Students will primarily query policies explicitly stated in the indexed PDF handbook.";
 
         setMessages([
           {
@@ -227,7 +217,7 @@ export default function ChallengePage({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans space-y-8">
-      
+
       {/* Top Header */}
       <div>
         <div className="flex gap-2 flex-wrap mb-2">
@@ -272,10 +262,10 @@ export default function ChallengePage({
 
       {/* Two-Column Grid: Left = AI Chat Room, Right = Friend's 60-Min Plan */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
-        
+
         {/* LEFT: Interactive Gemini AI Chat Room */}
         <div className="lg:col-span-7 rounded-2xl bg-slate-950/90 border border-indigo-500/40 flex flex-col h-[640px] shadow-2xl overflow-hidden">
-          
+
           {/* Chat Header */}
           <div className="p-3.5 bg-slate-900/90 border-b border-white/10 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
@@ -336,11 +326,10 @@ export default function ChallengePage({
                   className={`flex ${isBot ? "justify-start" : "justify-end"}`}
                 >
                   <div
-                    className={`max-w-[88%] rounded-2xl p-3.5 text-xs sm:text-[13px] leading-relaxed whitespace-pre-wrap ${
-                      isBot
+                    className={`max-w-[88%] rounded-2xl p-3.5 text-xs sm:text-[13px] leading-relaxed whitespace-pre-wrap ${isBot
                         ? "bg-slate-900/90 text-slate-100 rounded-tl-2xs border border-white/10"
                         : "bg-indigo-600 text-white rounded-tr-2xs shadow-md shadow-indigo-600/30"
-                    }`}
+                      }`}
                   >
                     {isBot && (
                       <div className="flex items-center gap-1.5 mb-1 text-[11px] font-bold text-cyan-400">
@@ -406,7 +395,7 @@ export default function ChallengePage({
 
         {/* RIGHT: Friend's Blueprint & 60-Min Pie Chart */}
         <div className="lg:col-span-5 rounded-2xl bg-slate-950/80 border border-white/10 p-5 space-y-4">
-          
+
           <div className="pb-3 border-b border-white/10">
             <div className="flex justify-between items-center mb-1">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400">

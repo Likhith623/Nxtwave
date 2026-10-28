@@ -11,9 +11,7 @@ import {
   Plus,
   Trash2,
   CheckCircle2,
-  AlertTriangle,
   Lightbulb,
-  Cpu,
   RefreshCw,
   FileCheck2,
 } from "lucide-react";
