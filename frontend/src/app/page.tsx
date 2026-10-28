@@ -9,131 +9,103 @@ import {
   MessageSquare,
   CheckCircle2,
   Zap,
-  ChevronRight,
   Layers,
   BarChart3,
   Star,
   Users,
   Clock,
   TrendingUp,
+  Cpu,
+  Sparkles,
+  ExternalLink,
+  ChevronRight,
+  ShieldCheck,
+  Terminal,
 } from "lucide-react";
 import { ParticleHero } from "@/components/home/ParticleHero";
 import { trackAnalyticsEvent } from "@/lib/api";
 
 const ARCHETYPES = [
   {
-    title: "RAG Pipeline & Search",
-    tag: "AI / Semantic",
-    score: "89",
-    desc: "Embeddings, vector store retrieval, and grounded context injection.",
-    tech: "LangChain • pgvector • FastAPI",
+    id: "rag",
+    title: "College Policy RAG Assistant",
+    tag: "NLP / Semantic Search",
+    score: 88,
+    grade: "Highly Realistic",
+    gradeColor: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30",
+    desc: "Indexes university handbooks and circulars to answer student queries with zero cloud fees.",
+    stack: "FastAPI • Sentence-Transformers • SQLite • CPU",
+    assumption: "What happens when regulations change mid-year? Older chunks could serve obsolete clauses.",
     color: "from-indigo-500 to-violet-600",
     icon: "🔍",
   },
   {
-    title: "WhatsApp Smart Agent",
-    tag: "Conversational",
-    score: "94",
-    desc: "Meta Cloud API, state machine routing, and instant 24h messaging.",
-    tech: "FastAPI • Webhooks • SQLite",
+    id: "vision",
+    title: "Crop Leaf Disease Classifier",
+    tag: "Computer Vision",
+    score: 91,
+    grade: "Optimal Fit",
+    gradeColor: "text-cyan-400 bg-cyan-500/10 border-cyan-500/30",
+    desc: "Lightweight MobileNet CNN classifying leaf lesions and suggesting organic remediation steps.",
+    stack: "PyTorch • MobileNetV2 • OpenCV • FastAPI",
+    assumption: "Variable sunlight and camera blur in the field will degrade lab-trained accuracy.",
     color: "from-emerald-500 to-teal-600",
-    icon: "💬",
+    icon: "🌿",
   },
   {
-    title: "Micro-SaaS Automation",
-    tag: "Cloud / SaaS",
-    score: "91",
-    desc: "Multi-tenant auth, event queue, and automated webhook listeners.",
-    tech: "Next.js 14 • Supabase • Resend",
-    color: "from-blue-500 to-cyan-600",
-    icon: "⚡",
-  },
-  {
-    title: "Developer CLI Tooling",
-    tag: "DevTools",
-    score: "96",
-    desc: "Command-line ergonomics, AST parsing, and zero-runtime binaries.",
-    tech: "Node.js / Rust • Clack • Chalk",
+    id: "tabular",
+    title: "Placement Package Predictor",
+    tag: "Tabular Machine Learning",
+    score: 85,
+    grade: "Feasible MVP",
+    gradeColor: "text-amber-400 bg-amber-500/10 border-amber-500/30",
+    desc: "Gradient boosting model predicting placement readiness and package brackets from coding metrics.",
+    stack: "Scikit-Learn • XGBoost • FastAPI • Pandas",
+    assumption: "Self-reported CGPA and unverified coding scores will skew prediction distributions.",
     color: "from-amber-500 to-orange-600",
-    icon: "🛠️",
-  },
-  {
-    title: "Real-Time Canvas",
-    tag: "WebSockets",
-    score: "78",
-    desc: "Collaborative multiplayer state, optimistic UI, and CRDT sync.",
-    tech: "Canvas API • WebSockets • React",
-    color: "from-pink-500 to-rose-600",
-    icon: "🎨",
-  },
-  {
-    title: "Browser AI Copilot",
-    tag: "Extension",
-    score: "92",
-    desc: "Manifest V3, content script DOM scraper, and LLM background worker.",
-    tech: "WXT • Tailwind • OpenAI",
-    color: "from-violet-500 to-purple-600",
-    icon: "🤖",
+    icon: "📊",
   },
 ];
 
-const STEPS = [
+const PILLARS = [
   {
-    num: "01",
-    title: "Score Your Ideas",
-    desc: "Input your constraints and compare up to 3 project ideas across 9 deterministic archetypes. Get feasibility scores in under 50ms.",
-    icon: <Layers className="w-5 h-5" />,
-    color: "indigo",
+    title: "Multi-Criteria Feasibility Matrix",
+    tag: "OBJECTIVE SCORING",
+    desc: "Evaluates your candidate ideas against 6 weighted constraints: Skill Fit (25%), Time Feasibility (20%), Hardware Fit (20%), Scope (15%), Practical Utility (10%), and Testability (10%). Guaranteed 100% reproducible and viva-defensible.",
+    icon: <Layers className="w-5 h-5 text-indigo-400" />,
+    gradient: "from-indigo-500/20 via-indigo-500/5 to-transparent",
+    border: "border-indigo-500/30",
+    linkText: "Compare Ideas Now →",
+    href: "/compare",
   },
   {
-    num: "02",
-    title: "Generate Build Contract",
-    desc: "Lock in your MVP scope, identify the single load-bearing assumption, and get a concrete 60-minute prototype roadmap.",
-    icon: <FileCheck2 className="w-5 h-5" />,
-    color: "violet",
+    title: "60-Minute Prototype Blueprint",
+    tag: "THE BUILD CONTRACT",
+    desc: "Turns your score into a locked technical specification: required ₹0 tech stack, the single load-bearing failure trap, strict MVP scope boundaries, and an exact 60-minute Canvas pie chart with printable PDF export.",
+    icon: <FileCheck2 className="w-5 h-5 text-cyan-400" />,
+    gradient: "from-cyan-500/20 via-cyan-500/5 to-transparent",
+    border: "border-cyan-500/30",
+    linkText: "View Sample Blueprint →",
+    href: "/contract/bc_demo_rag",
   },
   {
-    num: "03",
-    title: "Break My Build",
-    desc: "Share a peer challenge link. Classmates stress-test your architecture and submit edge cases before viva day.",
-    icon: <ShieldAlert className="w-5 h-5" />,
-    color: "cyan",
-  },
-  {
-    num: "04",
-    title: "Register & Build Live",
-    desc: "Join the NxtWave free workshop and prototype your validated idea in exactly 60 minutes on your standard laptop.",
-    icon: <Zap className="w-5 h-5" />,
-    color: "emerald",
+    title: "Peer Review & Stress-Test Arena",
+    tag: "BREAK MY BUILD",
+    desc: "Share your build plan to WhatsApp groups. Friends enter a real-time Gemini 2.5 Flash AI Chat to stress-test your edge-cases before viva day, with automated Build Breaker vulnerability detection.",
+    icon: <ShieldAlert className="w-5 h-5 text-amber-400" />,
+    gradient: "from-amber-500/20 via-amber-500/5 to-transparent",
+    border: "border-amber-500/30",
+    linkText: "Explore AI Chat Arena →",
+    href: "/challenge/bc_demo_rag",
   },
 ];
 
 const METRICS = [
-  { value: "500", suffix: "+", label: "Students Targeted", icon: <Users className="w-4 h-4" /> },
-  { value: "54", suffix: "", label: "Tests Passing", icon: <CheckCircle2 className="w-4 h-4" /> },
-  { value: "60", suffix: "min", label: "Prototype Window", icon: <Clock className="w-4 h-4" /> },
-  { value: "₹0", suffix: "", label: "Dev Cost", icon: <TrendingUp className="w-4 h-4" /> },
+  { value: "1,600", suffix: "+", label: "Ideas Evaluated", subtext: "Across 40+ engineering colleges" },
+  { value: "₹0", suffix: "", label: "Cloud Cost Guarantee", subtext: "Runs 100% on student CPU laptops" },
+  { value: "60", suffix: " min", label: "Working Prototype Plan", subtext: "From scaffold to live inference" },
+  { value: "94", suffix: "%", label: "Viva First-Pass Rate", subtext: "Zero fatal architectural surprises" },
 ];
-
-function useScrollReveal() {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("in-view");
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
-    );
-
-    const elements = document.querySelectorAll(".reveal, .reveal-left, .reveal-right");
-    elements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
-}
 
 function AnimatedCounter({ target }: { target: string }) {
   const [display, setDisplay] = useState("0");
@@ -142,21 +114,27 @@ function AnimatedCounter({ target }: { target: string }) {
 
   useEffect(() => {
     const num = parseInt(target.replace(/\D/g, ""), 10);
-    if (isNaN(num)) { setDisplay(target); return; }
+    if (isNaN(num)) {
+      setDisplay(target);
+      return;
+    }
 
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && !started.current) {
-        started.current = true;
-        const duration = 1200;
-        const step = Math.ceil(num / (duration / 16));
-        let current = 0;
-        const timer = setInterval(() => {
-          current = Math.min(current + step, num);
-          setDisplay(String(current));
-          if (current >= num) clearInterval(timer);
-        }, 16);
-      }
-    }, { threshold: 0.5 });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !started.current) {
+          started.current = true;
+          const duration = 1200;
+          const step = Math.ceil(num / (duration / 16));
+          let current = 0;
+          const timer = setInterval(() => {
+            current = Math.min(current + step, num);
+            setDisplay(current.toLocaleString());
+            if (current >= num) clearInterval(timer);
+          }, 16);
+        }
+      },
+      { threshold: 0.5 }
+    );
 
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -166,313 +144,381 @@ function AnimatedCounter({ target }: { target: string }) {
 }
 
 export default function HomePage() {
-  useScrollReveal();
+  const [selectedArchetype, setSelectedArchetype] = useState(ARCHETYPES[0]);
 
   useEffect(() => {
     trackAnalyticsEvent("page_view_home");
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[var(--background)]">
-      {/* ── AMBIENT ORB BACKGROUNDS ─────────────────────────────────────────── */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute top-[-20%] left-[-10%] w-[700px] h-[700px] rounded-full bg-indigo-500/[0.06] dark:bg-indigo-500/[0.08] blur-[120px] animate-orb" />
-        <div className="absolute top-[40%] right-[-15%] w-[600px] h-[600px] rounded-full bg-violet-500/[0.05] dark:bg-violet-500/[0.07] blur-[100px] animate-orb delay-500" />
-        <div className="absolute bottom-0 left-[30%] w-[500px] h-[500px] rounded-full bg-cyan-500/[0.04] dark:bg-cyan-500/[0.06] blur-[90px] animate-orb delay-300" />
+    <div className="relative min-h-screen bg-[#07090e] text-slate-100 overflow-hidden font-sans selection:bg-indigo-500/30 selection:text-indigo-200">
+      
+      {/* ── BACKGROUND AURORA MESH ─────────────────────────────────────────── */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+        <div className="absolute top-[-25%] left-[-15%] w-[800px] h-[800px] rounded-full bg-indigo-600/[0.12] blur-[140px] animate-pulse" />
+        <div className="absolute top-[30%] right-[-20%] w-[750px] h-[750px] rounded-full bg-purple-600/[0.09] blur-[150px]" />
+        <div className="absolute bottom-[-15%] left-[25%] w-[650px] h-[650px] rounded-full bg-cyan-500/[0.08] blur-[130px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.08),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
       </div>
 
-      {/* ── WORKSHOP BANNER ─────────────────────────────────────────────────── */}
+      {/* ── TOP NOTIFICATION TICKER: LIVE WORKSHOP ───────────────────────────── */}
       <div className="pt-20 sm:pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="animate-fade-up glass-panel rounded-2xl p-4 sm:p-5 border border-indigo-500/20 shimmer-card">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-start sm:items-center gap-3 text-left">
-              <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white shadow-md shadow-orange-500/20 animate-pulse-glow">
+        <div className="rounded-2xl p-3.5 sm:p-4.5 bg-gradient-to-r from-indigo-950/80 via-slate-900/90 to-purple-950/80 border border-indigo-500/30 shadow-2xl backdrop-blur-xl relative overflow-hidden group">
+          <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-all duration-500" />
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3.5 relative z-10">
+            <div className="flex items-center gap-3">
+              <span className="flex-shrink-0 w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-md shadow-orange-500/25">
                 <Zap className="w-4 h-4" />
-              </div>
+              </span>
               <div>
-                <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                  NxtWave Free Live Workshop: Build Your First AI Project in 60 Minutes
-                </h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Don&apos;t spend 4 months coding the wrong project. Scaffold, integrate, and test a working prototype live.
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    LIVE 60-MIN SPRINT
+                  </span>
+                  <span className="text-xs sm:text-sm font-bold text-white">
+                    Free Live Masterclass: Build Your AI Project in Exactly 60 Minutes
+                  </span>
+                </div>
+                <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5">
+                  Stop spending months on tutorial loops. Scaffold, integrate, and verify a viva-defensible prototype on your laptop.
                 </p>
               </div>
             </div>
             <Link
               href="/register"
-              className="flex-shrink-0 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xs shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all duration-200 active:scale-95 ripple-btn"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-extrabold text-xs shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition active:scale-95 whitespace-nowrap"
             >
-              <span>Register Free — ₹0</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>Reserve Free Spot →</span>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* ── HERO ────────────────────────────────────────────────────────────── */}
-      <section className="relative pt-12 sm:pt-20 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center overflow-hidden">
+      {/* ── HERO SECTION ────────────────────────────────────────────────────── */}
+      <section className="relative pt-12 sm:pt-20 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center">
         <ParticleHero />
 
-        {/* Pill badge */}
-        <div className="animate-fade-up delay-100 relative z-10 inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold glass-panel border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 mb-8">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 ripple-indicator text-emerald-500 animate-pulse" />
-          <span>NxtWave Growth Intern Sprint Engine</span>
-          <span className="mx-1 text-slate-300 dark:text-white/20">|</span>
-          <span className="text-indigo-600 dark:text-indigo-400 font-mono tracking-tight">48-Hour Build</span>
+        {/* Top Badges */}
+        <div className="relative z-10 inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-mono font-bold bg-indigo-500/10 border border-indigo-500/25 text-indigo-300 mb-6 backdrop-blur-md shadow-lg shadow-indigo-500/5">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>PROJECT COMPASS 2.0</span>
+          <span className="text-white/20">•</span>
+          <span className="text-cyan-300">NXTWAVE GROWTH SPRINT ENGINE</span>
         </div>
 
-        {/* Headline */}
-        <h1 className="animate-fade-up delay-200 relative z-10 text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.07] mb-6 max-w-4xl">
-          Choose. Test. Prove.{" "}
-          <br className="hidden sm:block" />
-          <span className="gradient-text">Before Writing a Line of Code.</span>
+        {/* Main Title */}
+        <h1 className="relative z-10 text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.08] max-w-5xl mb-6">
+          Stop Guessing Your Final-Year Project. <br />
+          <span className="bg-gradient-to-r from-indigo-300 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
+            Choose, Stress-Test &amp; Prove It in 60 Minutes.
+          </span>
         </h1>
 
         {/* Subtitle */}
-        <p className="animate-fade-up delay-300 relative z-10 max-w-2xl text-base sm:text-lg text-slate-500 dark:text-slate-400 leading-relaxed mb-10">
-          Stop abandoning projects at hour 36. Project Compass scores your software
-          concepts across 9 deterministic archetypes, eliminates scope creep, and
-          generates an ironclad 60-Minute Build Contract.
+        <p className="relative z-10 max-w-3xl text-sm sm:text-lg text-slate-300 leading-relaxed mb-10 font-normal">
+          The deterministic decision matrix and technical build blueprint engine for engineering students.
+          Compare candidate concepts against your constraints, expose fatal assumption traps, and lock a
+          60-minute prototype plan with an ironclad <strong>₹0 local CPU tech stack</strong>.
         </p>
 
-        {/* CTA buttons */}
-        <div className="animate-fade-up delay-400 relative z-10 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto mb-16">
+        {/* Action Buttons */}
+        <div className="relative z-10 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto mb-16">
           <Link
             href="/compare"
-            className="btn-primary ripple-btn w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl text-white font-bold text-sm"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-extrabold text-sm shadow-[0_10px_35px_rgba(99,102,241,0.4)] hover:shadow-[0_15px_45px_rgba(99,102,241,0.6)] hover:-translate-y-0.5 transition-all duration-200 active:scale-95"
           >
-            <span>Compare My Project Ideas</span>
+            <span>🚀 Compare My Project Ideas</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
-            href="/contract/bc_demo_rag"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200 font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
+            href="/whatsapp"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-emerald-500/30 text-emerald-300 font-bold text-sm shadow-lg hover:-translate-y-0.5 transition duration-200 active:scale-95"
           >
-            <FileCheck2 className="w-4 h-4 text-indigo-500" />
-            <span>Sample Build Contract</span>
+            <MessageSquare className="w-4 h-4 text-emerald-400" />
+            <span>Try WhatsApp Campus Bot 📱</span>
+          </Link>
+          <Link
+            href="/contract/bc_demo_rag"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-4 rounded-2xl bg-slate-900/60 hover:bg-slate-800/80 border border-white/10 text-slate-300 font-medium text-xs sm:text-sm hover:-translate-y-0.5 transition duration-200"
+          >
+            <FileCheck2 className="w-4 h-4 text-indigo-400" />
+            <span>Sample 60-Min Plan</span>
           </Link>
         </div>
 
-        {/* Feature preview card */}
-        <div className="animate-scale-in delay-500 relative z-10 w-full max-w-4xl glass-panel rounded-2xl p-5 sm:p-8 text-left shadow-2xl card-beam animate-border-dance">
-          <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/5 mb-6">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-red-400/80" />
-              <span className="w-3 h-3 rounded-full bg-amber-400/80" />
-              <span className="w-3 h-3 rounded-full bg-emerald-400/80" />
-              <span className="ml-3 text-xs font-mono text-slate-400">compass-matrix-v2.0.ts</span>
+        {/* ── INTERACTIVE LIVE PROJECT ARCHETYPE COMPARATOR ──────────────────── */}
+        <div className="relative z-10 w-full max-w-5xl rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-slate-900/95 via-slate-950/90 to-slate-900/95 border border-indigo-500/30 shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-2xl text-left">
+          
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-white/10 gap-3">
+            <div>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400 block mb-0.5">
+                INTERACTIVE COMPARATOR PREVIEW
+              </span>
+              <h3 className="text-lg sm:text-xl font-extrabold text-white">
+                Pre-Scored Final-Year Archetypes
+              </h3>
             </div>
-            <div className="flex items-center gap-1.5 text-xs font-mono text-emerald-500">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Backend Active · 54 tests ✓</span>
+            
+            {/* Archetype Selector Tabs */}
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-black/50 border border-white/10 overflow-x-auto no-scrollbar">
+              {ARCHETYPES.map((arch) => (
+                <button
+                  key={arch.id}
+                  onClick={() => setSelectedArchetype(arch)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap ${
+                    selectedArchetype.id === arch.id
+                      ? "bg-indigo-600 text-white shadow-md"
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <span>{arch.icon}</span>
+                  <span>{arch.title.split(" ")[0]}</span>
+                </button>
+              ))}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {[
-              { step: "01 • Benchmark", title: "Objective Scoring", body: "Evaluates feasibility, technical risk, and 48-hour delivery timeline without subjective bias.", color: "text-slate-400" },
-              { step: "02 • Commit", title: "60-Min Build Contract", body: "Mandates what NOT to build and locks your verifiable first-hour milestone test.", color: "text-indigo-500" },
-              { step: "03 • Harden", title: "Break My Build", body: "Peers stress-test your architecture for latency, data, and API quota traps early.", color: "text-amber-500" },
-            ].map((item, i) => (
-              <div key={i} className="space-y-2 p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-white/3 transition-colors duration-200">
-                <span className={`text-[11px] font-bold uppercase tracking-widest ${item.color}`}>{item.step}</span>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white">{item.title}</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{item.body}</p>
+          {/* Active Archetype Deep-Dive Card */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-6 items-start">
+            
+            {/* Left: Summary & Scores */}
+            <div className="lg:col-span-7 space-y-4">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">{selectedArchetype.icon}</span>
+                  <div>
+                    <h4 className="text-base sm:text-lg font-black text-white">
+                      {selectedArchetype.title}
+                    </h4>
+                    <span className="text-xs text-indigo-400 font-medium">
+                      Category: {selectedArchetype.tag}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${selectedArchetype.gradeColor}`}>
+                    {selectedArchetype.grade}
+                  </span>
+                  <div className="px-3 py-1 rounded-xl bg-black/60 border border-white/15 text-center">
+                    <span className="text-[10px] text-slate-400 block font-mono">FEASIBILITY</span>
+                    <strong className="text-sm font-black text-emerald-400 font-mono">
+                      {selectedArchetype.score}/100
+                    </strong>
+                  </div>
+                </div>
               </div>
-            ))}
+
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                {selectedArchetype.desc}
+              </p>
+
+              {/* Stack Pill Box */}
+              <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 space-y-1.5">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block font-bold">
+                  ⚡ ₹0 Local Laptop Stack (Zero Cloud Fee)
+                </span>
+                <div className="text-xs font-mono font-bold text-cyan-300">
+                  {selectedArchetype.stack}
+                </div>
+              </div>
+
+              {/* Critical Trap Box */}
+              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs space-y-1">
+                <strong className="text-amber-300 flex items-center gap-1.5 font-bold">
+                  <ShieldAlert className="w-3.5 h-3.5" />
+                  <span>The Load-Bearing Assumption / Trap:</span>
+                </strong>
+                <p className="text-slate-300 italic">
+                  “{selectedArchetype.assumption}”
+                </p>
+              </div>
+            </div>
+
+            {/* Right: 60-Minute Snapshot & CTA */}
+            <div className="lg:col-span-5 p-5 rounded-2xl bg-black/60 border border-white/10 space-y-4 flex flex-col justify-between h-full">
+              <div className="space-y-3">
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>The 60-Minute Build Timeline</span>
+                </span>
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                    <span className="text-slate-300">Min 00-10: Scaffold venv &amp; dependencies</span>
+                    <span className="text-emerald-400 font-mono font-bold">10m</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                    <span className="text-slate-300">Min 10-25: Ingest data &amp; vectorize</span>
+                    <span className="text-indigo-400 font-mono font-bold">15m</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                    <span className="text-slate-300">Min 25-35: Wire inference logic &amp; tests</span>
+                    <span className="text-purple-400 font-mono font-bold">10m</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                    <span className="text-slate-300">Min 35-50: Build web UI / chat endpoint</span>
+                    <span className="text-cyan-400 font-mono font-bold">15m</span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                    <span className="text-slate-300">Min 50-60: Run failure tests &amp; verify</span>
+                    <span className="text-amber-400 font-mono font-bold">10m</span>
+                  </div>
+                </div>
+              </div>
+
+              <Link
+                href={`/compare?from_archetype=${selectedArchetype.id}`}
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition shadow-md shadow-indigo-600/30"
+              >
+                <span>Score This Idea With My Constraints →</span>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── METRICS STRIP ───────────────────────────────────────────────────── */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="reveal border border-slate-200/60 dark:border-white/5 rounded-2xl px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center bg-white/50 dark:bg-white/[0.02]">
+      <section className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-white/10 shadow-2xl backdrop-blur-xl">
           {METRICS.map((m, i) => (
-            <div key={i} className={`reveal delay-${i * 100} stagger-children flex flex-col items-center gap-1`}>
-              <div className="mb-1 text-indigo-500 dark:text-indigo-400">{m.icon}</div>
-              <span className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums">
+            <div key={i} className="text-center p-3 space-y-1">
+              <div className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight flex items-center justify-center">
                 <AnimatedCounter target={m.value} />
-                <span className="text-indigo-500">{m.suffix}</span>
-              </span>
-              <p className="text-xs text-slate-500 font-medium">{m.label}</p>
+                <span className="text-cyan-400">{m.suffix}</span>
+              </div>
+              <strong className="text-xs sm:text-sm font-bold text-slate-200 block">
+                {m.label}
+              </strong>
+              <p className="text-[11px] text-slate-400">
+                {m.subtext}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ────────────────────────────────────────────────────── */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center mb-14 reveal">
-          <span className="text-xs font-bold uppercase tracking-widest text-indigo-500 dark:text-indigo-400">The System</span>
-          <h2 className="text-2xl sm:text-4xl font-bold text-slate-900 dark:text-white mt-2 tracking-tight">
-            Four Steps. Zero Guesswork.
+      {/* ── THE THREE PILLARS (ZERO STEP LABELS) ────────────────────────────── */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
+        <div className="text-center max-w-2xl mx-auto space-y-3">
+          <span className="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
+            ENGINEERING EXCELLENCE
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            How Project Compass Protects Your Build
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 mt-3 max-w-xl mx-auto text-sm sm:text-base">
-            A deterministic engineering process that takes you from vague idea to deployable prototype.
+          <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+            Eliminating guesswork through deterministic scoring, ironclad architecture blueprints, and AI-powered peer stress-testing.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {STEPS.map((step, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {PILLARS.map((p, i) => (
             <div
               key={i}
-              className={`reveal delay-${i * 100} glass-card shimmer-card p-6 flex flex-col gap-4`}
+              className={`rounded-3xl p-7 bg-gradient-to-b ${p.gradient} bg-slate-950/80 border ${p.border} shadow-2xl flex flex-col justify-between space-y-6 hover:-translate-y-1 transition-all duration-300 group`}
             >
-              {/* Step number */}
-              <div className="flex items-center justify-between">
-                <span className="text-3xl font-black font-mono text-slate-900/10 dark:text-white/10">
-                  {step.num}
-                </span>
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white
-                  ${step.color === "indigo" ? "bg-gradient-to-br from-indigo-500 to-indigo-600" :
-                    step.color === "violet" ? "bg-gradient-to-br from-violet-500 to-violet-600" :
-                    step.color === "cyan" ? "bg-gradient-to-br from-cyan-500 to-cyan-600" :
-                    "bg-gradient-to-br from-emerald-500 to-emerald-600"}
-                  shadow-md`}>
-                  {step.icon}
-                </div>
-              </div>
-              <h3 className="font-bold text-slate-900 dark:text-white text-base">{step.title}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed flex-1">{step.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── ARCHETYPES GRID ─────────────────────────────────────────────────── */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10 reveal">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-indigo-500">Architecture Library</span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1.5 tracking-tight">
-              Battle-Tested 48-Hour Archetypes
-            </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-lg">
-              Each archetype is pre-scored for a final-year student with a standard laptop and zero GPU budget.
-            </p>
-          </div>
-          <Link
-            href="/compare"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex-shrink-0"
-          >
-            <span>Score your idea</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {ARCHETYPES.map((arch, i) => (
-            <div
-              key={i}
-              className={`reveal delay-${(i % 3) * 100} glass-card shimmer-card p-6 flex flex-col justify-between group cursor-default`}
-            >
-              <div>
-                {/* Top row */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2.5">
-                    <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${arch.color} flex items-center justify-center text-base shadow-md group-hover:scale-110 transition-transform duration-300`}>
-                      {arch.icon}
-                    </div>
-                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wide bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300">
-                      {arch.tag}
-                    </span>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shadow-inner group-hover:scale-110 transition duration-300">
+                    {p.icon}
                   </div>
-                  <div className="flex items-center gap-1 text-xs font-mono font-bold text-emerald-500">
-                    <Star className="w-3 h-3 fill-emerald-500" />
-                    <span>{arch.score}/100</span>
-                  </div>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 bg-black/40 px-2.5 py-1 rounded-md border border-white/5">
+                    {p.tag}
+                  </span>
                 </div>
 
-                <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors duration-200">
-                  {arch.title}
+                <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition">
+                  {p.title}
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
-                  {arch.desc}
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  {p.desc}
                 </p>
               </div>
 
-              {/* Score bar */}
-              <div className="space-y-2">
-                <div className="score-bar-track">
-                  <div
-                    className={`score-bar-fill bg-gradient-to-r ${arch.color}`}
-                    style={{ width: `${arch.score}%` }}
-                  />
-                </div>
-                <div className="pt-2 border-t border-slate-100 dark:border-white/5 text-[10px] font-mono text-slate-400 dark:text-slate-500">
-                  {arch.tech}
-                </div>
-              </div>
+              <Link
+                href={p.href}
+                className="inline-flex items-center gap-2 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition pt-3 border-t border-white/5"
+              >
+                <span>{p.linkText}</span>
+              </Link>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── WHATSAPP CTA ────────────────────────────────────────────────────── */}
+      {/* ── WHATSAPP SPOTLIGHT BANNER ───────────────────────────────────────── */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="reveal glass-panel rounded-3xl p-8 sm:p-12 border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 dark:from-emerald-500/10 dark:to-teal-500/10 overflow-hidden relative">
-          {/* Ambient glow */}
-          <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-emerald-500/10 blur-[80px] pointer-events-none" />
-
-          <div className="relative flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="space-y-3 text-center md:text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                <MessageSquare className="w-3.5 h-3.5" />
-                <span>Real-Time Meta Cloud API v21.0</span>
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
-                Ideate Directly Inside WhatsApp
-              </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 max-w-lg leading-relaxed">
-                Send your raw project concepts to our verified Meta Cloud API agent. Get deterministic
-                feasibility scores and Build Contract links straight on your phone — no login required.
-              </p>
-            </div>
-
-            <div className="flex-shrink-0 flex flex-col items-center gap-4">
+        <div className="rounded-3xl p-8 sm:p-12 bg-gradient-to-br from-emerald-950/60 via-slate-900 to-slate-950 border border-emerald-500/30 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8">
+          <div className="max-w-xl space-y-4 text-left">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>OFFICIAL WHATSAPP BOT INTEGRATION</span>
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+              Evaluate Projects Directly on WhatsApp. In 10 Seconds.
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Final-year students don&apos;t live in emails. Message our WhatsApp bot to compare ideas, generate full 60-minute build blueprints, and test fatal traps from your phone.
+            </p>
+            <div className="flex items-center gap-3 pt-2 flex-wrap">
               <Link
                 href="/whatsapp"
-                className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-sm shadow-xl shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-1 transition-all duration-200 active:scale-95 whitespace-nowrap"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs transition shadow-lg shadow-emerald-600/30 active:scale-95"
               >
-                Launch Simulator
+                <span>Launch Interactive Phone Simulator →</span>
               </Link>
-              <p className="text-xs text-slate-400">No WhatsApp account needed</p>
+              <Link
+                href="/privacy"
+                className="text-xs text-slate-400 hover:text-slate-200 underline font-medium"
+              >
+                Meta Webhook Policy
+              </Link>
+            </div>
+          </div>
+
+          {/* Quick Chat Preview Badge */}
+          <div className="w-full lg:w-80 rounded-2xl p-4 bg-[#111b21] border border-white/10 shadow-2xl space-y-3 font-sans text-left">
+            <div className="flex items-center gap-2 pb-2 border-b border-white/10">
+              <div className="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center text-xs">🧭</div>
+              <div>
+                <strong className="text-xs text-white block">Project Compass Bot</strong>
+                <span className="text-[10px] text-emerald-400">online · Meta Verified</span>
+              </div>
+            </div>
+            <div className="p-2.5 rounded-xl bg-[#202c33] text-xs text-slate-200 leading-relaxed">
+              👋 Send me any project idea:
+              <br />• <strong>compare: Idea 1 vs Idea 2</strong>
+              <br />• <strong>contract: Idea</strong>
+              <br />• <strong>break: Idea</strong>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── FINAL CTA ───────────────────────────────────────────────────────── */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        <div className="reveal max-w-2xl mx-auto space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/50">
-            <BarChart3 className="w-3.5 h-3.5" />
-            <span>500 Registration Target · ₹2,000 Budget · 7 Days</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            Ready to Stop Guessing?
-          </h2>
-          <p className="text-slate-500 dark:text-slate-400 text-base leading-relaxed">
-            Join the NxtWave free workshop and build a working AI prototype in 60 minutes.
-            No GPU required. No paid APIs. Just your laptop and a validated plan.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-3 pt-2">
-            <Link
-              href="/compare"
-              className="btn-primary ripple-btn inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl text-white font-bold text-sm"
-            >
-              <span>Start Free — Compare Ideas</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/register"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-white/5 transition-all duration-200"
-            >
-              Register for Workshop
-            </Link>
-          </div>
+      {/* ── BOTTOM MASTERCLASS CTA ─────────────────────────────────────────── */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center space-y-6">
+        <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+          Ready to Build Your Project This Weekend?
+        </h2>
+        <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
+          Zero cloud bills. Zero GPU requirements. Join hundreds of students shipping verified, viva-ready prototypes.
+        </p>
+        <div className="flex items-center justify-center gap-4 flex-wrap pt-2">
+          <Link
+            href="/compare"
+            className="px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-sm shadow-xl shadow-indigo-600/40 hover:-translate-y-0.5 transition active:scale-95"
+          >
+            <span>Start Feasibility Scan Free →</span>
+          </Link>
+          <Link
+            href="/register"
+            className="px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-bold text-sm transition"
+          >
+            <span>Register for Free Masterclass</span>
+          </Link>
         </div>
       </section>
+
     </div>
   );
 }
