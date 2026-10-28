@@ -1,236 +1,195 @@
 {% extends "base.html" %}
 
-{% block title %}60-Minute Build Plan & Contract: {{ contract.project_title }} — Project Compass{% endblock %}
+{% block title %}Build Plan: {{ contract.project_title }} — Project Compass{% endblock %}
 
-{% block head %}
+{% block head_extra %}
 <style>
-  .pie-stage-grid {
+  /* Step 2 Hero Two-Column Layout (Slide 3 of Growth Plan) */
+  .step2-hero-grid {
     display: grid;
-    grid-template-columns: minmax(300px, 420px) 1fr;
-    gap: 2.25rem;
-    align-items: center;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 1.75rem;
+    align-items: stretch;
+    margin-bottom: 1.75rem;
   }
-  @media (max-width: 860px) {
-    .pie-stage-grid {
+  @media (max-width: 960px) {
+    .step2-hero-grid {
       grid-template-columns: 1fr;
     }
   }
-  .pie-canvas-box {
-    position: relative;
-    width: 100%;
-    max-width: 380px;
-    margin: 0 auto;
-    text-align: center;
-  }
-  #plan60Chart {
-    width: 100%;
-    max-width: 360px;
-    height: auto;
-    cursor: pointer;
-    filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.45));
-    transition: transform 0.25s ease;
-  }
-  #plan60Chart:hover {
-    transform: translateY(-3px);
-  }
-  .pie-tooltip {
-    position: absolute;
-    pointer-events: none;
-    background: rgba(13, 18, 34, 0.96);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    color: #ffffff;
-    padding: 0.65rem 0.9rem;
-    border-radius: 10px;
-    font-size: 0.8rem;
-    line-height: 1.45;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
-    display: none;
-    z-index: 20;
-    max-width: 240px;
-    text-align: left;
+
+  .step2-list-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    height: 100%;
+    justify-content: space-between;
   }
 
-  .step2-summary-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 0.85rem;
-    margin-bottom: 2.25rem;
-  }
-  .step2-pill-card {
+  .step2-item-card {
     display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    padding: 0.9rem 1.1rem;
-    border-radius: 14px;
+    align-items: flex-start;
+    gap: 0.85rem;
     background: var(--bg-tertiary);
     border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
     text-decoration: none;
-    transition: transform 0.18s ease, border-color 0.18s ease;
+    transition: transform 0.2s ease, border-color 0.2s ease;
   }
-  .step2-pill-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--accent-cyan);
+  .step2-item-card:hover {
+    transform: translateX(3px);
+    border-color: rgba(var(--accent-cyan-rgb), 0.5);
   }
-  .step2-num {
-    width: 36px;
-    height: 36px;
+
+  .step2-badge-num {
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 900;
-    font-size: 0.95rem;
+    font-size: 0.82rem;
+    font-weight: 800;
     color: #ffffff;
     flex-shrink: 0;
+    margin-top: 0.1rem;
   }
 
-  .workshop-60-banner {
-    background: linear-gradient(135deg, #131129 0%, #1e1b4b 55%, #0f172a 100%);
-    border: 2px solid rgba(244, 63, 94, 0.45);
-    border-radius: 24px;
-    padding: 2.25rem 2.25rem;
-    margin: 2.5rem 0;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 0 0 40px rgba(244, 63, 94, 0.15);
+  /* 60-Min Pie Chart Panel (Slide 3 Right Side) */
+  .step2-pie-panel {
+    background: linear-gradient(145deg, #090e1a 0%, #111827 100%);
+    border: 1.5px solid rgba(99, 102, 241, 0.45);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
     position: relative;
     overflow: hidden;
   }
 
-  .wa-group-card {
-    background: #111b21;
-    border-radius: 24px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    overflow: hidden;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
-  }
-  .wa-group-header {
-    background: #1f2c34;
-    padding: 0.85rem 1.15rem;
-    color: #e9edef;
-    font-weight: 800;
-    font-size: 0.92rem;
-    border-bottom: 1px solid #2a3942;
+  /* Slide 3 Bottom Workshop Bar */
+  .step2-bottom-workshop-bar {
+    background: linear-gradient(135deg, #0b1020 0%, #151a30 50%, #0d1326 100%);
+    border: 2px solid rgba(99, 102, 241, 0.55);
+    border-radius: 16px;
+    padding: 1.15rem 1.6rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
-  .wa-group-body {
-    padding: 1.15rem;
-    background: #0b141a;
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-    font-size: 0.84rem;
-  }
-  .wa-bubble-out {
-    align-self: flex-end;
-    background: #d9fdd3;
-    color: #111b21;
-    padding: 0.55rem 0.85rem;
-    border-radius: 12px 0 12px 12px;
-    max-width: 85%;
-    font-weight: 500;
-  }
-  .wa-bubble-in {
-    align-self: flex-start;
-    background: #ffffff;
-    color: #111b21;
-    padding: 0.55rem 0.85rem;
-    border-radius: 0 12px 12px 12px;
-    max-width: 85%;
-    font-weight: 500;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    margin-bottom: 2.25rem;
   }
 
-  .milestone-timeline {
-    position: relative;
-    padding-left: 2rem;
-  }
-  .milestone-timeline::before {
-    content: '';
-    position: absolute;
-    left: 0.6rem;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(to bottom, var(--accent-cyan), var(--accent-purple));
-  }
-  .milestone-dot {
-    position: absolute;
-    left: -1.6rem;
-    top: 0.25rem;
-    width: 14px;
-    height: 14px;
+  .badge-60-circle {
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
-    background: var(--accent-cyan);
-    border: 2px solid var(--bg-primary);
-    box-shadow: 0 0 8px rgba(6,182,212,0.6);
-  }
-  .milestone-item {
-    position: relative;
-    margin-bottom: 1.5rem;
-  }
-
-  .share-input-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
-  .share-input-row input { flex: 1; min-width: 200px; }
-
-  @keyframes pulse-ring {
-    0%   { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.55); }
-    70%  { box-shadow: 0 0 0 14px rgba(244, 63, 94, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
-  }
-  .btn-join-workshop-60 {
-    animation: pulse-ring 2s infinite;
-    background: linear-gradient(135deg, #f43f5e, #fb7185);
-    color: #ffffff !important;
-    font-size: 1.08rem;
-    padding: 0.9rem 2rem;
-    border-radius: 999px;
-    font-weight: 800;
-    border: none;
-    text-decoration: none;
-    display: inline-flex;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff;
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 18px rgba(99, 102, 241, 0.55);
   }
 
-  /* Print Optimization: Clean Official Document Layout */
+  /* Failure test card */
+  .failure-test-card {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s ease;
+  }
+  .failure-test-card:hover {
+    border-color: rgba(var(--accent-amber-rgb), 0.4);
+  }
+
+  /* Print Styles: Clean White-Paper Layout (Zero Blank Pages) */
   @media print {
-    body { background: #ffffff !important; color: #111827 !important; }
-    .navbar, .no-print, footer { display: none !important; }
-    #contractContent { padding: 0 !important; max-width: 100% !important; }
-    .card, .workshop-60-banner {
+    *, *::before, *::after {
+      color-adjust: exact !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body, html {
       background: #ffffff !important;
-      color: #111827 !important;
-      border: 1px solid #d1d5db !important;
+      color: #0f172a !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    }
+    .reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      visibility: visible !important;
+    }
+    .no-print, .navbar, footer, .btn, button, .share-input-row, a[href^="#"] {
+      display: none !important;
+    }
+    #contractContent, .card, .step2-hero-grid, .step2-item-card, .step2-pie-panel, .step2-bottom-workshop-bar {
+      opacity: 1 !important;
+      visibility: visible !important;
+      display: block !important;
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border: 1px solid #cbd5e1 !important;
       box-shadow: none !important;
       break-inside: avoid;
     }
-    h1, h2, h3, h4, h5, strong { color: #111827 !important; }
-    .badge { border: 1px solid #9ca3af !important; color: #111827 !important; background: #f3f4f6 !important; }
-    #plan60Chart { filter: none !important; }
+    h1, h2, h3, h4, h5, strong, p, span, li, td, th {
+      color: #0f172a !important;
+    }
+    .badge {
+      border: 1px solid #94a3b8 !important;
+      color: #0f172a !important;
+      background: #f1f5f9 !important;
+    }
+    #printChartImg {
+      display: block !important;
+      max-width: 320px !important;
+      margin: 0 auto !important;
+    }
+    #plan60Canvas {
+      display: none !important;
+    }
   }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container" style="padding-top: 2rem; padding-bottom: 4rem;" id="contractContent">
+<div class="container" style="padding-top: 1.75rem; padding-bottom: 4rem;" id="contractContent">
 
-    <!-- Step 2 Page Header -->
-    <div style="margin-bottom: 1.75rem;" class="reveal">
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+    <!-- Step 2 Page Header (Slide 3 of Growth Plan) -->
+    <div style="margin-bottom: 1.5rem;" class="reveal">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
             <div>
-                <span class="badge badge-cyan" style="margin-bottom: 0.5rem;">STEP 2 • A BUILD PLAN THAT LEAVES NOTHING OUT</span>
-                <h1 style="font-size: clamp(1.85rem, 3.8vw, 2.65rem); font-weight: 900; color: var(--text-main); letter-spacing: -0.02em; margin-bottom: 0.35rem;">
-                    {{ contract.project_title }}
+                <div style="display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--font-mono); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-indigo); font-weight: 700; margin-bottom: 0.4rem;">
+                    <span>02 / THE 60-MINUTE BUILD BLUEPRINT</span>
+                    <span>·</span>
+                    <span>STEP 2 OF 4</span>
+                </div>
+                <h1 style="font-size: clamp(1.85rem, 3.8vw, 2.75rem); font-weight: 900; color: var(--text-main); letter-spacing: -0.025em; line-height: 1.15; margin: 0 0 0.35rem 0;">
+                    Step 2 · <span style="color: var(--accent-indigo);">A Build Plan that leaves nothing out</span>
                 </h1>
-                <p style="color: var(--text-secondary); font-size: 1rem; margin: 0;">
-                    Complete printable technical blueprint: required ₹0 stack, hidden assumptions, failure tests, strict scope limitations, and your <strong>exact 60-minute build pie chart</strong>.
+                <p style="color: var(--text-secondary); font-size: 1rem; margin: 0; max-width: 760px;">
+                    One click turns the score into a printable, structured blueprint: required ₹0 stack, hidden assumptions, failure tests, strict scope limitations, and your <strong>exact 60-minute build pie chart</strong>.
                 </p>
             </div>
-            <div class="no-print" style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="downloadContractPDF()">
+
+            <!-- Action Bar (Top) -->
+            <div class="no-print" style="display: flex; gap: 0.55rem; flex-wrap: wrap; align-items: center;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="downloadContractPDF()" title="Save as clean printable PDF">
                     ↓ Download PDF report
                 </button>
-                <button type="button" class="btn btn-outline btn-sm" onclick="copyShareLink()">
+                <button type="button" class="btn btn-outline btn-sm" onclick="copyShareLink()" id="copyShareBtn">
                     Copy share link 🔗
                 </button>
                 <button type="button" class="btn btn-emerald btn-sm" onclick="shareToWhatsApp()">
@@ -243,191 +202,253 @@
         </div>
     </div>
 
-    <!-- Contract Master Card (Official Printable Technical Document) -->
-    <div class="card reveal" style="padding: 2.25rem; background: var(--bg-card); border-color: rgba(var(--accent-cyan-rgb), 0.35);">
-        <!-- Contract Metadata Strip -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1.25rem; margin-bottom: 1.75rem;">
-            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                <span class="badge badge-emerald">OFFICIAL BUILD CONTRACT</span>
-                <span style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent-cyan); background: var(--bg-tertiary); padding: 0.25rem 0.65rem; border-radius: var(--radius-sm);">
-                    ID: {{ contract.contract_id }}
-                </span>
-                <span style="font-size: 0.88rem; color: var(--text-secondary);">
-                    Category: <strong style="color: var(--accent-cyan);">{{ contract.category }}</strong> •
-                    Difficulty: <strong style="color: var(--accent-amber);">{{ contract.difficulty|title }}</strong> •
-                    Total Prototype Time: <strong style="color: var(--accent-emerald);">Exactly 60 Minutes</strong>
-                </span>
+    <!-- Contract Master Card -->
+    <div class="card reveal" style="padding: 2rem; background: var(--bg-card); border-color: rgba(99, 102, 241, 0.4); border-radius: 18px; margin-bottom: 2rem;">
+        
+        <!-- Project Title & Metadata Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.85rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+            <div>
+                <span class="badge badge-indigo" style="margin-bottom: 0.35rem;">OFFICIAL BUILD CONTRACT LOCKED</span>
+                <h2 style="font-size: 1.55rem; font-weight: 900; color: var(--text-main); margin: 0;">
+                    {{ contract.project_title }}
+                </h2>
+                <div style="font-size: 0.84rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                    Category: <strong style="color: var(--accent-cyan);">{{ contract.category }}</strong> ·
+                    Feasibility Score: <strong style="color: var(--accent-emerald);">{{ contract.feasibility_score }}/100 · Realistic. Ship it.</strong> ·
+                    Target Time: <strong style="color: var(--accent-indigo);">Exactly 60 Minutes</strong>
+                </div>
             </div>
-            <a href="#pieChartAnchor" class="badge badge-purple no-print" style="text-decoration: none; cursor: pointer;">
-                📊 Jump to 60-Min Pie Chart ↓
-            </a>
-        </div>
-
-        <!-- Original Idea & Concept -->
-        <div style="margin-bottom: 2rem;">
-            <div style="font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.45rem;">
-                PROJECT CONCEPT & PROBLEM STATEMENT
+            <div style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent-cyan); background: var(--bg-tertiary); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                ID: {{ contract.contract_id }}
             </div>
-            <div style="background: var(--bg-tertiary); padding: 1.15rem 1.35rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent-cyan); color: var(--text-main); font-size: 0.96rem; line-height: 1.6;">
-                {{ contract.original_idea }}
-            </div>
-        </div>
-
-        <!-- 6-Pillar Quick Overview (Matches Slide 3 Left Column 1-6) -->
-        <div class="step2-summary-grid no-print">
-            <a href="#sec1-stack" class="step2-pill-card">
-                <span class="step2-num" style="background: #f43f5e;">1</span>
-                <div>
-                    <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">₹0 Tech Stack</strong>
-                    <span style="color: var(--text-secondary); font-size: 0.78rem;">FastAPI + SQLite + free models. No cloud bill.</span>
-                </div>
-            </a>
-            <a href="#sec2-assumption" class="step2-pill-card">
-                <span class="step2-num" style="background: #6366f1;">2</span>
-                <div>
-                    <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">Load-Bearing Assumption</strong>
-                    <span style="color: var(--text-secondary); font-size: 0.78rem;">The one hidden risk that sinks the project.</span>
-                </div>
-            </a>
-            <a href="#sec3-tests" class="step2-pill-card">
-                <span class="step2-num" style="background: #f59e0b;">3</span>
-                <div>
-                    <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">Failure Tests</strong>
-                    <span style="color: var(--text-secondary); font-size: 0.78rem;">2–3 tests: what, expect, accept, fix. Labelled "Proposed".</span>
-                </div>
-            </a>
-            <a href="#sec4-scope" class="step2-pill-card">
-                <span class="step2-num" style="background: #10b981;">4</span>
-                <div>
-                    <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">Scope Boundary</strong>
-                    <span style="color: var(--text-secondary); font-size: 0.78rem;">What NOT to build in Week 1.</span>
-                </div>
-            </a>
-            <a href="#sec5-plan60" class="step2-pill-card">
-                <span class="step2-num" style="background: #8b5cf6;">5</span>
-                <div>
-                    <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">60-Minute Prototype Plan</strong>
-                    <span style="color: var(--text-secondary); font-size: 0.78rem;">Milestones + 60-Min Pie Chart adding up to an hour.</span>
-                </div>
-            </a>
-            <a href="#sec6-action" class="step2-pill-card">
-                <span class="step2-num" style="background: #ec4899;">6</span>
-                <div>
-                    <strong style="color: var(--text-main); font-size: 0.92rem; display: block;">5-Minute Next Action</strong>
-                    <span style="color: var(--text-secondary); font-size: 0.78rem;">One task you can do right now.</span>
-                </div>
-            </a>
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 1. THE ₹0 TECH STACK (ALL REQUIRED TOOLS, TEXT & DEPENDENCIES)     -->
+        <!-- SLIDE 3 TWO-COLUMN HERO: 6 POINTS (LEFT) + 60-MIN PIE CHART (RIGHT)  -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div id="sec1-stack" style="margin-bottom: 2.5rem; padding-top: 0.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 800; color: var(--text-main);">
-                    <span>⚙️</span> 1. The ₹0 Tech Stack (Everything Required to Build)
-                </div>
-                <span class="badge badge-emerald">₹0 Cloud Fees • Runs on Standard Laptop</span>
+        <div class="step2-hero-grid">
+            
+            <!-- LEFT COLUMN: The 6 Points (Matching Slide 3 of PDF) -->
+            <div class="step2-list-stack">
+                <!-- 1. ₹0 Tech Stack -->
+                <a href="#sec1-stack" class="step2-item-card">
+                    <span class="step2-badge-num" style="background: #f43f5e;">1</span>
+                    <div>
+                        <strong style="color: var(--text-main); font-size: 0.95rem; display: block;">₹0 Tech Stack</strong>
+                        <span style="color: var(--text-secondary); font-size: 0.82rem; line-height: 1.4;">
+                            FastAPI + SQLite + free embeddings. No cloud bill. Runs directly on student laptop.
+                        </span>
+                    </div>
+                </a>
+
+                <!-- 2. Load-Bearing Assumption -->
+                <a href="#sec2-assumption" class="step2-item-card">
+                    <span class="step2-badge-num" style="background: #6366f1;">2</span>
+                    <div>
+                        <strong style="color: var(--text-main); font-size: 0.95rem; display: block;">Load-Bearing Assumption</strong>
+                        <span style="color: var(--text-secondary); font-size: 0.82rem; line-height: 1.4;">
+                            The one hidden risk that sinks the project: “{{ contract.critical_assumption[:95] }}...”
+                        </span>
+                    </div>
+                </a>
+
+                <!-- 3. Failure Tests -->
+                <a href="#sec3-tests" class="step2-item-card">
+                    <span class="step2-badge-num" style="background: #f59e0b;">3</span>
+                    <div>
+                        <strong style="color: var(--text-main); font-size: 0.95rem; display: block;">Failure Tests</strong>
+                        <span style="color: var(--text-secondary); font-size: 0.82rem; line-height: 1.4;">
+                            2–3 tests: what to test, what to expect, acceptance criteria, how to fix it. Labelled "Proposed".
+                        </span>
+                    </div>
+                </a>
+
+                <!-- 4. Scope Boundary -->
+                <a href="#sec4-scope" class="step2-item-card">
+                    <span class="step2-badge-num" style="background: #10b981;">4</span>
+                    <div>
+                        <strong style="color: var(--text-main); font-size: 0.95rem; display: block;">Scope Boundary</strong>
+                        <span style="color: var(--text-secondary); font-size: 0.82rem; line-height: 1.4;">
+                            Essential MVP features vs what NOT to build in Week 1 (no payments, no complex logins).
+                        </span>
+                    </div>
+                </a>
+
+                <!-- 5. 60-Minute Prototype Plan -->
+                <a href="#sec5-plan60" class="step2-item-card">
+                    <span class="step2-badge-num" style="background: #8b5cf6;">5</span>
+                    <div>
+                        <strong style="color: var(--text-main); font-size: 0.95rem; display: block;">60-Minute Prototype Plan</strong>
+                        <span style="color: var(--text-secondary); font-size: 0.82rem; line-height: 1.4;">
+                            Milestones that add up to exactly an hour: scaffold, data ingest, core AI, UI wire-up, verify.
+                        </span>
+                    </div>
+                </a>
+
+                <!-- 6. 5-Minute Next Action -->
+                <a href="#sec6-action" class="step2-item-card">
+                    <span class="step2-badge-num" style="background: #ec4899;">6</span>
+                    <div>
+                        <strong style="color: var(--text-main); font-size: 0.95rem; display: block;">5-Minute Next Action</strong>
+                        <span style="color: var(--text-secondary); font-size: 0.82rem; line-height: 1.4;">
+                            One task they can do right now to build momentum immediately.
+                        </span>
+                    </div>
+                </a>
             </div>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
-                Specifically recommends free tools that run on standard laptops without cloud fees (for example: FastAPI backend + local SQLite database + free sentence embeddings).
+
+            <!-- RIGHT COLUMN: 60-Minute Pie Chart (Matching Slide 3 of PDF) -->
+            <div class="step2-pie-panel">
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <div>
+                        <span style="font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; color: #34d399; font-weight: 800;">
+                            EXACTLY 60 MINUTES
+                        </span>
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0;">
+                            60-Min Build Pie Chart
+                        </h3>
+                    </div>
+                    <div class="no-print" style="display: flex; gap: 0.25rem;">
+                        <button type="button" class="btn btn-outline btn-sm" id="btnClassic5" onclick="setChartMode('classic5')" style="font-size: 0.72rem; padding: 0.2rem 0.5rem; background: rgba(99,102,241,0.25); border-color: #6366f1; color: #ffffff;">
+                            Classic 5 (60m)
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" id="btnDetailed8" onclick="setChartMode('detailed')" style="font-size: 0.72rem; padding: 0.2rem 0.5rem; color: #94a3b8;">
+                            Detailed 8 (60m)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Canvas for Screen & High-Res Image for Print -->
+                <div style="position: relative; width: 100%; display: flex; justify-content: center; align-items: center; min-height: 230px;">
+                    <canvas id="plan60Canvas" width="360" height="230" style="max-width: 100%; height: auto; display: block;"></canvas>
+                    <img id="printChartImg" alt="60-Minute Prototype Plan Pie Chart" style="display: none; max-width: 100%;" />
+                </div>
+
+                <!-- Slice Legend (Matches Slide 3 labels: Scaffold, Core logic, Test queries, Simple web UI, Stress test) -->
+                <div id="chartLegendBox" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.4rem; margin-top: 0.5rem;">
+                    <!-- Populated dynamically by script -->
+                </div>
+
+                <div style="width: 100%; text-align: center; margin-top: 0.6rem; font-family: var(--font-mono); font-size: 0.74rem; color: #34d399; font-weight: 700; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.45rem;">
+                    TOTAL TIME: 60 MINS · ₹0 CLOUD COST
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- SLIDE 3 BOTTOM BAR: 60 MINS = 60 MINS LIVE WORKSHOP BANNER          -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <div class="step2-bottom-workshop-bar">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="badge-60-circle">60</div>
+                <div>
+                    <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin: 0; line-height: 1.3;">
+                        “This plan takes exactly 60 minutes. So does our workshop. Come build it live.”
+                    </h3>
+                    <p style="font-size: 0.86rem; color: #cbd5e1; margin: 0.2rem 0 0 0;">
+                        Your plan is ready! Learn how to build this exact prototype in 60 minutes at NxtWave's free live workshop.
+                    </p>
+                </div>
+            </div>
+            <div class="no-print">
+                <a href="/register?contract_id={{ contract.contract_id }}" class="btn btn-emerald btn-lg" style="font-weight: 800; padding: 0.85rem 1.6rem; white-space: nowrap;">
+                    Join the workshop →
+                </a>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- DETAILED PRINTABLE TECHNICAL SECTIONS (1 TO 6)                      -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+        <!-- 1. The ₹0 Tech Stack -->
+        <div id="sec1-stack" style="margin-bottom: 2.25rem; padding-top: 0.5rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin: 0;">
+                    ⚙️ 1. The ₹0 Tech Stack (Everything Required to Build)
+                </h3>
+                <span class="badge badge-emerald">₹0 Cloud Fees</span>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                Specifically recommends free tools that run on standard student laptops without cloud fees.
             </p>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
-                <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">Frontend UI</div>
-                    <strong style="color: var(--accent-cyan); font-size: 1rem;">{{ contract.frontend_rec }}</strong>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.85rem;">
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--accent-indigo); margin-bottom: 0.25rem;">Frontend</div>
+                    <strong style="color: var(--text-main); font-size: 0.92rem;">{{ contract.frontend_rec }}</strong>
                 </div>
-                <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">Backend Server</div>
-                    <strong style="color: var(--accent-blue); font-size: 1rem;">{{ contract.backend_rec }}</strong>
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--accent-indigo); margin-bottom: 0.25rem;">Backend API</div>
+                    <strong style="color: var(--text-main); font-size: 0.92rem;">{{ contract.backend_rec }} (FastAPI)</strong>
                 </div>
-                <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">AI Model / Engine</div>
-                    <strong style="color: var(--accent-purple); font-size: 1rem;">{{ contract.ai_model_rec }}</strong>
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--accent-indigo); margin-bottom: 0.25rem;">AI Model / Engine</div>
+                    <strong style="color: var(--text-main); font-size: 0.92rem;">{{ contract.ai_model_rec }}</strong>
                 </div>
-                <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">Local Database</div>
-                    <strong style="color: var(--accent-emerald); font-size: 1rem;">{{ contract.db_rec }}</strong>
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--accent-indigo); margin-bottom: 0.25rem;">Database</div>
+                    <strong style="color: var(--text-main); font-size: 0.92rem;">{{ contract.db_rec }}</strong>
                 </div>
             </div>
-            <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.75rem; border: 1px solid var(--border-subtle);">
-                <strong style="color: var(--text-main);">Architectural Rationale:</strong> <span style="color: var(--text-secondary);">{{ contract.tech_reasoning }}</span>
-            </div>
-            <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); font-size: 0.9rem; line-height: 1.6; border: 1px solid var(--border-subtle);">
-                <strong style="color: var(--text-main);">Required Data, Text & Dependencies:</strong> <span style="color: var(--text-secondary);">{{ contract.required_data }}</span>
+            <div style="margin-top: 0.85rem; font-size: 0.85rem; color: var(--text-secondary); background: var(--bg-tertiary); padding: 0.85rem 1rem; border-radius: var(--radius-sm); border-left: 3px solid var(--accent-indigo);">
+                <strong>Architectural Rationale:</strong> {{ contract.tech_reasoning }}
             </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 2. THE "LOAD-BEARING ASSUMPTION" (THE TRAP & KEY LIMITATION)       -->
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div id="sec2-assumption" style="margin-bottom: 2.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 800; color: var(--text-main);">
-                    <span>⚠️</span> 2. The "Load-Bearing Assumption" (The Trap & Key Limitation)
-                </div>
-                <span class="badge badge-amber">Critical Hidden Risk</span>
+        <!-- 2. The Load-Bearing Assumption -->
+        <div id="sec2-assumption" style="margin-bottom: 2.25rem; padding-top: 0.5rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin: 0;">
+                    ⚠️ 2. The “Load-Bearing Assumption” (The Trap & Key Limitation)
+                </h3>
+                <span class="badge badge-amber">Single Point of Failure</span>
             </div>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
-                Identifies the single biggest hidden risk and technical limitation that could make the project fail during viva evaluation.
-            </p>
-            <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid var(--accent-amber); border-radius: var(--radius-md); padding: 1.5rem;">
-                <h5 style="color: var(--accent-amber); font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
-                    <span>⚠️</span> SINGLE POINT OF FAILURE (THE TRAP):
-                </h5>
-                <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.85rem; line-height: 1.5;">
-                    "{{ contract.critical_assumption }}"
+            <div style="background: rgba(245, 158, 11, 0.08); border-left: 4px solid var(--accent-amber); padding: 1.15rem 1.35rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-top: 0.6rem;">
+                <p style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); line-height: 1.5; margin: 0 0 0.4rem 0;">
+                    “{{ contract.critical_assumption }}”
                 </p>
-                <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; border-top: 1px dashed rgba(245, 158, 11, 0.3); padding-top: 0.75rem;">
-                    <strong style="color: var(--accent-amber);">Why this limitation matters:</strong> If this assumption fails, the entire project collapses during the college viva review regardless of how much UI code you write. The failure tests below verify this risk before your professor does.
+                <div style="font-size: 0.84rem; color: var(--text-secondary);">
+                    <strong>What happens when someone asks an unlisted question?</strong> If this assumption proves false during your professor's viva review and your code lacks a confidence threshold, the model hallucinates and the project fails review.
                 </div>
             </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 3. CONCRETE FAILURE TESTS                                          -->
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div id="sec3-tests" style="margin-bottom: 2.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 800; color: var(--text-main);">
-                    <span>🧪</span> 3. Concrete Failure Tests
-                </div>
+        <!-- 3. Concrete Failure Tests -->
+        <div id="sec3-tests" style="margin-bottom: 2.25rem; padding-top: 0.5rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin: 0;">
+                    🛡️ 3. Concrete Failure Tests
+                </h3>
                 <span class="badge badge-amber">Proposed Tests — Not Yet Executed</span>
             </div>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
-                2 to 3 specific tests to run to check for bugs before your professor does. Honestly labeled as <strong>"Proposed Tests — Not Yet Executed"</strong> rather than faking test results.
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                2–3 targeted stress-test scenarios to run before writing weeks of code.
             </p>
-
-            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <div>
                 {% for test in contract.failure_scenarios %}
-                <div class="card" style="padding: 1.5rem; background: var(--bg-tertiary); border-color: var(--border-subtle); margin-bottom: 0;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
-                        <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-main);">
-                            <span class="badge badge-amber" style="margin-right: 0.5rem;">{{ test.test_id }}</span>
-                            {{ test.test_name }}
-                        </div>
-                        <span style="font-size: 0.75rem; color: var(--accent-amber); font-weight: 700;">PROPOSED STRESS TEST</span>
+                <div class="failure-test-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <strong style="color: var(--text-main); font-size: 1rem;">{{ test.test_name }}</strong>
+                        <span style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--accent-cyan); background: var(--bg-card); padding: 0.2rem 0.5rem; border-radius: 4px;">
+                            {{ test.test_id }}
+                        </span>
                     </div>
-                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5;">
-                        <strong style="color: var(--text-main);">What is Tested:</strong> {{ test.what_is_tested }}<br>
-                        <strong style="color: var(--accent-rose);">Why It Matters:</strong> {{ test.why_it_matters }}
-                    </p>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; font-size: 0.85rem;">
-                        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
-                            <div style="font-size: 0.75rem; color: var(--accent-cyan); text-transform: uppercase; font-weight: 800; margin-bottom: 0.25rem;">1. What to Test (Procedure)</div>
-                            <div style="color: var(--text-main);">{{ test.test_procedure }}</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; font-size: 0.84rem;">
+                        <div>
+                            <strong style="color: var(--text-muted); display: block; margin-bottom: 0.15rem;">1. What to Test:</strong>
+                            <span style="color: var(--text-secondary);">{{ test.what_is_tested }}</span>
                         </div>
-                        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
-                            <div style="font-size: 0.75rem; color: var(--accent-blue); text-transform: uppercase; font-weight: 800; margin-bottom: 0.25rem;">2. What to Expect (Observation)</div>
-                            <div style="color: var(--text-main);">{{ test.expected_observation }}</div>
+                        <div>
+                            <strong style="color: var(--text-muted); display: block; margin-bottom: 0.15rem;">2. What to Expect:</strong>
+                            <span style="color: var(--text-secondary);">{{ test.expected_observation }}</span>
                         </div>
-                        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
-                            <div style="font-size: 0.75rem; color: var(--accent-emerald); text-transform: uppercase; font-weight: 800; margin-bottom: 0.25rem;">3. Acceptance Criteria</div>
-                            <div style="color: var(--accent-emerald); font-weight: 600;">{{ test.acceptance_criteria }}</div>
+                        <div>
+                            <strong style="color: var(--accent-emerald); display: block; margin-bottom: 0.15rem;">3. Acceptance Criteria:</strong>
+                            <span style="color: var(--text-secondary);">{{ test.acceptance_criteria }}</span>
                         </div>
-                        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
-                            <div style="font-size: 0.75rem; color: var(--accent-amber); text-transform: uppercase; font-weight: 800; margin-bottom: 0.25rem;">4. How to Fix It (Remediation)</div>
-                            <div style="color: var(--accent-amber); font-weight: 600;">{{ test.remediation_plan }}</div>
+                        <div>
+                            <strong style="color: var(--accent-amber); display: block; margin-bottom: 0.15rem;">4. How to Fix It:</strong>
+                            <span style="color: var(--text-secondary);">{{ test.remediation_plan }}</span>
                         </div>
                     </div>
                 </div>
@@ -435,35 +456,30 @@
             </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 4. STRICT SCOPE BOUNDARY (WHAT NOT TO BUILD & LIMITATIONS)         -->
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div id="sec4-scope" style="margin-bottom: 2.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 800; color: var(--text-main);">
-                    <span>🎯</span> 4. Strict Scope Boundary (What NOT to Build in Week 1)
-                </div>
-                <span class="badge badge-rose">Prevent Scope Creep</span>
+        <!-- 4. Strict Scope Boundary -->
+        <div id="sec4-scope" style="margin-bottom: 2.25rem; padding-top: 0.5rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin: 0;">
+                    🎯 4. Strict Scope Boundary
+                </h3>
+                <span class="badge badge-purple">DO NOT Build in Week 1</span>
             </div>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
-                Students always waste time on things they don't need (like fancy logins, payment gateways, or multi-language support). The contract explicitly says: <strong>"DO NOT build these in Week 1."</strong>
-            </p>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-                <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-md); padding: 1.5rem;">
-                    <div style="color: var(--accent-emerald); font-weight: 800; font-size: 1rem; margin-bottom: 0.75rem;">
-                        ✅ Essential MVP Features (Build in Week 1):
-                    </div>
-                    <ul style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-main); display: flex; flex-direction: column; gap: 0.5rem; line-height: 1.5;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 0.75rem;">
+                <div style="background: var(--bg-tertiary); padding: 1.15rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <strong style="color: var(--accent-emerald); font-size: 0.92rem; display: block; margin-bottom: 0.5rem;">
+                        ✓ In-Scope (Build in Week 1):
+                    </strong>
+                    <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.84rem; color: var(--text-secondary); line-height: 1.6;">
                         {% for feat in contract.mvp_features %}
                         <li>{{ feat }}</li>
                         {% endfor %}
                     </ul>
                 </div>
-                <div style="background: rgba(244, 63, 94, 0.05); border: 1px solid rgba(244, 63, 94, 0.25); border-radius: var(--radius-md); padding: 1.5rem;">
-                    <div style="color: var(--accent-rose); font-weight: 800; font-size: 1rem; margin-bottom: 0.75rem;">
-                        🚫 Strict Boundary: DO NOT Build in Week 1:
-                    </div>
-                    <ul style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.5rem; line-height: 1.5;">
+                <div style="background: var(--bg-tertiary); padding: 1.15rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <strong style="color: var(--accent-rose); font-size: 0.92rem; display: block; margin-bottom: 0.5rem;">
+                        ✗ DO NOT Build in Week 1 (Postpone):
+                    </strong>
+                    <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.84rem; color: var(--text-secondary); line-height: 1.6;">
                         {% for feat in contract.deferred_features %}
                         <li>{{ feat }}</li>
                         {% endfor %}
@@ -472,829 +488,316 @@
             </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 5. THE 60-MINUTE PROTOTYPE PLAN (STEP-BY-STEP + 60-MIN PIE CHART)  -->
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div id="sec5-plan60" style="margin-bottom: 2.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 800; color: var(--text-main);">
-                    <span>⏱️</span> 5. The 60-Minute Prototype Plan
-                </div>
-                <span class="badge badge-cyan">Milestones Add Up to Exactly 60 Minutes</span>
+        <!-- 5. The 60-Minute Prototype Plan -->
+        <div id="sec5-plan60" style="margin-bottom: 2.25rem; padding-top: 0.5rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin: 0;">
+                    ⏱️ 5. The 60-Minute Prototype Plan
+                </h3>
+                <span class="badge badge-indigo">Four 15-Minute Milestones</span>
             </div>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.75rem;">
-                Breaks down the first working prototype into four 15-minute milestones:
-                <strong>Minutes 00-15</strong> (Scaffold & load 1 document),
-                <strong>Minutes 15-30</strong> (Write core logic & test queries),
-                <strong>Minutes 30-45</strong> (Connect simple web UI), and
-                <strong>Minutes 45-60</strong> (Run stress test & verify).
-            </p>
-
-            <!-- Step-by-Step Timeline View -->
-            <div class="milestone-timeline" style="margin-bottom: 2.25rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; margin-top: 0.75rem;">
                 {% for milestone in contract.plan_60min %}
-                <div class="milestone-item">
-                    <div class="milestone-dot"></div>
-                    <div class="card" style="padding: 1.25rem; background: var(--bg-tertiary); border-color: var(--border-subtle); margin-bottom: 0;">
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
-                            <span class="badge badge-cyan" style="font-family: var(--font-mono);">{{ milestone.time_window }}</span>
-                            <strong style="color: var(--text-main); font-size: 1rem;">{{ milestone.phase_title }}</strong>
-                        </div>
-                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem; line-height: 1.5;">{{ milestone.objective }}</p>
-                        <ul style="padding-left: 1.2rem; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem; line-height: 1.6;">
-                            {% for action in milestone.action_items %}
-                            <li>{{ action }}</li>
-                            {% endfor %}
-                        </ul>
-                        <div style="font-size: 0.82rem; color: var(--accent-cyan); font-weight: 600; border-top: 1px solid var(--border-subtle); padding-top: 0.5rem;">
-                            <strong>✅ Deliverable:</strong> {{ milestone.deliverable }}
-                        </div>
-                    </div>
+                <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1rem;">
+                    <span style="font-family: var(--font-mono); font-size: 0.76rem; color: var(--accent-indigo); font-weight: 800; display: block; margin-bottom: 0.25rem;">
+                        {{ milestone.time_window }}
+                    </span>
+                    <strong style="color: var(--text-main); font-size: 0.92rem; display: block; margin-bottom: 0.35rem;">
+                        {{ milestone.phase_title }}
+                    </strong>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
+                        {{ milestone.objective }}
+                    </p>
                 </div>
                 {% endfor %}
             </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 6. 5-MINUTE IMMEDIATE NEXT ACTION                                  -->
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div id="sec6-action" style="margin-bottom: 2.75rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem; font-weight: 800; color: var(--text-main);">
-                    <span>🚀</span> 6. 5-Minute Immediate Next Action
-                </div>
-                <span class="badge badge-emerald">Start Right Now</span>
+        <!-- 6. 5-Minute Immediate Next Action -->
+        <div id="sec6-action" style="margin-bottom: 1.5rem; padding-top: 0.5rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin: 0;">
+                    ⚡ 6. Immediate Next Action (Start in 5 Minutes)
+                </h3>
+                <span class="badge badge-emerald">Momentum Trigger</span>
             </div>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.85rem;">
-                One simple task the student can do right now before joining the 60-minute build session:
-            </p>
-            <div style="background: linear-gradient(135deg, rgba(var(--accent-cyan-rgb), 0.14), rgba(var(--accent-blue-rgb), 0.14)); border: 1px solid var(--accent-cyan); border-radius: var(--radius-md); padding: 1.35rem 1.5rem;">
-                <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); line-height: 1.5;">
+            <div style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.1)); border: 1px solid rgba(16,185,129,0.35); border-radius: var(--radius-sm); padding: 1.15rem 1.35rem;">
+                <strong style="color: var(--text-main); font-size: 0.98rem; display: block; margin-bottom: 0.35rem;">
+                    Your Day-1 First Step:
+                </strong>
+                <p style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--text-main); margin: 0;">
                     {{ contract.immediate_action }}
-                </div>
+                </p>
             </div>
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 📊 THE SHOWSTOPPER: BEAUTIFUL 3D 60-MINUTE PIE CHART AT END OF DOC -->
+        <!-- STEP 3 VIRAL SHARE LOOP: WHATSAPP GROUP & AI CHAT ROOM (SLIDE 4)    -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div id="pieChartAnchor" style="background: linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(13, 18, 34, 0.98)); border: 2px solid rgba(99, 102, 241, 0.4); border-radius: 22px; padding: 2.25rem; margin-bottom: 2.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 2rem; margin-top: 2rem;" class="no-print">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
                 <div>
-                    <span class="badge badge-purple" style="margin-bottom: 0.4rem;">EXACTLY 60 MINUTES • VISUAL TIME ALLOCATION</span>
-                    <h2 style="font-size: clamp(1.4rem, 2.8vw, 1.9rem); font-weight: 900; color: #ffffff; margin: 0;">
-                        ⏰ Your 60-Minute Build Plan — Pie Chart Breakdown
-                    </h2>
-                    <p style="font-size: 0.9rem; color: #cbd5e1; margin-top: 0.25rem;">
-                        Every single task in your prototype plan is accounted for inside a single 60-minute clock. Hover or click any slice to inspect its exact deliverables.
-                    </p>
-                </div>
-                <!-- View Mode Toggle: Granular 8-Slice vs Slide-3 5-Slice -->
-                <div class="no-print" style="display: inline-flex; background: rgba(255,255,255,0.06); padding: 0.3rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); gap: 0.35rem;">
-                    <button type="button" id="btnMode8" class="btn btn-sm" style="background: #6366f1; color: #fff; font-size: 0.78rem; padding: 0.4rem 0.85rem; border-radius: 9px;" onclick="setPieMode('granular8')">
-                        8-Step Detailed (60m)
-                    </button>
-                    <button type="button" id="btnMode5" class="btn btn-sm" style="background: transparent; color: #cbd5e1; font-size: 0.78rem; padding: 0.4rem 0.85rem; border-radius: 9px;" onclick="setPieMode('classic5')">
-                        5-Stage Classic (60m)
-                    </button>
-                </div>
-            </div>
-
-            <div class="pie-stage-grid">
-                <!-- Left: 3D Extruded Pie Chart Canvas -->
-                <div class="pie-canvas-box">
-                    <div style="font-size: 0.8rem; font-weight: 900; letter-spacing: 0.12em; color: #94a3b8; text-transform: uppercase; margin-bottom: 0.5rem;">
-                        EXACTLY 60 MINUTES
-                    </div>
-                    <canvas id="plan60Chart" width="420" height="360"></canvas>
-                    <div id="pieTooltip" class="pie-tooltip"></div>
-
-                    <!-- Compact Legend Under Pie (Matches Slide 3) -->
-                    <div id="pieChartLegend" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.55rem 1rem; text-align: left; margin-top: 1rem; padding: 0.85rem 1rem; background: rgba(255,255,255,0.04); border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);"></div>
-                </div>
-
-                <!-- Right: Complete Minute-by-Minute Breakdown List -->
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                        <strong style="color: #ffffff; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                            Minute-by-Minute Allocation (Total = 60 Mins)
-                        </strong>
-                        <span style="font-family: var(--font-mono); font-size: 0.8rem; color: #10b981; font-weight: 800;">
-                            ∑ = 60 / 60 MIN (100%)
-                        </span>
-                    </div>
-                    <div id="pieBreakdownCards" style="display: flex; flex-direction: column; gap: 0.6rem;"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 🎯 IMMEDIATELY AFTER PIE CHART: "60 MINS = 60 MINS" WORKSHOP CTA   -->
-        <!-- (Matches Slide 3 Bottom Bar + User's Exact Prompt Specification!)   -->
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div class="workshop-60-banner reveal">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.75rem;">
-                <div style="display: flex; align-items: center; gap: 1.35rem; flex: 1; min-width: 280px;">
-                    <!-- Glowing "60" Circle from Slide 3 -->
-                    <div style="width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #111827; font-weight: 900; font-size: 1.65rem; font-family: var(--font-mono); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 28px rgba(245, 158, 11, 0.5);">
-                        <span style="line-height: 1;">60</span>
-                        <span style="font-size: 0.55rem; font-weight: 800; letter-spacing: 0.05em;">MINS</span>
-                    </div>
-
-                    <div>
-                        <div style="display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
-                            <span class="badge badge-emerald">THIS PLAN = 60 MINS</span>
-                            <span class="badge badge-cyan">OUR LIVE WORKSHOP = 60 MINS</span>
-                        </div>
-                        <h3 style="font-size: clamp(1.3rem, 2.6vw, 1.75rem); font-weight: 900; color: #ffffff; line-height: 1.3; margin-bottom: 0.4rem;">
-                            “This plan takes exactly 60 minutes. So does our workshop. Come build it live — let’s build it together!”
-                        </h3>
-                        <p style="color: #cbd5e1; font-size: 0.94rem; margin: 0; line-height: 1.55;">
-                            Your plan is ready! Learn how to build this exact prototype in 60 minutes at NxtWave's free live workshop. Instead of struggling alone, join our 60-minute hands-on session and follow every slice of your 60-minute pie chart live with a mentor.
-                        </p>
-                    </div>
-                </div>
-
-                <div style="flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
-                    <a href="/register?contract_id={{ contract.contract_id }}"
-                       class="btn-join-workshop-60"
-                       onclick="handleWorkshopCtaClick('contract_after_pie_chart', '{{ contract.contract_id }}')">
-                        <span>Join the 60-Min Workshop →</span>
-                    </a>
-                    <span style="font-size: 0.76rem; color: #94a3b8;">
-                        100% Free (₹0) • Standard Laptop • Live Code Walkthrough
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- 📱 STEP 3: UNLIMITED FREE PUBLICITY IN ONE LINK (SLIDE 4 OF PDF)    -->
-        <!-- Share to WhatsApp Group + Friend Sees & Continues With Context!     -->
-        <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <div style="border-top: 1px solid var(--border-subtle); padding-top: 2.5rem; margin-top: 2.5rem;" class="reveal">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
-                <div>
-                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
-                        <span class="badge badge-amber">STEP 3 • UNLIMITED FREE PUBLICITY, IN ONE LINK</span>
-                        <span class="badge badge-purple">SOCIAL STAKES & CHALLENGE INSTINCT</span>
-                        <span class="badge badge-emerald">RECIPROCITY</span>
-                    </div>
-                    <h3 style="font-size: clamp(1.45rem, 3vw, 2rem); font-weight: 900; color: var(--text-main); margin-bottom: 0.35rem;">
-                        Share This Link to Your WhatsApp Group — Friends Review & Continue With Your Context
+                    <span class="badge badge-purple" style="margin-bottom: 0.35rem;">STEP 3 · UNLIMITED FREE PUBLICITY, IN ONE LINK</span>
+                    <h3 style="font-size: 1.45rem; font-weight: 900; color: var(--text-main); margin: 0;">
+                        Share Link to WhatsApp Group — Friends Join AI Chat &amp; Test Your Build
                     </h3>
-                    <p style="font-size: 0.95rem; color: var(--text-secondary); max-width: 780px; line-height: 1.6; margin: 0;">
-                        When you share your link in your class WhatsApp group, your friends can inspect what you are building, stress-test your plan ("Break My Build"), or <strong>continue with this exact document as context</strong> to test or compare their own ideas!
+                    <p style="font-size: 0.92rem; color: var(--text-secondary); margin: 0.35rem 0 0 0; max-width: 780px;">
+                        When you share this link, your classmates land in an <strong>interactive AI Chat room</strong> where they can probe your idea, test edge cases, and see if they can break your build before your professor does!
                     </p>
                 </div>
             </div>
 
-            <!-- Shareable Link Input + Primary Share Buttons (Matches Slide 4 Bottom Buttons) -->
-            <div class="card" style="padding: 1.5rem; background: var(--bg-tertiary); border-color: rgba(var(--accent-cyan-rgb), 0.35); margin-bottom: 2rem;">
-                <div style="font-size: 0.8rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">
-                    🔗 Your Unique Shareable Build Plan & Context Link:
+            <!-- Share Buttons & Copy Link -->
+            <div class="card" style="padding: 1.25rem 1.5rem; background: var(--bg-tertiary); border-color: rgba(99,102,241,0.35); margin-bottom: 1.5rem;">
+                <div style="font-size: 0.78rem; font-weight: 800; color: var(--accent-indigo); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem;">
+                    🔗 Shareable AI Chat &amp; Stress-Test Arena Link:
                 </div>
-                <div class="share-input-row" style="margin-bottom: 1.15rem;">
+                <div class="share-input-row" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
                     <input type="text" readonly id="shareUrlInput"
-                        value="{{ request.base_url }}contract/{{ contract.contract_id }}"
-                        class="form-control"
-                        style="font-family: var(--font-mono); font-size: 0.88rem; background: var(--bg-card); font-weight: 600;">
+                           value="{{ request.base_url }}challenge/{{ contract.contract_id }}"
+                           class="form-control"
+                           style="flex: 1; min-width: 260px; font-family: var(--font-mono); font-size: 0.88rem; background: var(--bg-card); font-weight: 600;">
                     <button type="button" class="btn btn-secondary btn-sm" onclick="copyShareLink()">
                         📋 Copy share link
                     </button>
                     <button type="button" class="btn btn-emerald btn-sm" onclick="shareToWhatsApp()">
                         📱 Share to WhatsApp Group
                     </button>
-                    <button type="button" class="btn btn-outline btn-sm" onclick="downloadContractPDF()">
-                        ↓ Download PDF report
-                    </button>
+                    <a href="/challenge/{{ contract.contract_id }}" class="btn btn-primary btn-sm">
+                        💬 Open AI Chat Room →
+                    </a>
                 </div>
 
-                <!-- Ready-to-Paste WhatsApp Group Message -->
-                <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem 1.25rem; font-size: 0.86rem; color: var(--text-secondary); line-height: 1.65; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                    <div style="flex: 1; min-width: 240px;">
-                        <strong style="color: var(--accent-emerald);">💬 Ready-to-Paste WhatsApp Group Message:</strong><br>
-                        <span id="waMsg">Guys, break my final-year project plan ("{{ contract.project_title }}") before my professor does! 😅
-Check my 60-minute build plan & pie chart here: {{ request.base_url }}contract/{{ contract.contract_id }}
-You can drop a critique on my plan OR click "Continue with Context" to score your own project idea! 🔥</span>
-                    </div>
-                    <button type="button" class="btn btn-outline btn-sm" onclick="copyToClipboard(document.getElementById('waMsg').innerText, '📱 WhatsApp group message copied!')">
-                        Copy WhatsApp Text 📋
-                    </button>
-                </div>
-            </div>
-
-            <!-- Slide 4 Visual Layout: WhatsApp Group Preview + 4-Step Friend Viral Loop -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.75rem; align-items: stretch; margin-bottom: 2.25rem;">
-                <!-- Left: CSE Final Year WhatsApp Group Mockup (From Slide 4) -->
-                <div class="wa-group-card">
-                    <div class="wa-group-header">
-                        <span>📱 CSE Final Year · Group</span>
-                        <span style="font-size: 0.72rem; color: #10b981;">● 64 classmates online</span>
-                    </div>
-                    <div class="wa-group-body">
-                        <div class="wa-bubble-out">
-                            Guys, break my project plan before my professor does.<br>
-                            <span style="color: #0284c7; text-decoration: underline; font-family: var(--font-mono); font-size: 0.78rem;">{{ request.base_url }}contract/{{ contract.contract_id }}</span>
-                        </div>
-                        <div class="wa-bubble-in">
-                            <strong style="color: #7c3aed; font-size: 0.75rem; display: block;">Rahul (CSE-A)</strong>
-                            No login? Opened! Wait — if rules change in the 2026 circular, your bot breaks. Added that critique to your doc!
-                        </div>
-                        <div class="wa-bubble-out">
-                            Ouch. Project Compass just auto-added a safeguard for that! Now click <strong>"Continue with Context"</strong> on my link and test yours →
-                        </div>
-                        <div class="wa-bubble-in">
-                            <strong style="color: #059669; font-size: 0.75rem; display: block;">Priya (CSE-B)</strong>
-                            Wait… what would MINE score?! Looking at your 60-minute pie chart right now, I'm joining the 60-min workshop too! 🔥
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right: The 4-Step Viral Loop (From Slide 4) + Friend Continuation Actions -->
-                <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 0.85rem;">
-                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 1rem 1.25rem; display: flex; gap: 1rem; align-items: center;">
-                        <span class="step2-num" style="background: #f43f5e;">1</span>
-                        <div>
-                            <strong style="color: var(--text-main); font-size: 0.95rem;">Friend taps your WhatsApp link</strong>
-                            <div style="color: var(--text-secondary); font-size: 0.84rem;">Lands directly on this Build Plan & 60-Minute Pie Chart. No login, no app install.</div>
-                        </div>
-                    </div>
-                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 1rem 1.25rem; display: flex; gap: 1rem; align-items: center;">
-                        <span class="step2-num" style="background: #6366f1;">2</span>
-                        <div>
-                            <strong style="color: var(--text-main); font-size: 0.95rem;">Sees what you're doing & drops a critique</strong>
-                            <div style="color: var(--text-secondary); font-size: 0.84rem;">Hunts errors in your assumptions, tests feasibility, and adds edge cases below.</div>
-                        </div>
-                    </div>
-                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 1rem 1.25rem; display: flex; gap: 1rem; align-items: center;">
-                        <span class="step2-num" style="background: #f59e0b;">3</span>
-                        <div>
-                            <strong style="color: var(--text-main); font-size: 0.95rem;">Continues this document as context</strong>
-                            <div style="color: var(--text-secondary); font-size: 0.84rem;">Clicks <strong>"Continue With This Document as Context"</strong> to remix your plan or score their own idea.</div>
-                        </div>
-                    </div>
-                    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 1rem 1.25rem; display: flex; gap: 1rem; align-items: center;">
-                        <span class="step2-num" style="background: #10b981;">4</span>
-                        <div>
-                            <strong style="color: var(--text-main); font-size: 0.95rem;">The loop restarts + Both join the 60-Min Workshop</strong>
-                            <div style="color: var(--text-secondary); font-size: 0.84rem;">New plan, new link, a new group chat. Every friend becomes an active builder.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ═══════════════════════════════════════════════════════════════════ -->
-            <!-- 🤝 FRIEND CONTEXT CONTINUATION HUB (For Friends Opening the Link!)  -->
-            <!-- ═══════════════════════════════════════════════════════════════════ -->
-            <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(6, 182, 212, 0.12)); border: 2px solid rgba(139, 92, 246, 0.45); border-radius: 20px; padding: 1.85rem; margin-bottom: 2.25rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem; margin-bottom: 1.25rem;">
-                    <div>
-                        <span class="badge badge-purple" style="margin-bottom: 0.4rem;">👋 OPENED YOUR FRIEND'S SHARED LINK?</span>
-                        <h4 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin: 0;">
-                            Continue This Document as Context — Stress-Test It or Remix It!
-                        </h4>
-                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.3rem; margin-bottom: 0;">
-                            You are viewing Build Contract <code style="color: var(--accent-cyan);">{{ contract.contract_id }}</code> (<strong>{{ contract.project_title }}</strong>). Choose how you want to continue with this document:
-                        </p>
-                    </div>
-                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                        <a href="/compare?from_contract={{ contract.contract_id }}" class="btn btn-primary btn-sm">
-                            🔄 Continue / Remix This Plan as My Context →
-                        </a>
-                        <a href="/challenge/{{ contract.contract_id }}" class="btn btn-purple btn-sm">
-                            🛡️ Open Full "Break My Build" Arena →
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Inline Quick Peer Challenge Form (So Friends Can Contribute Right Inside the Document!) -->
-                <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 1.35rem;">
-                    <div style="font-size: 0.92rem; font-weight: 700; color: var(--accent-purple); margin-bottom: 0.35rem;">
-                        💡 Peer Prompt for Classmates: "{{ contract.peer_challenge_prompt }}"
-                    </div>
-                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1rem;">
-                        Spot a flaw or edge case in your friend's plan? Add it below — Project Compass will immediately append a new <strong>Failure Test & Architectural Safeguard</strong> to this contract!
-                    </p>
-                    <form id="inlineChallengeForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; align-items: end;">
-                        <div>
-                            <label class="form-label" style="font-size: 0.78rem;">Your Name (Friend / Classmate)</label>
-                            <input type="text" id="inlinePeerName" class="form-control" placeholder="e.g. Karthik (CSE Final Year)" required>
-                        </div>
-                        <div>
-                            <label class="form-label" style="font-size: 0.78rem;">What Edge Case Breaks This Plan? *</label>
-                            <input type="text" id="inlineChallengeText" class="form-control" placeholder="e.g. What if the PDF circular has scanned tables or updated 2026 rules?" required minlength="10">
-                        </div>
-                        <div>
-                            <label class="form-label" style="font-size: 0.78rem;">Why Does It Matter in Viva? *</label>
-                            <input type="text" id="inlineWhyMatters" class="form-control" placeholder="e.g. Bot will give wrong attendance rules to students" required minlength="5">
-                        </div>
-                        <div>
-                            <button type="submit" id="inlineChallengeBtn" class="btn btn-purple btn-block" style="height: 44px;">
-                                + Add Critique to Document 🛡️
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Existing Peer Challenges Feed -->
-            <div style="margin-top: 1.5rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
-                    <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin: 0;">
-                        🛡️ Friend & Classmate Stress-Test Critiques on This Document ({{ challenges|length if challenges else 0 }}):
-                    </h4>
-                    <div class="share-input-row" style="max-width: 420px;">
-                        <input type="text" readonly value="{{ request.base_url }}challenge/{{ contract.contract_id }}" class="form-control" style="font-family: var(--font-mono); font-size: 0.78rem; padding: 0.35rem 0.65rem;" id="challengeUrlInput">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="copyToClipboard(document.getElementById('challengeUrlInput').value, 'Peer challenge link copied!')">
-                            Copy Challenge Link 📋
-                        </button>
-                    </div>
-                </div>
-
-                <div id="inlineChallengesList" style="display: flex; flex-direction: column; gap: 0.85rem;">
-                    {% if challenges and challenges|length > 0 %}
-                        {% for ch in challenges %}
-                        <div style="background: var(--bg-tertiary); padding: 1.15rem 1.35rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent-purple); border: 1px solid var(--border-subtle);">
-                            <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.4rem;">
-                                <strong style="color: var(--accent-purple);">From Classmate: {{ ch.peer_name }}</strong>
-                                <span style="color: var(--text-muted);">{{ ch.created_at[:16]|replace('T', ' ') if (ch.created_at is string) else (ch.created_at.strftime('%Y-%m-%d %H:%M') if ch.created_at else '') }}</span>
-                            </div>
-                            <div style="font-size: 0.94rem; color: var(--text-main); margin-bottom: 0.3rem; font-weight: 600;">
-                                Challenge: "{{ ch.challenge_text }}"
-                            </div>
-                            <div style="font-size: 0.84rem; color: var(--text-secondary);">
-                                <strong>Why it matters:</strong> {{ ch.why_it_matters }}
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px dashed var(--border-subtle); text-align: center; color: var(--text-muted); font-size: 0.9rem;">
-                            No friend critiques yet — share your link on WhatsApp or add the first stress-test above!
-                        </div>
-                    {% endif %}
+                <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem 1rem; font-size: 0.84rem; color: var(--text-secondary); line-height: 1.55;">
+                    <strong style="color: var(--accent-emerald);">💬 Pre-Formatted WhatsApp Message:</strong><br>
+                    <span id="waText">Guys, break my final-year project plan ("{{ contract.project_title }}") before my professor does! 😅
+Check my 60-minute build plan & chat with the AI about it here: {{ request.base_url }}challenge/{{ contract.contract_id }}
+Drop an edge case in the chat or click "Wait... what would MY idea score?" to test yours! 🔥</span>
                 </div>
             </div>
         </div>
 
-    </div><!-- end card -->
-</div><!-- end container -->
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-// ─── 100% Native Zero-Dependency 3D-Extruded 60-Minute Pie Chart Engine ──────
-// Works instantaneously with zero external CDN dependencies!
-const MILESTONES_FROM_BACKEND = [
-    {% for m in contract.plan_60min %}
-    {
-        window: {{ m.time_window | tojson }},
-        title: {{ m.phase_title | tojson }},
-        objective: {{ m.objective | tojson }},
-        deliverable: {{ m.deliverable | tojson }},
-        actions: {{ m.action_items | tojson }}
-    }{% if not loop.last %},{% endif %}
-    {% endfor %}
+// ─────────────────────────────────────────────────────────────────────────────
+// 1. Interactive 60-Minute Pie Chart (Matches Slide 3 of Growth Plan)
+// ─────────────────────────────────────────────────────────────────────────────
+const CLASSIC_5_DATA = [
+    { title: "Scaffold + load 1 doc", minutes: 10, color: "#f43f5e", desc: "FastAPI + local venv + sample PDF text extract" },
+    { title: "Core logic", minutes: 15, color: "#6366f1", desc: "Local sentence-transformers embeddings + cosine retrieval" },
+    { title: "Test queries", minutes: 10, color: "#8b5cf6", desc: "Sub-200ms query test + semantic fallback filter" },
+    { title: "Simple web UI", minutes: 15, color: "#10b981", desc: "Lightweight chat UI with source page citations" },
+    { title: "Stress test + verify", minutes: 10, color: "#f59e0b", desc: "Run out-of-domain query test & rehearse viva demo" }
 ];
 
-// Mode 1: Detailed 8-Slice 60-Minute Breakdown (Divided into many rich slices totaling 60 mins)
-const SLICES_GRANULAR_8 = [
-    {
-        shortLabel: "Env & FastAPI Scaffold",
-        window: "Min 00–08",
-        minutes: 8,
-        color: "#f43f5e",
-        darkColor: "#be123c",
-        task: (MILESTONES_FROM_BACKEND[0]?.actions?.[0]) || "Initialize Python virtual environment, FastAPI app structure & dependencies."
-    },
-    {
-        shortLabel: "Load & Parse 1 Sample Doc",
-        window: "Min 08–15",
-        minutes: 7,
-        color: "#fb923c",
-        darkColor: "#c2410c",
-        task: (MILESTONES_FROM_BACKEND[0]?.actions?.[1]) || "Load 1 real sample document/dataset and verify clean text/tensor extraction."
-    },
-    {
-        shortLabel: "Core AI Model / Embeddings",
-        window: "Min 15–25",
-        minutes: 10,
-        color: "#6366f1",
-        darkColor: "#4338ca",
-        task: (MILESTONES_FROM_BACKEND[1]?.actions?.[0]) || "Initialize local CPU AI model (Sentence-Transformers / MobileNet / Scikit-Learn)."
-    },
-    {
-        shortLabel: "Similarity & Guardrail Logic",
-        window: "Min 25–30",
-        minutes: 5,
-        color: "#3b82f6",
-        darkColor: "#1d4ed8",
-        task: (MILESTONES_FROM_BACKEND[1]?.actions?.[2]) || "Set strict confidence / similarity threshold to block hallucinations."
-    },
-    {
-        shortLabel: "Test Queries & API Endpoint",
-        window: "Min 30–40",
-        minutes: 10,
-        color: "#eab308",
-        darkColor: "#a16207",
-        task: (MILESTONES_FROM_BACKEND[2]?.actions?.[0]) || "Wrap core inference logic in a validated FastAPI POST endpoint and test queries."
-    },
-    {
-        shortLabel: "Connect Simple Web UI",
-        window: "Min 40–50",
-        minutes: 10,
-        color: "#10b981",
-        darkColor: "#047857",
-        task: (MILESTONES_FROM_BACKEND[2]?.actions?.[1]) || "Connect clean single-page browser UI with instant results & source citations."
-    },
-    {
-        shortLabel: "Out-of-Domain Stress Test",
-        window: "Min 50–55",
-        minutes: 5,
-        color: "#a855f7",
-        darkColor: "#7e22ce",
-        task: (MILESTONES_FROM_BACKEND[3]?.actions?.[0]) || "Execute proposed failure test with tricky/unlisted input to verify refusal guardrail."
-    },
-    {
-        shortLabel: "Latency Check & Viva Demo",
-        window: "Min 55–60",
-        minutes: 5,
-        color: "#06b6d4",
-        darkColor: "#0e7490",
-        task: (MILESTONES_FROM_BACKEND[3]?.actions?.[2]) || "Verify <250ms local CPU latency and lock 60-second viva demo walkthrough."
-    }
+const DETAILED_8_DATA = [
+    { title: "Setup virtualenv & FastAPI", minutes: 5, color: "#f43f5e" },
+    { title: "Install sentence-transformers", minutes: 7, color: "#fb7185" },
+    { title: "Ingest sample PDF text", minutes: 8, color: "#6366f1" },
+    { title: "Generate vector embeddings", minutes: 10, color: "#818cf8" },
+    { title: "Build cosine retrieval logic", minutes: 8, color: "#8b5cf6" },
+    { title: "Wire chat frontend", minutes: 10, color: "#10b981" },
+    { title: "Enforce refusal threshold", minutes: 7, color: "#34d399" },
+    { title: "Run viva rehearsal", minutes: 5, color: "#f59e0b" }
 ];
 
-// Mode 2: Slide-3 Classic 5-Slice 60-Minute Breakdown (10m + 15m + 10m + 15m + 10m = 60m)
-const SLICES_CLASSIC_5 = [
-    {
-        shortLabel: "Scaffold + load 1 doc (10')",
-        window: "Min 00–10",
-        minutes: 10,
-        color: "#f43f5e",
-        darkColor: "#be123c",
-        task: MILESTONES_FROM_BACKEND[0]?.objective || "Scaffold FastAPI project structure and ingest 1 sample document."
-    },
-    {
-        shortLabel: "Core logic (15')",
-        window: "Min 10–25",
-        minutes: 15,
-        color: "#4f46e5",
-        darkColor: "#3730a3",
-        task: MILESTONES_FROM_BACKEND[1]?.objective || "Build the local embedding/model pipeline and core scoring/retrieval logic."
-    },
-    {
-        shortLabel: "Test queries (10')",
-        window: "Min 25–35",
-        minutes: 10,
-        color: "#f59e0b",
-        darkColor: "#b45309",
-        task: "Run test queries against the core pipeline and calibrate threshold guardrails."
-    },
-    {
-        shortLabel: "Simple web UI (15')",
-        window: "Min 35–50",
-        minutes: 15,
-        color: "#10b981",
-        darkColor: "#047857",
-        task: MILESTONES_FROM_BACKEND[2]?.objective || "Connect a clean, responsive web interface to your FastAPI backend."
-    },
-    {
-        shortLabel: "Stress test + verify (10')",
-        window: "Min 50–60",
-        minutes: 10,
-        color: "#8b5cf6",
-        darkColor: "#6d28d9",
-        task: MILESTONES_FROM_BACKEND[3]?.objective || "Execute failure stress tests and verify the prototype works end-to-end."
-    }
-];
+let currentChartMode = "classic5";
 
-let currentPieMode = 'granular8';
-let activeSliceIndex = -1;
-
-function getCurrentSlices() {
-    return currentPieMode === 'granular8' ? SLICES_GRANULAR_8 : SLICES_CLASSIC_5;
-}
-
-function setPieMode(mode) {
-    currentPieMode = mode;
-    activeSliceIndex = -1;
-    const b8 = document.getElementById('btnMode8');
-    const b5 = document.getElementById('btnMode5');
-    if (b8 && b5) {
-        if (mode === 'granular8') {
-            b8.style.background = '#6366f1';
-            b8.style.color = '#ffffff';
-            b5.style.background = 'transparent';
-            b5.style.color = '#cbd5e1';
-        } else {
-            b5.style.background = '#6366f1';
-            b5.style.color = '#ffffff';
-            b8.style.background = 'transparent';
-            b8.style.color = '#cbd5e1';
-        }
-    }
-    render3DPieChart();
-    renderLegendAndBreakdown();
-}
-
-function render3DPieChart() {
-    const canvas = document.getElementById('plan60Chart');
+function renderPieChart() {
+    const canvas = document.getElementById("plan60Canvas");
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const data = currentChartMode === "classic5" ? CLASSIC_5_DATA : DETAILED_8_DATA;
+    const totalMinutes = data.reduce((acc, s) => acc + s.minutes, 0) || 60;
+
     const dpr = window.devicePixelRatio || 1;
-    const cssW = 420;
-    const cssH = 340;
-    canvas.width = cssW * dpr;
-    canvas.height = cssH * dpr;
-    ctx.save();
+    const w = 360;
+    const h = 230;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
     ctx.scale(dpr, dpr);
-    ctx.clearRect(0, 0, cssW, cssH);
+    ctx.clearRect(0, 0, w, h);
 
-    const slices = getCurrentSlices();
-    const totalMinutes = slices.reduce((acc, s) => acc + s.minutes, 0); // Always 60
-    const cx = cssW / 2;
-    const cy = cssH / 2 - 14;
-    const rx = 152;
-    const ry = 112; // Elliptical tilt for true 3D perspective (like Slide 3!)
-    const depth = 26; // 3D extrusion height
+    const cx = w / 2;
+    const cy = h / 2 - 5;
+    const rx = 120;
+    const ry = 88;
+    const depth = 18;
 
-    // 1. Draw 3D extruded cylinder side walls (from bottom layer up to top surface)
+    // Compute slice angles
     let startAngle = -Math.PI / 2;
-    slices.forEach((slice, idx) => {
-        const sweep = (slice.minutes / totalMinutes) * (Math.PI * 2);
+    const slices = data.map((item) => {
+        const sweep = (item.minutes / totalMinutes) * Math.PI * 2;
         const endAngle = startAngle + sweep;
         const midAngle = startAngle + sweep / 2;
-        const isHovered = idx === activeSliceIndex;
-        const offsetDist = isHovered ? 10 : 0;
-        const ox = Math.cos(midAngle) * offsetDist;
-        const oy = Math.sin(midAngle) * offsetDist * (ry / rx);
-
-        for (let d = depth; d >= 1; d--) {
-            ctx.beginPath();
-            ctx.ellipse(cx + ox, cy + oy + d, rx, ry, 0, startAngle, endAngle);
-            ctx.lineTo(cx + ox, cy + oy + d);
-            ctx.closePath();
-            ctx.fillStyle = slice.darkColor;
-            ctx.fill();
-        }
+        const res = { ...item, startAngle, endAngle, midAngle };
         startAngle = endAngle;
+        return res;
     });
 
-    // 2. Draw top tilted pie surface slices + crisp white separators + direct minute labels
-    startAngle = -Math.PI / 2;
-    slices.forEach((slice, idx) => {
-        const sweep = (slice.minutes / totalMinutes) * (Math.PI * 2);
-        const endAngle = startAngle + sweep;
-        const midAngle = startAngle + sweep / 2;
-        const isHovered = idx === activeSliceIndex;
-        const offsetDist = isHovered ? 10 : 0;
-        const ox = Math.cos(midAngle) * offsetDist;
-        const oy = Math.sin(midAngle) * offsetDist * (ry / rx);
+    // 1. Draw 3D Extruded Layers (Bottom to Top)
+    for (let layer = depth; layer >= 1; layer--) {
+        slices.forEach(s => {
+            ctx.beginPath();
+            ctx.ellipse(cx, cy + layer, rx, ry, 0, s.startAngle, s.endAngle);
+            ctx.lineTo(cx, cy + layer);
+            ctx.closePath();
+            ctx.fillStyle = "#1e1b4b";
+            ctx.fill();
+        });
+    }
 
+    // 2. Draw Top Slices
+    slices.forEach(s => {
         ctx.beginPath();
-        ctx.moveTo(cx + ox, cy + oy);
-        ctx.ellipse(cx + ox, cy + oy, rx, ry, 0, startAngle, endAngle);
+        ctx.ellipse(cx, cy, rx, ry, 0, s.startAngle, s.endAngle);
+        ctx.lineTo(cx, cy);
         ctx.closePath();
-        ctx.fillStyle = slice.color;
+        ctx.fillStyle = s.color;
         ctx.fill();
-
-        ctx.lineWidth = 2.5;
-        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = "#0b1020";
         ctx.stroke();
 
-        // Direct label on the slice ("10 min", "15 min", etc.)
-        const labelRadiusX = rx * 0.63;
-        const labelRadiusY = ry * 0.63;
-        const lx = cx + ox + Math.cos(midAngle) * labelRadiusX;
-        const ly = cy + oy + Math.sin(midAngle) * labelRadiusY;
-
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '800 13px "Plus Jakarta Sans", Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.shadowColor = 'rgba(0,0,0,0.45)';
-        ctx.shadowBlur = 4;
-        ctx.fillText(slice.minutes + ' min', lx, ly);
-        ctx.shadowBlur = 0;
-
-        startAngle = endAngle;
+        // Slice Minute Label (e.g. "10 min", "15 min")
+        const labelRadius = rx * 0.65;
+        const lx = cx + Math.cos(s.midAngle) * labelRadius;
+        const ly = cy + Math.sin(s.midAngle) * (labelRadius * 0.73);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 11px -apple-system, BlinkMacSystemFont, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`${s.minutes} min`, lx, ly);
     });
 
-    ctx.restore();
-}
+    // 3. Center Hole / Donut Hub
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rx * 0.32, ry * 0.32, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "#090e1a";
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgba(99,102,241,0.6)";
+    ctx.stroke();
 
-function renderLegendAndBreakdown() {
-    const slices = getCurrentSlices();
-    const legendEl = document.getElementById('pieChartLegend');
-    const breakdownEl = document.getElementById('pieBreakdownCards');
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 13px -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("60m", cx, cy - 3);
+    ctx.fillStyle = "#34d399";
+    ctx.font = "bold 8px monospace";
+    ctx.fillText("TOTAL", cx, cy + 9);
 
-    if (legendEl) {
-        legendEl.innerHTML = slices.map((s, idx) => `
-            <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;color:#e2e8f0;cursor:pointer;padding:0.2rem 0.35rem;border-radius:6px;background:${activeSliceIndex === idx ? 'rgba(255,255,255,0.12)' : 'transparent'};"
-                 onmouseenter="highlightSlice(${idx})" onmouseleave="highlightSlice(-1)">
-                <span style="width:11px;height:11px;border-radius:50%;background:${s.color};flex-shrink:0;display:inline-block;"></span>
-                <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.shortLabel}</span>
+    // Render legend
+    const legendBox = document.getElementById("chartLegendBox");
+    if (legendBox) {
+        legendBox.innerHTML = data.map(item => `
+            <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.74rem; color: #cbd5e1;">
+                <span style="width: 10px; height: 10px; border-radius: 50%; background: ${item.color}; flex-shrink: 0;"></span>
+                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.title} (<strong>${item.minutes}m</strong>)</span>
             </div>
-        `).join('');
+        `).join("");
     }
 
-    if (breakdownEl) {
-        breakdownEl.innerHTML = slices.map((s, idx) => {
-            const pct = Math.round((s.minutes / 60) * 100);
-            const isHi = activeSliceIndex === idx;
-            return `
-            <div style="background:${isHi ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.04)'};border:1px solid ${isHi ? s.color : 'rgba(255,255,255,0.09)'};border-left:4px solid ${s.color};border-radius:10px;padding:0.65rem 0.9rem;transition:all 0.15s ease;cursor:pointer;"
-                 onmouseenter="highlightSlice(${idx})" onmouseleave="highlightSlice(-1)">
-                <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;margin-bottom:0.2rem;">
-                    <div style="display:flex;align-items:center;gap:0.5rem;">
-                        <span style="font-family:var(--font-mono);font-size:0.74rem;font-weight:800;color:${s.color};background:rgba(255,255,255,0.07);padding:0.12rem 0.45rem;border-radius:5px;">
-                            ${s.window}
-                        </span>
-                        <strong style="color:#ffffff;font-size:0.88rem;">${s.shortLabel}</strong>
-                    </div>
-                    <span style="font-family:var(--font-mono);font-size:0.8rem;font-weight:800;color:#ffffff;">
-                        ${s.minutes} min <span style="color:#94a3b8;font-weight:500;">(${pct}%)</span>
-                    </span>
-                </div>
-                <div style="font-size:0.78rem;color:#cbd5e1;line-height:1.4;">${s.task}</div>
-            </div>
-            `;
-        }).join('');
-    }
-}
-
-function highlightSlice(idx) {
-    activeSliceIndex = idx;
-    render3DPieChart();
-    renderLegendAndBreakdown();
-}
-
-// Mouse hover hit-testing on the 3D elliptical pie canvas
-function initPieHoverEvents() {
-    const canvas = document.getElementById('plan60Chart');
-    const tooltip = document.getElementById('pieTooltip');
-    if (!canvas) return;
-
-    canvas.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = 420 / rect.width;
-        const scaleY = 340 / rect.height;
-        const mx = (e.clientX - rect.left) * scaleX;
-        const my = (e.clientY - rect.top) * scaleY;
-
-        const cx = 210;
-        const cy = 170 - 14;
-        const rx = 152;
-        const ry = 112;
-
-        const dx = (mx - cx) / rx;
-        const dy = (my - cy) / ry;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist <= 1.05) {
-            let angle = Math.atan2(dy, dx);
-            // Normalize relative to -PI/2 start
-            let rel = angle - (-Math.PI / 2);
-            while (rel < 0) rel += Math.PI * 2;
-            while (rel >= Math.PI * 2) rel -= Math.PI * 2;
-
-            const slices = getCurrentSlices();
-            let accum = 0;
-            let found = -1;
-            for (let i = 0; i < slices.length; i++) {
-                const sweep = (slices[i].minutes / 60) * (Math.PI * 2);
-                if (rel >= accum && rel < accum + sweep) {
-                    found = i;
-                    break;
-                }
-                accum += sweep;
-            }
-            if (found !== activeSliceIndex) {
-                activeSliceIndex = found;
-                render3DPieChart();
-                renderLegendAndBreakdown();
-            }
-            if (found >= 0 && tooltip) {
-                const s = slices[found];
-                tooltip.style.display = 'block';
-                tooltip.style.left = Math.min(rect.width - 220, Math.max(10, e.clientX - rect.left + 12)) + 'px';
-                tooltip.style.top = Math.max(10, e.clientY - rect.top - 40) + 'px';
-                tooltip.innerHTML = `
-                    <strong style="color:${s.color};">${s.window} (${s.minutes} min)</strong><br>
-                    <strong>${s.shortLabel}</strong><br>
-                    <span style="color:#cbd5e1;font-size:0.75rem;">${s.task}</span>
-                `;
-            }
-        } else {
-            if (activeSliceIndex !== -1) {
-                activeSliceIndex = -1;
-                render3DPieChart();
-                renderLegendAndBreakdown();
-            }
-            if (tooltip) tooltip.style.display = 'none';
+    // Update Print Image snapshot so browsers that don't snapshot canvas layers directly still print the pie chart
+    try {
+        const printImg = document.getElementById("printChartImg");
+        if (printImg) {
+            printImg.src = canvas.toDataURL("image/png");
         }
-    });
-
-    canvas.addEventListener('mouseleave', () => {
-        activeSliceIndex = -1;
-        render3DPieChart();
-        renderLegendAndBreakdown();
-        if (tooltip) tooltip.style.display = 'none';
-    });
+    } catch (e) {
+        console.warn("Could not snapshot canvas to image for print:", e);
+    }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    render3DPieChart();
-    renderLegendAndBreakdown();
-    initPieHoverEvents();
-});
+function setChartMode(mode) {
+    currentChartMode = mode;
+    const btnClassic = document.getElementById("btnClassic5");
+    const btnDetailed = document.getElementById("btnDetailed8");
+    if (mode === "classic5") {
+        if (btnClassic) {
+            btnClassic.style.background = "rgba(99,102,241,0.25)";
+            btnClassic.style.borderColor = "#6366f1";
+            btnClassic.style.color = "#ffffff";
+        }
+        if (btnDetailed) {
+            btnDetailed.style.background = "transparent";
+            btnDetailed.style.borderColor = "var(--border-subtle)";
+            btnDetailed.style.color = "#94a3b8";
+        }
+    } else {
+        if (btnDetailed) {
+            btnDetailed.style.background = "rgba(99,102,241,0.25)";
+            btnDetailed.style.borderColor = "#6366f1";
+            btnDetailed.style.color = "#ffffff";
+        }
+        if (btnClassic) {
+            btnClassic.style.background = "transparent";
+            btnClassic.style.borderColor = "var(--border-subtle)";
+            btnClassic.style.color = "#94a3b8";
+        }
+    }
+    renderPieChart();
+}
 
-// ─── Shareable link & WhatsApp Group helpers ──────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// 2. Share Link & WhatsApp Handling (Points to /challenge/{contract_id} AI Chat)
+// ─────────────────────────────────────────────────────────────────────────────
 function copyShareLink() {
-    const url = document.getElementById('shareUrlInput').value;
-    copyToClipboard(url, '🔗 Build Plan link copied! Paste it in your WhatsApp group.');
-    trackEvent('share_link_copied', '{{ contract.contract_id }}');
+    const input = document.getElementById("shareUrlInput");
+    const shareUrl = input ? input.value : (window.location.origin + "/challenge/{{ contract.contract_id }}");
+    navigator.clipboard.writeText(shareUrl).then(() => {
+        showToast("📋 Share link copied! Friends who open it enter an interactive AI Chat room to test your build.", "success");
+        trackEvent("contract_link_copied", "{{ contract.contract_id }}");
+    }).catch(() => {
+        prompt("Copy this link to share with classmates:", shareUrl);
+    });
 }
 
 function shareToWhatsApp() {
-    const contractUrl = document.getElementById('shareUrlInput').value;
-    const text = encodeURIComponent(
-        "Guys, break my final-year project plan (\"{{ contract.project_title }}\") before my professor does! 😅\n\n" +
-        "Check my 60-minute build plan & 60-min pie chart here:\n" + contractUrl + "\n\n" +
-        "You can drop a critique on my plan OR click 'Continue with Context' to score your own project idea! 🔥"
-    );
-    trackEvent('whatsapp_group_share_clicked', '{{ contract.contract_id }}');
-    window.open('https://wa.me/?text=' + text, '_blank');
+    const textEl = document.getElementById("waText");
+    const shareText = textEl ? textEl.innerText : "Check my 60-min AI project plan on Project Compass!";
+    trackEvent("contract_shared_whatsapp", "{{ contract.contract_id }}");
+    window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, "_blank");
 }
 
-// ─── Inline Friend Critique Submission ("Break My Build" directly on Contract) ─
-const inlineForm = document.getElementById('inlineChallengeForm');
-if (inlineForm) {
-    inlineForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('inlineChallengeBtn');
-        const peerName = document.getElementById('inlinePeerName').value.trim() || 'Classmate Peer';
-        const challengeText = document.getElementById('inlineChallengeText').value.trim();
-        const whyMatters = document.getElementById('inlineWhyMatters').value.trim();
-
-        try {
-            btn.disabled = true;
-            btn.innerText = 'Adding Critique...';
-
-            const res = await fetch('/api/contracts/{{ contract.contract_id }}/challenges', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    peer_name: peerName,
-                    challenge_text: challengeText,
-                    why_it_matters: whyMatters
-                })
-            });
-
-            if (!res.ok) {
-                const err = await res.json();
-                throw new Error(err.detail || 'Could not submit critique');
-            }
-
-            const data = await res.json();
-            const listEl = document.getElementById('inlineChallengesList');
-            const cardHtml = `
-                <div style="background: rgba(16, 185, 129, 0.1); padding: 1.15rem 1.35rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent-emerald); border: 1px solid rgba(16, 185, 129, 0.35);">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.4rem;">
-                        <strong style="color: var(--accent-emerald);">✅ Added Just Now by: ${data.peer_name}</strong>
-                        <span class="badge badge-amber">${data.recommendation.risk_level} Risk</span>
-                    </div>
-                    <div style="font-size: 0.94rem; color: var(--text-main); margin-bottom: 0.3rem; font-weight: 600;">
-                        Challenge: "${data.challenge_text}"
-                    </div>
-                    <div style="font-size: 0.84rem; color: var(--text-secondary); margin-bottom: 0.4rem;">
-                        <strong>Why it matters:</strong> ${data.why_it_matters}
-                    </div>
-                    <div style="font-size: 0.82rem; color: var(--accent-cyan); background: rgba(6,182,212,0.08); padding: 0.5rem 0.75rem; border-radius: 6px;">
-                        <strong>🛡️ Auto-Generated Safeguard Added to Plan:</strong> ${data.recommendation.architectural_safeguard}
-                    </div>
-                </div>
-            `;
-            listEl.insertAdjacentHTML('afterbegin', cardHtml);
-            inlineForm.reset();
-            showToast('Critique added! Architectural safeguard appended to this Build Contract.', 'success');
-        } catch (err) {
-            showToast(err.message, 'error');
-        } finally {
-            btn.disabled = false;
-            btn.innerText = '+ Add Critique to Document 🛡️';
-        }
-    });
-}
-
-// ─── Printable PDF Report Download (Zero-Dependency Native Print + Optional jsPDF) ─
+// ─────────────────────────────────────────────────────────────────────────────
+// 3. Foolproof PDF Download (Fixes Blank Page Completely)
+// ─────────────────────────────────────────────────────────────────────────────
 function downloadContractPDF() {
-    showToast('📄 Opening printable PDF view — choose "Save as PDF" to download crisp vector report!', 'info');
-    trackEvent('contract_pdf_downloaded', '{{ contract.contract_id }}');
+    showToast("📄 Preparing crisp PDF report with 60-min pie chart...", "info");
+    trackEvent("contract_pdf_downloaded", "{{ contract.contract_id }}");
+
+    // Force all .reveal elements to be fully visible immediately so opacity:0 never hides print content
+    document.querySelectorAll(".reveal").forEach(el => {
+        el.classList.add("visible");
+        el.style.opacity = "1";
+        el.style.transform = "none";
+    });
+
+    // Make sure the canvas snapshot is ready
+    const canvas = document.getElementById("plan60Canvas");
+    const printImg = document.getElementById("printChartImg");
+    if (canvas && printImg) {
+        printImg.src = canvas.toDataURL("image/png");
+    }
+
     setTimeout(() => {
         window.print();
-    }, 250);
+    }, 200);
 }
+
+// Initialize on page load
+document.addEventListener("DOMContentLoaded", () => {
+    // Reveal all elements immediately
+    document.querySelectorAll(".reveal").forEach(el => el.classList.add("visible"));
+    renderPieChart();
+    window.addEventListener("resize", renderPieChart);
+});
 </script>
 {% endblock %}

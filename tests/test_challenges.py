@@ -87,3 +87,16 @@ def test_peer_challenge_duplicate_rejection():
     res2 = client.post(f"/api/contracts/{contract_id}/challenges", json=payload)
     assert res2.status_code == 409
     assert "already been submitted" in res2.json()["detail"]
+
+def test_peer_ai_chat_interaction():
+    """Verify the Gemini AI chat endpoint on a contract."""
+    res = client.post("/api/contracts/bc_demo_rag/challenges/chat", json={
+        "message": "What happens if fees or regulations change in the 2026 circular?",
+        "peer_name": "Test Classmate"
+    })
+    assert res.status_code == 200
+    data = res.json()
+    assert "reply" in data
+    assert len(data["reply"]) > 20
+    assert data["status"] == "success"
+    assert data["is_critique"] is True or "vulnerability" in data["reply"].lower() or "circular" in data["reply"].lower()

@@ -79,5 +79,9 @@ def test_whatsapp_meta_webhook_verification():
 
 def test_optional_llm_graceful_fallback():
     """Verify that when LLM credentials are absent, the provider gracefully reports unavailable."""
-    # By default, zero-cost setting is False
-    assert llm_service.is_available() is False
+    from app.services.llm_provider import LLMProvider
+    test_provider = LLMProvider()
+    test_provider.enabled = False
+    test_provider.gemini_key = None
+    test_provider.openai_key = None
+    assert test_provider.is_available() is False

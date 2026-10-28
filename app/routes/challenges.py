@@ -1,7 +1,8 @@
 import json
 import uuid
 import logging
-from typing import List
+from typing import List, Optional
+from pydantic import BaseModel, Field
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -12,6 +13,7 @@ from app.schemas import (
     ImprovementRecommendation
 )
 from app.services.contract_planner import process_peer_challenge_submission
+from app.services.llm_provider import llm_service
 from app.security import verify_rate_limit, sanitize_string
 from app.analytics import record_event
 from app.supabase_client import (
@@ -22,6 +24,17 @@ from app.supabase_client import (
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/contracts/{contract_id}/challenges", tags=["Peer Challenges"])
+
+class ProjectChatRequest(BaseModel):
+    message: str = Field(..., min_length=2, max_length=2000)
+    peer_name: Optional[str] = "Anonymous Peer"
+
+class ProjectChatResponse(BaseModel):
+    reply: str
+    is_critique: bool = False
+    risk_level: Optional[str] = None
+    model_used: str = "gemini-2.5-flash"
+    status: str = "success"
 
 @router.get("", response_model=List[PeerChallengeResponse])
 def list_contract_challenges(
@@ -216,4 +229,89 @@ def submit_peer_challenge(
         status="processed",
         recommendation=recommendation,
         created_at=db_challenge.created_at
+    )
+
+
+@router.post("/chat", response_model=ProjectChatResponse)
+async def chat_about_contract(
+    contract_id: str,
+    chat_in: ProjectChatRequest,
+    req: Request,
+    db: Session = Depends(get_db)
+):
+    """Interactive AI chat endpoint powered by Google Gemini (with rules engine fallback).
+    
+    Allows classmates and visitors to probe, test edge-cases, and ask questions about a specific Build Contract.
+    """
+    verify_rate_limit(req)
+
+    # 1. Resolve contract details
+    contract = db.query(BuildContract).filter(BuildContract.contract_id == contract_id).first()
+    contract_data = None
+    if contract:
+        contract_data = {
+            "contract_id": contract.contract_id,
+            "project_title": contract.project_title,
+            "original_idea": contract.original_idea,
+            "category": contract.category,
+            "difficulty": contract.difficulty,
+            "feasibility_score": 88,
+            "critical_assumption": contract.critical_assumption,
+            "frontend_rec": contract.frontend_rec,
+            "backend_rec": contract.backend_rec,
+            "ai_model_rec": contract.ai_model_rec,
+            "db_rec": contract.db_rec,
+            "failure_scenarios": contract.get_failure_scenarios(),
+            "mvp_features": contract.get_mvp_features(),
+        }
+    else:
+        supa_c = supabase_get_contract(contract_id)
+        if supa_c:
+            def _parse(val, def_val):
+                if isinstance(val, str):
+                    try:
+                        return json.loads(val)
+                    except Exception:
+                        return def_val
+                return val or def_val
+            contract_data = {
+                "contract_id": supa_c["contract_id"],
+                "project_title": supa_c["project_title"],
+                "original_idea": supa_c["original_idea"],
+                "category": supa_c["category"],
+                "difficulty": supa_c.get("difficulty", "intermediate"),
+                "feasibility_score": supa_c.get("feasibility_score", 88),
+                "critical_assumption": supa_c["critical_assumption"],
+                "frontend_rec": supa_c.get("frontend_rec", "Next.js / HTML5"),
+                "backend_rec": supa_c.get("backend_rec", "FastAPI"),
+                "ai_model_rec": supa_c.get("ai_model_rec", "Sentence-Transformers on CPU"),
+                "db_rec": supa_c.get("db_rec", "SQLite"),
+                "failure_scenarios": _parse(supa_c.get("failure_scenarios_json"), []),
+                "mvp_features": _parse(supa_c.get("mvp_features_json"), []),
+            }
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Build Contract '{contract_id}' not found."
+            )
+
+    msg = sanitize_string(chat_in.message)
+    res = await llm_service.chat_with_project(contract_data, msg)
+
+    # Record analytics
+    client_ip = req.client.host if req.client else None
+    record_event(
+        db=db,
+        event_name="peer_chat_message",
+        contract_id=contract_id,
+        client_ip=client_ip,
+        metadata={"is_critique": res.get("is_critique", False), "model": res.get("model_used")}
+    )
+
+    return ProjectChatResponse(
+        reply=res.get("reply", "Understood. The 60-minute build plan is ready to review."),
+        is_critique=res.get("is_critique", False),
+        risk_level=res.get("risk_level"),
+        model_used=res.get("model_used", "gemini-2.5-flash"),
+        status="success"
     )

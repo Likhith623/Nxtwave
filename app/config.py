@@ -61,9 +61,11 @@ class Settings:
 
     # Optional AI Integration (Zero cost default is False)
     ENABLE_OPTIONAL_LLM: bool = os.getenv("ENABLE_OPTIONAL_LLM", "False").lower() in ("true", "1", "yes")
-    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "openai").strip().lower()
+    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "gemini").strip().lower()
     OPENAI_API_KEY: Optional[str] = os.getenv("OPENAI_API_KEY", "").strip() or None
     LLM_MODEL: str = os.getenv("LLM_MODEL", "gpt-4o-mini").strip()
+    GEMINI_API_KEY: Optional[str] = os.getenv("GEMINI_API_KEY", "").strip() or None
+    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash").strip()
 
     # ===========================================================================
     # META WHATSAPP CLOUD API CONFIGURATION
