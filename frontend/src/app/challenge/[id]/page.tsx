@@ -18,6 +18,8 @@ import {
   AlertTriangle,
   FileCheck2,
   Share2,
+  Copy,
+  Check,
 } from "lucide-react";
 import { getContract, trackAnalyticsEvent } from "@/lib/api";
 import { useToast } from "@/components/ui/ToastContext";
@@ -95,14 +97,31 @@ function FormattedBotMessage({ text }: { text: string }) {
 }
 
 function formatInlineMarkdown(content: string) {
-  // Bold **text**
-  const parts = content.split(/(\*\*.*?\*\*)/g);
+  // Support **bold**, `code`, and *italic*
+  const parts = content.split(/(\*\*.*?\*\*|`.*?`|\*.*?\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**")) {
       return (
         <strong key={i} className="font-bold text-white">
           {part.slice(2, -2)}
         </strong>
+      );
+    }
+    if (part.startsWith("`") && part.endsWith("`")) {
+      return (
+        <code
+          key={i}
+          className="px-1.5 py-0.5 rounded-md bg-black/50 border border-white/10 font-mono text-[11px] text-cyan-300"
+        >
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    if (part.startsWith("*") && part.endsWith("*")) {
+      return (
+        <em key={i} className="italic text-slate-200">
+          {part.slice(1, -1)}
+        </em>
       );
     }
     return part;
@@ -123,6 +142,7 @@ export default function ChallengePage({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMsg, setInputMsg] = useState("");
   const [sending, setSending] = useState(false);
+  const [copiedMsgId, setCopiedMsgId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"chat" | "blueprint">("chat");
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -336,6 +356,13 @@ export default function ChallengePage({
     }
   };
 
+  const copyBotMessage = (id: string, text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedMsgId(id);
+    success("Copied AI defense critique to clipboard!");
+    setTimeout(() => setCopiedMsgId(null), 2500);
+  };
+
   const projectTitle = contract?.project_title || contract?.project_name || "Academic Document RAG Assistant";
   const feasibilityScore = contract?.feasibility_score || 88;
   const criticalAssumption = contract?.critical_assumption || "Students will primarily query policies explicitly stated in the indexed PDF handbook.";
@@ -486,9 +513,23 @@ export default function ChallengePage({
                         <div className="flex items-center justify-between gap-2 pb-1.5 mb-2 border-b border-white/10 text-[11px]">
                           <span className="font-bold text-cyan-400 flex items-center gap-1">
                             <Sparkles className="w-3 h-3" />
-                            <span>Architecture Review</span>
+                            <span>Architecture Defense</span>
                           </span>
-                          <span className="text-[10px] text-slate-400 font-mono">{m.timestamp}</span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => copyBotMessage(m.id, m.text)}
+                              className="p-1 rounded-md hover:bg-white/10 text-slate-400 hover:text-slate-200 transition"
+                              title="Copy AI Critique"
+                            >
+                              {copiedMsgId === m.id ? (
+                                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                              ) : (
+                                <Copy className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                            <span className="text-[10px] text-slate-400 font-mono">{m.timestamp}</span>
+                          </div>
                         </div>
                         <FormattedBotMessage text={m.text} />
                         
@@ -538,22 +579,28 @@ export default function ChallengePage({
           </div>
 
           {/* Chat Input Bar */}
-          <div className="p-3 bg-slate-900 border-t border-white/10 flex items-center gap-2 z-10">
-            <input
-              type="text"
-              placeholder="Ask how this build handles edge cases, or test an assumption..."
-              value={inputMsg}
-              onChange={(e) => setInputMsg(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-              disabled={sending}
-              className="flex-1 bg-slate-950 text-white px-4 py-3 rounded-2xl text-xs sm:text-sm focus:outline-none placeholder:text-slate-500 border border-white/10 focus:border-cyan-500/50 transition"
-            />
+          <div className="p-3 bg-slate-900/90 backdrop-blur-md border-t border-white/10 flex items-center gap-2.5 z-10">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Ask how this build handles edge cases, or test an assumption..."
+                value={inputMsg}
+                onChange={(e) => setInputMsg(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                disabled={sending}
+                className="w-full bg-slate-950 text-white pl-4 pr-12 py-3.5 rounded-2xl text-xs sm:text-sm focus:outline-none placeholder:text-slate-500 border border-white/10 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition"
+              />
+              <span className="hidden sm:inline-block absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold text-slate-500 bg-white/5 border border-white/10">
+                ↵
+              </span>
+            </div>
             <button
               onClick={() => handleSendMessage()}
               disabled={sending || !inputMsg.trim()}
-              className="p-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-bold transition shadow-md disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 flex-shrink-0"
+              className="px-5 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-bold transition shadow-lg shadow-indigo-600/30 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 flex items-center gap-2 flex-shrink-0 text-xs sm:text-sm"
               title="Send Message"
             >
+              <span>Send</span>
               <Send className="w-4 h-4" />
             </button>
           </div>

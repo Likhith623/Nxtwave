@@ -1,325 +1,664 @@
 {% extends "base.html" %}
 
-{% block title %}Break My Build: {{ contract.project_title }} — Project Compass{% endblock %}
+{% block title %}AI Stress-Test Arena: {{ contract.project_title }} — Project Compass{% endblock %}
 
 {% block head_extra %}
 <style>
-  /* Peer Review Layout (Slide 4 of Growth Plan) */
-  .challenge-grid {
+  /* ── Arena Layout Grid ─────────────────────────────────────────────── */
+  .arena-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 4rem 1.25rem;
+  }
+
+  .arena-grid {
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
+    grid-template-columns: 1.25fr 0.85fr;
     gap: 1.75rem;
     align-items: start;
-    margin-bottom: 2.5rem;
   }
-  @media (max-width: 960px) {
-    .challenge-grid {
+  @media (max-width: 1024px) {
+    .arena-grid {
       grid-template-columns: 1fr;
     }
   }
 
-  /* Tempting CTA Top Bar (Wait... what would MINE score?) */
-  .tempt-bar {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(245, 158, 11, 0.15) 50%, rgba(99, 102, 241, 0.15) 100%);
-    border: 2px solid rgba(245, 158, 11, 0.5);
-    border-radius: 16px;
-    padding: 1.15rem 1.6rem;
+  /* ── Top Viral Banner ("Wait... what would MY idea score?") ──────────── */
+  .viral-hero-card {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 27, 75, 0.85) 50%, rgba(15, 23, 42, 0.95) 100%);
+    border: 1.5px solid rgba(245, 158, 11, 0.45);
+    border-radius: 20px;
+    padding: 1.25rem 1.75rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
+    gap: 1.25rem;
     flex-wrap: wrap;
     margin-bottom: 1.75rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-  }
-
-  /* AI Chat Box */
-  .ai-chat-card {
-    background: linear-gradient(145deg, #090e1a 0%, #111827 100%);
-    border: 1.5px solid rgba(99, 102, 241, 0.45);
-    border-radius: 18px;
-    display: flex;
-    flex-direction: column;
-    height: 640px;
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(245, 158, 11, 0.1);
+    position: relative;
     overflow: hidden;
   }
+  .viral-hero-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%; width: 200%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+    animation: shimmer 6s infinite;
+    pointer-events: none;
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(50%); }
+  }
 
-  .chat-header {
-    padding: 1rem 1.25rem;
-    background: rgba(15, 23, 42, 0.9);
+  /* ── Modern AI Chat Room Chassis ───────────────────────────────────── */
+  .chat-chassis {
+    background: #080d1a;
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    height: 700px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(99, 102, 241, 0.12);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Chat Top Status Bar */
+  .chat-status-bar {
+    padding: 1rem 1.35rem;
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1.25rem;
-    display: flex;
-    flex-direction: column;
     gap: 1rem;
+    z-index: 10;
+  }
+  .bot-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .bot-avatar-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .live-dot {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #10b981;
+    border: 2px solid #080d1a;
+    box-shadow: 0 0 8px #10b981;
+    animation: pulseDot 2s infinite;
+  }
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.15); }
   }
 
-  .chat-bubble {
-    max-width: 86%;
-    padding: 0.9rem 1.15rem;
-    border-radius: 14px;
-    font-size: 0.88rem;
-    line-height: 1.55;
-    word-wrap: break-word;
+  /* Quick Suggestion Chips Carousel */
+  .chips-carousel {
+    padding: 0.65rem 1.15rem;
+    background: rgba(15, 23, 42, 0.65);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
-
-  .chat-bubble-ai {
-    background: rgba(30, 41, 59, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #f1f5f9;
-    align-self: flex-start;
-    border-bottom-left-radius: 4px;
+  .chips-carousel::-webkit-scrollbar {
+    display: none;
   }
-
-  .chat-bubble-user {
-    background: linear-gradient(135deg, #4f46e5, #6366f1);
-    color: #ffffff;
-    align-self: flex-end;
-    border-bottom-right-radius: 4px;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-  }
-
-  .chat-suggestion-chip {
+  .prompt-chip {
     background: rgba(99, 102, 241, 0.12);
-    border: 1px solid rgba(99, 102, 241, 0.35);
+    border: 1px solid rgba(99, 102, 241, 0.3);
     color: #c7d2fe;
-    font-size: 0.78rem;
-    padding: 0.35rem 0.75rem;
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 0.4rem 0.85rem;
     border-radius: 999px;
     cursor: pointer;
-    transition: all 0.2s ease;
     white-space: nowrap;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
   }
-  .chat-suggestion-chip:hover {
-    background: rgba(99, 102, 241, 0.25);
+  .prompt-chip:hover {
+    background: rgba(99, 102, 241, 0.28);
     border-color: #818cf8;
     color: #ffffff;
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
   }
 
-  .chat-input-bar {
-    padding: 0.85rem 1rem;
-    background: rgba(15, 23, 42, 0.95);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex;
-    gap: 0.6rem;
-    align-items: center;
-  }
-
-  /* Right Side Context Card */
-  .context-summary-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: 18px;
-    padding: 1.5rem;
+  /* Messages Stream */
+  .messages-stream {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem 1.35rem;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1.15rem;
+    background: radial-gradient(circle at 50% 10%, rgba(30, 27, 75, 0.25) 0%, rgba(8, 13, 26, 0.95) 100%);
+  }
+
+  /* Message Rows */
+  .msg-row {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 90%;
+    animation: fadeInMsg 0.25s ease-out;
+  }
+  @keyframes fadeInMsg {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .msg-row-ai {
+    align-self: flex-start;
+  }
+  .msg-row-user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+
+  .msg-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+  .msg-avatar-ai {
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    color: #38bdf8;
+  }
+  .msg-avatar-user {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #ffffff;
+  }
+
+  .msg-bubble {
+    padding: 1rem 1.25rem;
+    border-radius: 18px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    position: relative;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+  }
+  .msg-bubble-ai {
+    background: rgba(15, 23, 42, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+    border-top-left-radius: 4px;
+  }
+  .msg-bubble-user {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    color: #ffffff;
+    border-top-right-radius: 4px;
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.35);
+  }
+
+  /* Formatted Bot Elements */
+  .bot-quote {
+    padding: 0.6rem 0.9rem;
+    margin: 0.5rem 0;
+    border-radius: 10px;
+    background: rgba(245, 158, 11, 0.1);
+    border-left: 3px solid #f59e0b;
+    color: #fde68a;
+    font-style: italic;
+    font-size: 0.84rem;
+  }
+  .breaker-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.5);
+    color: #fbbf24;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    margin-bottom: 0.55rem;
+    letter-spacing: 0.05em;
+    animation: pulseDot 2s infinite;
+  }
+  .code-chip {
+    font-family: var(--font-mono);
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.15rem 0.4rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #38bdf8;
+    font-size: 0.82rem;
+  }
+  .msg-timestamp {
+    font-size: 0.68rem;
+    color: #64748b;
+    font-family: var(--font-mono);
+    margin-top: 0.4rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* Animated 3-Dot Typing Indicator */
+  .typing-box {
+    display: none;
+    align-self: flex-start;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1.15rem;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    font-size: 0.78rem;
+    color: #94a3b8;
+    margin-left: 2.6rem;
+    animation: fadeInMsg 0.2s ease;
+  }
+  .typing-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #38bdf8;
+    animation: bounceDot 1.4s infinite ease-in-out both;
+  }
+  .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+  .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+  @keyframes bounceDot {
+    0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  /* Modern Glass Input Bar */
+  .chat-input-wrapper {
+    padding: 0.9rem 1.25rem;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    z-index: 10;
+  }
+  .chat-text-input {
+    flex: 1;
+    background: rgba(8, 13, 26, 0.85);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    color: #ffffff;
+    padding: 0.85rem 1.15rem;
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+  .chat-text-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    background: rgba(15, 23, 42, 0.95);
+  }
+  .send-action-btn {
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    border: none;
+    border-radius: 16px;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 0.85rem 1.4rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.4);
+    white-space: nowrap;
+  }
+  .send-action-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+  }
+  .send-action-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  /* ── Right Column: Architecture Defense Card ───────────────────────── */
+  .blueprint-card {
+    background: linear-gradient(145deg, #090e1a 0%, #111827 100%);
+    border: 1.5px solid rgba(99, 102, 241, 0.35);
+    border-radius: 24px;
+    padding: 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  }
+
+  .spec-header-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .pie-preview-box {
+    background: rgba(8, 13, 26, 0.75);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 16px;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .stack-grid-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+    font-size: 0.78rem;
+  }
+  .stack-item {
+    background: rgba(15, 23, 42, 0.85);
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .stack-item strong {
+    color: #94a3b8;
+    display: block;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+  }
+  .stack-item span {
+    color: #f1f5f9;
+    font-weight: 700;
+  }
+
+  .trap-alert-box {
+    background: rgba(245, 158, 11, 0.08);
+    border-left: 3px solid #f59e0b;
+    border-radius: 0 12px 12px 0;
+    padding: 0.85rem 1.1rem;
+    font-size: 0.82rem;
   }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container" style="padding-top: 1.75rem; padding-bottom: 4rem;">
+<div class="arena-container">
 
-    <!-- Peer Review & AI Stress-Test Arena Header (Slide 4 of Growth Plan) -->
+    <!-- Top Arena Heading Bar -->
     <div style="margin-bottom: 1.5rem;" class="reveal">
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.4rem;">
-            <span class="badge badge-amber">PEER REVIEW &amp; STRESS-TEST ARENA</span>
-            <span class="badge badge-purple">BREAK MY BUILD</span>
-            <span class="badge badge-cyan">AI ARCHITECTURE REVIEW</span>
+            <span class="badge badge-amber">⚡ PEER REVIEW &amp; AI STRESS-TEST ARENA</span>
+            <span class="badge badge-cyan">POWERED BY GEMINI 2.5 FLASH</span>
             <span class="badge badge-emerald">ZERO LOGIN REQUIRED</span>
         </div>
-        <h1 style="font-size: clamp(1.85rem, 3.8vw, 2.75rem); font-weight: 900; color: var(--text-main); letter-spacing: -0.025em; line-height: 1.15; margin: 0 0 0.35rem 0;">
-            Peer Review &amp; <span style="color: var(--accent-purple);">AI Stress-Test Arena</span>
+        <h1 style="font-size: clamp(1.85rem, 3.8vw, 2.75rem); font-weight: 900; color: #ffffff; letter-spacing: -0.025em; line-height: 1.15; margin: 0 0 0.35rem 0;">
+            Peer Review &amp; <span style="background: linear-gradient(135deg, #06b6d4, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AI Stress-Test Arena</span>
         </h1>
-        <p style="color: var(--text-secondary); font-size: 1rem; margin: 0; max-width: 820px;">
-            Your classmate shared their final-year AI project plan for <strong>{{ contract.project_title }}</strong> (Feasibility: <strong>{{ contract.feasibility_score }}/100</strong>). No login required. Chat with the AI, probe edge-cases, or see if your own idea can beat their score!
+        <p style="color: #94a3b8; font-size: 0.98rem; margin: 0; max-width: 820px; line-height: 1.5;">
+            Your classmate shared their 60-minute build plan for <strong style="color: #ffffff;">{{ contract.project_title }}</strong> (Feasibility Score: <strong style="color: #34d399;">{{ contract.feasibility_score }}/100</strong>). Chat with the AI architect, probe edge cases, or test if your own final-year idea can beat their score!
         </p>
     </div>
 
-    <!-- 🔥 TEMPTING CTA BANNER: "Wait... what would MINE score?" (Slide 4 of Growth Plan) -->
-    <div class="tempt-bar reveal">
-        <div style="display: flex; align-items: center; gap: 0.85rem;">
-            <span style="font-size: 2rem;">🔥</span>
+    <!-- 🔥 TEMPTING RE-ENGAGEMENT VIRAL BANNER -->
+    <div class="viral-hero-card reveal">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0;">
+                🔥
+            </div>
             <div>
-                <strong style="color: #ffffff; font-size: 1.15rem; display: block; line-height: 1.25;">
-                    “Wait… what would MY idea score?!”
+                <strong style="color: #ffffff; font-size: 1.15rem; display: block; line-height: 1.25; font-weight: 900;">
+                    “Wait… what would MY final-year idea score?!”
                 </strong>
-                <span style="color: #cbd5e1; font-size: 0.86rem;">
-                    Curious if your own final-year idea is feasible? Get an instant score across 6 weighted criteria with ₹0 cloud budget.
+                <span style="color: #cbd5e1; font-size: 0.86rem; line-height: 1.4; display: block; margin-top: 0.15rem;">
+                    Curious if your own idea has hidden viva traps? Score your project across 6 weighted criteria with ₹0 cloud budget.
                 </span>
             </div>
         </div>
         <div>
-            <a href="/" class="btn btn-emerald btn-lg" style="font-weight: 800; padding: 0.85rem 1.6rem; white-space: nowrap; box-shadow: 0 4px 18px rgba(16,185,129,0.35);">
-                Test My Idea Free → (Start Over)
+            <a href="/" class="btn btn-emerald btn-lg" style="font-weight: 800; padding: 0.85rem 1.75rem; white-space: nowrap; box-shadow: 0 4px 20px rgba(16,185,129,0.35); text-decoration: none;">
+                🚀 Test My Idea Free →
             </a>
         </div>
     </div>
 
     <!-- Main Two-Column Layout: Left = AI Chat Room, Right = Friend's 60-Min Plan & Pie Chart -->
-    <div class="challenge-grid">
+    <div class="arena-grid">
 
         <!-- LEFT COLUMN: Interactive AI Chat Room (Powered by Gemini 2.5 Flash) -->
-        <div class="ai-chat-card reveal">
-            <!-- Chat Header -->
-            <div class="chat-header">
-                <div style="display: flex; align-items: center; gap: 0.6rem;">
-                    <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block; box-shadow: 0 0 8px #10b981;"></span>
+        <div class="chat-chassis reveal">
+            <!-- Chat Top Status Bar -->
+            <div class="chat-status-bar">
+                <div class="bot-status-pill">
+                    <div class="bot-avatar-badge">
+                        🤖
+                        <span class="live-dot" title="Gemini 2.5 Flash Live"></span>
+                    </div>
                     <div>
-                        <strong style="color: #ffffff; font-size: 0.95rem; display: block;">Project Compass AI Assistant</strong>
-                        <span style="color: #94a3b8; font-size: 0.76rem;">Testing: {{ contract.project_title }}</span>
+                        <div style="display: flex; align-items: center; gap: 0.45rem;">
+                            <strong style="color: #ffffff; font-size: 0.92rem;">Project Compass AI Architect</strong>
+                            <span style="font-family: var(--font-mono); font-size: 0.68rem; font-weight: 800; background: rgba(6, 182, 212, 0.15); color: #38bdf8; border: 1px solid rgba(6, 182, 212, 0.35); padding: 0.15rem 0.5rem; border-radius: 999px;">
+                                Gemini 2.5 Flash
+                            </span>
+                        </div>
+                        <span style="color: #94a3b8; font-size: 0.74rem;">
+                            Defending: <strong style="color: #e2e8f0;">{{ contract.project_title }}</strong>
+                        </span>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span class="badge badge-cyan" style="font-size: 0.72rem;">Gemini 2.5 Flash</span>
-                    <a href="/" class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; color: #f59e0b; border-color: rgba(245,158,11,0.4);">
-                        Score My Own Idea 🚀
+                <div>
+                    <a href="/" class="btn btn-outline btn-sm" style="font-size: 0.74rem; padding: 0.35rem 0.75rem; color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);">
+                        Test My Own Idea 🚀
                     </a>
                 </div>
             </div>
 
-            <!-- Suggestion Chips -->
-            <div style="padding: 0.6rem 1rem; background: rgba(15, 23, 42, 0.6); border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; gap: 0.4rem; overflow-x: auto;">
-                <span class="chat-suggestion-chip" onclick="sendSuggestion('What if fees or rules change in the 2026 circular?')">
-                    ⚡ What if fees change in 2026?
+            <!-- Quick Suggestion Chips Carousel -->
+            <div class="chips-carousel">
+                <span class="prompt-chip" onclick="sendSuggestion('What happens if college circulars or fee rules change mid-year in 2026?')">
+                    ⚡ What if rules change mid-year?
                 </span>
-                <span class="chat-suggestion-chip" onclick="sendSuggestion('Can this really run on CPU with zero cloud costs?')">
+                <span class="prompt-chip" onclick="sendSuggestion('Can this prototype run on an 8GB RAM student laptop without GPU for ₹0?')">
                     💻 Can it run on CPU for ₹0?
                 </span>
-                <span class="chat-suggestion-chip" onclick="sendSuggestion('What happens when someone asks an unlisted question?')">
-                    ❓ What if an unlisted question is asked?
+                <span class="prompt-chip" onclick="sendSuggestion('What happens when someone asks an unlisted query outside the handbook?')">
+                    ❓ Hallucination trap test
                 </span>
-                <span class="chat-suggestion-chip" onclick="sendSuggestion('How will this pass the professor viva review?')">
-                    🎓 How does it pass viva review?
+                <span class="prompt-chip" onclick="sendSuggestion('What tough trap questions will my professor ask during the project viva?')">
+                    🎓 Viva presentation trap test
+                </span>
+                <span class="prompt-chip" onclick="sendSuggestion('How will you prove in 60 minutes that your pipeline works?')">
+                    ⏱️ 60-Minute proof of concept test
                 </span>
             </div>
 
-            <!-- Message Area -->
-            <div class="chat-messages" id="chatMessages">
-                <!-- Initial Bot Message -->
-                <div class="chat-bubble chat-bubble-ai">
-                    <strong style="color: #38bdf8; display: block; margin-bottom: 0.25rem;">🤖 Project Compass AI:</strong>
-                    Hey! Your friend designed <strong>{{ contract.project_title }}</strong> (Feasibility Score: <span style="color: #34d399; font-weight: 800;">{{ contract.feasibility_score }}/100</span>).<br><br>
-                    Their single load-bearing assumption is:<br>
-                    <em style="color: #fbbf24;">“{{ contract.critical_assumption }}”</em><br><br>
-                    Try to break their build! Ask me how their ₹0 stack works, probe edge-cases (e.g. <em>“What if circulars change?”</em> or <em>“How does it handle 500 users?”</em>), or challenge their architecture!
+            <!-- Messages Stream -->
+            <div class="messages-stream" id="chatMessages">
+                <!-- Initial AI Welcome Message -->
+                <div class="msg-row msg-row-ai">
+                    <div class="msg-avatar msg-avatar-ai">🤖</div>
+                    <div class="msg-bubble msg-bubble-ai">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem; padding-bottom: 0.35rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                            <span style="font-size: 0.74rem; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 0.35rem;">
+                                ✨ Architecture Review
+                            </span>
+                            <span style="font-size: 0.68rem; color: #64748b; font-family: var(--font-mono);">Just now</span>
+                        </div>
+                        <p style="margin: 0 0 0.5rem 0;">
+                            👋 Hey! Your classmate shared their 60-minute build blueprint for <strong style="color: #ffffff;">{{ contract.project_title }}</strong> (Feasibility Score: <span style="color: #34d399; font-weight: 800;">{{ contract.feasibility_score }}/100</span>).
+                        </p>
+                        <div class="bot-quote">
+                            “{{ contract.critical_assumption }}”
+                        </div>
+                        <p style="margin: 0.5rem 0 0 0; color: #cbd5e1;">
+                            Try to break their build! Ask how their ₹0 local architecture works, probe edge-cases (e.g. <em>“What if circulars change?”</em> or <em>“How does it handle 500 users?”</em>), or challenge their design!
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Typing Indicator -->
-            <div id="typingIndicator" style="display: none; padding: 0.4rem 1.25rem; font-size: 0.78rem; color: #94a3b8; font-style: italic;">
-                🤖 AI is analyzing project architecture...
+            <!-- Animated 3-Dot Typing Indicator -->
+            <div class="typing-box" id="typingIndicator">
+                <span>Gemini 2.5 Flash is stress-testing</span>
+                <div class="typing-dots">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                </div>
             </div>
 
-            <!-- Input Bar -->
-            <form id="chatForm" class="chat-input-bar">
-                <input type="text" id="chatInput" class="form-control"
-                       placeholder="Ask a question or drop a critique to break this build..."
-                       style="flex: 1; background: rgba(30, 41, 59, 0.8); border-color: rgba(255,255,255,0.15); color: #ffffff; font-size: 0.88rem;"
-                       required minlength="2">
-                <button type="submit" id="sendBtn" class="btn btn-purple btn-sm" style="font-weight: 700; padding: 0.6rem 1.1rem; white-space: nowrap;">
-                    Send 💬
+            <!-- Chat Input Bar -->
+            <form id="chatForm" class="chat-input-wrapper">
+                <input type="text" id="chatInput" class="chat-text-input"
+                       placeholder="Ask how this build handles edge cases, or test an assumption..."
+                       required minlength="2" autocomplete="off">
+                <button type="submit" id="sendBtn" class="send-action-btn">
+                    <span>Send</span>
+                    <span>💬</span>
                 </button>
             </form>
         </div>
 
         <!-- RIGHT COLUMN: Friend's 60-Minute Plan, Pie Chart, & Stack Summary -->
-        <div class="context-summary-card reveal">
+        <div class="blueprint-card reveal">
             <!-- Project Overview Header -->
-            <div style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                    <span class="badge badge-emerald">FRIEND'S PROJECT</span>
-                    <span style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-emerald); font-weight: 800;">
-                        {{ contract.feasibility_score }}/100 SCORE
-                    </span>
+            <div class="spec-header-box">
+                <div>
+                    <span class="badge badge-emerald" style="font-size: 0.7rem; margin-bottom: 0.35rem;">CLASSMATE'S LOCKED SPEC</span>
+                    <h3 style="font-size: 1.35rem; font-weight: 800; color: #ffffff; margin: 0; line-height: 1.25;">
+                        {{ contract.project_title }}
+                    </h3>
+                    <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 0.25rem;">
+                        Category: <strong style="color: #38bdf8;">{{ contract.category }}</strong> ·
+                        Difficulty: <strong style="color: #a78bfa;">{{ contract.difficulty }}</strong>
+                    </div>
                 </div>
-                <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text-main); margin: 0;">
-                    {{ contract.project_title }}
-                </h3>
-                <p style="font-size: 0.84rem; color: var(--text-secondary); margin: 0.35rem 0 0 0; line-height: 1.45;">
-                    {{ contract.original_idea }}
-                </p>
+                <div style="text-align: right; flex-shrink: 0;">
+                    <div style="font-size: 1.45rem; font-weight: 900; color: #34d399; font-family: var(--font-mono); line-height: 1;">
+                        {{ contract.feasibility_score }}<span style="font-size: 0.85rem; color: #94a3b8;">/100</span>
+                    </div>
+                    <span style="font-size: 0.7rem; color: #34d399; font-weight: 700; text-transform: uppercase;">Feasible</span>
+                </div>
             </div>
 
             <!-- 60-Minute Pie Chart Mini Preview -->
-            <div style="background: linear-gradient(145deg, #090e1a 0%, #111827 100%); border: 1px solid rgba(99,102,241,0.3); border-radius: 12px; padding: 1rem; text-align: center;">
-                <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #34d399; font-weight: 800; text-transform: uppercase; margin-bottom: 0.4rem;">
-                    ● EXACTLY 60 MINUTES PROTOTYPE PLAN
+            <div class="pie-preview-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                    <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #34d399; font-weight: 800; text-transform: uppercase;">
+                        ● EXACTLY 60-MINUTE BUILD PIE CHART
+                    </span>
+                    <span style="font-size: 0.7rem; color: #94a3b8; font-family: var(--font-mono);">₹0 Cloud Cost</span>
                 </div>
-                <canvas id="miniPieCanvas" width="280" height="160" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"></canvas>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; font-size: 0.72rem; color: #cbd5e1; margin-top: 0.5rem; text-align: left;">
-                    <div><span style="color: #f43f5e;">●</span> Scaffold: 10m</div>
-                    <div><span style="color: #6366f1;">●</span> Core AI: 15m</div>
-                    <div><span style="color: #8b5cf6;">●</span> Query tests: 10m</div>
-                    <div><span style="color: #10b981;">●</span> Web UI: 15m</div>
-                    <div><span style="color: #f59e0b;">●</span> Verify: 10m</div>
-                    <div style="color: #34d399; font-weight: 700;">Total: 60m (₹0)</div>
+                <canvas id="miniPieCanvas" width="300" height="170" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"></canvas>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; font-size: 0.74rem; color: #cbd5e1; margin-top: 0.65rem; text-align: left;">
+                    <div><span style="color: #f43f5e; font-weight: 900;">●</span> Scaffold &amp; venv: <strong>10m</strong></div>
+                    <div><span style="color: #6366f1; font-weight: 900;">●</span> Core AI/PDF: <strong>15m</strong></div>
+                    <div><span style="color: #8b5cf6; font-weight: 900;">●</span> Query tests: <strong>10m</strong></div>
+                    <div><span style="color: #10b981; font-weight: 900;">●</span> Web UI: <strong>15m</strong></div>
+                    <div><span style="color: #f59e0b; font-weight: 900;">●</span> Viva verify: <strong>10m</strong></div>
+                    <div style="color: #34d399; font-weight: 800;">Total: Exactly 60m</div>
                 </div>
             </div>
 
-            <!-- The ₹0 Tech Stack -->
-            <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 0.82rem;">
-                <strong style="color: var(--text-main); font-size: 0.88rem; display: block; margin-bottom: 0.5rem;">
-                    ⚙️ The ₹0 Tech Stack:
+            <!-- The ₹0 Tech Stack Grid -->
+            <div>
+                <span style="font-size: 0.78rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; font-family: var(--font-mono); display: block; margin-bottom: 0.5rem;">
+                    ⚙️ Required ₹0 Local Stack
+                </span>
+                <div class="stack-grid-box">
+                    <div class="stack-item">
+                        <strong>Frontend</strong>
+                        <span>{{ contract.frontend_rec }}</span>
+                    </div>
+                    <div class="stack-item">
+                        <strong>Backend</strong>
+                        <span>{{ contract.backend_rec }}</span>
+                    </div>
+                    <div class="stack-item">
+                        <strong>AI Model</strong>
+                        <span>{{ contract.ai_model_rec }}</span>
+                    </div>
+                    <div class="stack-item">
+                        <strong>Database</strong>
+                        <span>{{ contract.db_rec }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load-Bearing Assumption Alert -->
+            <div class="trap-alert-box">
+                <strong style="color: #fbbf24; font-size: 0.78rem; text-transform: uppercase; font-family: var(--font-mono); display: block; margin-bottom: 0.25rem;">
+                    ⚠️ Critical Assumption Under Test:
                 </strong>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; color: var(--text-secondary);">
-                    <div><strong>Frontend:</strong> {{ contract.frontend_rec }}</div>
-                    <div><strong>Backend:</strong> {{ contract.backend_rec }}</div>
-                    <div><strong>Model:</strong> {{ contract.ai_model_rec }}</div>
-                    <div><strong>DB:</strong> {{ contract.db_rec }}</div>
-                </div>
+                <span style="color: #f1f5f9; line-height: 1.45; display: block;">
+                    “{{ contract.critical_assumption }}”
+                </span>
             </div>
 
-            <!-- Load-Bearing Assumption -->
-            <div style="background: rgba(245, 158, 11, 0.08); border-left: 3px solid var(--accent-amber); padding: 0.85rem 1rem; border-radius: 0 8px 8px 0; font-size: 0.82rem;">
-                <strong style="color: var(--accent-amber); display: block; margin-bottom: 0.2rem;">⚠️ Critical Assumption Under Test:</strong>
-                <span style="color: var(--text-main);">“{{ contract.critical_assumption }}”</span>
-            </div>
-
-            <!-- Action Buttons for Friend -->
-            <div style="display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.5rem;">
-                <a href="/contract/{{ contract.contract_id }}" class="btn btn-secondary btn-sm" style="text-align: center;">
-                    View Complete 6-Pillar Document 📋
+            <!-- Quick Action Links for Visitor -->
+            <div style="display: flex; flex-direction: column; gap: 0.65rem; margin-top: 0.25rem;">
+                <a href="/contract/{{ contract.contract_id }}" class="btn btn-secondary btn-sm" style="text-align: center; font-weight: 700; text-decoration: none;">
+                    📄 View Complete 6-Pillar Blueprint
                 </a>
-                <a href="/compare?from_contract={{ contract.contract_id }}" class="btn btn-outline btn-sm" style="text-align: center;">
+                <a href="/compare?from_contract={{ contract.contract_id }}" class="btn btn-outline btn-sm" style="text-align: center; font-weight: 700; text-decoration: none;">
                     🔄 Remix This Plan as My Context →
                 </a>
-                <a href="/" class="btn btn-emerald btn-sm" style="text-align: center; font-weight: 800;">
+                <a href="/" class="btn btn-emerald btn-sm" style="text-align: center; font-weight: 800; text-decoration: none; box-shadow: 0 4px 15px rgba(16,185,129,0.3);">
                     🚀 Test My Own Project Idea Free →
                 </a>
             </div>
         </div>
+
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <!-- SLIDE 4 VIRAL LOOP BANNER (THE LOOP RESTARTS)                       -->
+    <!-- VIRAL LOOP RE-ENGAGEMENT CARD (SLIDE 4)                             -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
-    <div class="card reveal" style="padding: 1.75rem 2rem; background: linear-gradient(135deg, #0b1120 0%, #151d33 100%); border: 1.5px solid rgba(99,102,241,0.4); border-radius: 18px; text-align: center;">
-        <span class="badge badge-purple" style="margin-bottom: 0.5rem;">THE VIRAL LOOP RESTARTS</span>
-        <h3 style="font-size: 1.45rem; font-weight: 900; color: #ffffff; margin: 0 0 0.4rem 0;">
-            “Your plan breaks if fees change.” · “Wait. Mine?!”
+    <div class="card reveal" style="padding: 2rem 2.25rem; background: linear-gradient(135deg, #0b1120 0%, #151d33 100%); border: 1.5px solid rgba(99,102,241,0.4); border-radius: 20px; text-align: center; margin-top: 2.5rem;">
+        <span class="badge badge-purple" style="margin-bottom: 0.6rem;">THE VIRAL LOOP RESTARTS</span>
+        <h3 style="font-size: 1.55rem; font-weight: 900; color: #ffffff; margin: 0 0 0.45rem 0;">
+            “Your plan breaks if fees change.” · “Wait. What about mine?!”
         </h3>
-        <p style="color: #cbd5e1; font-size: 0.94rem; max-width: 680px; margin: 0 auto 1.25rem auto;">
-            No ads. No rupee. Just ego, curiosity, and a WhatsApp group. Every friend who tests this plan becomes a visitor who tests their own.
+        <p style="color: #cbd5e1; font-size: 0.95rem; max-width: 680px; margin: 0 auto 1.35rem auto; line-height: 1.55;">
+            No ads. No paid fees. Just curiosity, peer defense, and a WhatsApp link. Every classmate who tests this architecture becomes a student who evaluates their own.
         </p>
-        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
-            <a href="/" class="btn btn-emerald btn-lg" style="font-weight: 800; padding: 0.85rem 1.75rem;">
-                🔥 Test Your Own Project Idea Free →
+        <div style="display: flex; gap: 0.85rem; justify-content: center; flex-wrap: wrap;">
+            <a href="/" class="btn btn-emerald btn-lg" style="font-weight: 800; padding: 0.85rem 1.85rem; text-decoration: none;">
+                🔥 Test Your Own Final-Year Idea Free →
             </a>
-            <a href="/compare?from_contract={{ contract.contract_id }}" class="btn btn-secondary btn-lg">
+            <a href="/compare?from_contract={{ contract.contract_id }}" class="btn btn-secondary btn-lg" style="text-decoration: none;">
                 Remix With This Context →
             </a>
         </div>
@@ -331,7 +670,7 @@
 {% block scripts %}
 <script>
 // ─────────────────────────────────────────────────────────────────────────────
-// 1. Mini 60-Minute Pie Chart for Sidecar View
+// 1. Mini 3D 60-Minute Pie Chart for Sidecar View
 // ─────────────────────────────────────────────────────────────────────────────
 function renderMiniPie() {
     const canvas = document.getElementById("miniPieCanvas");
@@ -348,28 +687,30 @@ function renderMiniPie() {
     ];
 
     const dpr = window.devicePixelRatio || 1;
-    const w = 280;
-    const h = 160;
+    const w = 300;
+    const h = 170;
     canvas.width = w * dpr;
     canvas.height = h * dpr;
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, w, h);
 
     const cx = w / 2;
-    const cy = h / 2;
-    const rx = 90;
-    const ry = 62;
-    const depth = 12;
+    const cy = h / 2 - 4;
+    const rx = 95;
+    const ry = 65;
+    const depth = 13;
 
     let startAngle = -Math.PI / 2;
     const slices = data.map(s => {
         const sweep = (s.minutes / 60) * Math.PI * 2;
         const endAngle = startAngle + sweep;
-        const item = { ...s, startAngle, endAngle };
+        const midAngle = startAngle + sweep / 2;
+        const item = { ...s, startAngle, endAngle, midAngle };
         startAngle = endAngle;
         return item;
     });
 
+    // 1. 3D Extrusion
     for (let l = depth; l >= 1; l--) {
         slices.forEach(s => {
             ctx.beginPath();
@@ -380,6 +721,7 @@ function renderMiniPie() {
         });
     }
 
+    // 2. Top Slices
     slices.forEach(s => {
         ctx.beginPath();
         ctx.ellipse(cx, cy, rx, ry, 0, s.startAngle, s.endAngle);
@@ -387,58 +729,124 @@ function renderMiniPie() {
         ctx.fillStyle = s.color;
         ctx.fill();
         ctx.lineWidth = 1;
-        ctx.strokeStyle = "#0b1020";
+        ctx.strokeStyle = "#080d1a";
         ctx.stroke();
+
+        const labelRadius = rx * 0.62;
+        const lx = cx + Math.cos(s.midAngle) * labelRadius;
+        const ly = cy + Math.sin(s.midAngle) * (labelRadius * 0.72);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 9px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(s.minutes + "m", lx, ly);
     });
 
+    // 3. Center Hole
     ctx.beginPath();
     ctx.ellipse(cx, cy, rx * 0.35, ry * 0.35, 0, 0, Math.PI * 2);
-    ctx.fillStyle = "#090e1a";
+    ctx.fillStyle = "#080d1a";
     ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = "rgba(99,102,241,0.5)";
+    ctx.stroke();
+
     ctx.fillStyle = "#ffffff";
     ctx.font = "bold 11px sans-serif";
     ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("60m", cx, cy);
+    ctx.fillText("60m", cx, cy - 2);
+    ctx.fillStyle = "#34d399";
+    ctx.font = "bold 7px monospace";
+    ctx.fillText("TOTAL", cx, cy + 8);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 2. Interactive AI Chat Logic (Powered by Gemini via /challenges/chat)
-// ─────────────────────────────────────────────────────────────────────
+// 2. Interactive AI Chat Logic (Powered by Gemini 2.5 Flash via /challenges/chat)
+// ─────────────────────────────────────────────────────────────────────────────
 const chatForm = document.getElementById("chatForm");
 const chatInput = document.getElementById("chatInput");
 const chatMessages = document.getElementById("chatMessages");
 const typingIndicator = document.getElementById("typingIndicator");
+const sendBtn = document.getElementById("sendBtn");
+
+function formatBotText(rawText) {
+    const isBreaker = rawText.includes("BUILD BREAKER") || rawText.includes("🚨");
+    let html = "";
+    if (isBreaker) {
+        html += `<div class="breaker-pill">🚨 BUILD BREAKER DETECTED</div>`;
+    }
+
+    const lines = rawText.split("\n");
+    lines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed) {
+            html += `<div style="height: 6px;"></div>`;
+            return;
+        }
+
+        // Blockquotes
+        if (trimmed.startsWith(">")) {
+            const quoteText = trimmed.replace(/^>\s*/, "").replace(/[*_]/g, "");
+            html += `<div class="bot-quote">“${quoteText}”</div>`;
+            return;
+        }
+
+        // Bullets
+        if (trimmed.startsWith("- ") || trimmed.startsWith("• ")) {
+            const bulletText = trimmed.replace(/^[-•]\s*/, "");
+            html += `<div style="display: flex; gap: 0.4rem; margin: 0.25rem 0 0.25rem 0.5rem;">
+                <span style="color: #38bdf8;">•</span>
+                <span>${formatInline(bulletText)}</span>
+            </div>`;
+            return;
+        }
+
+        html += `<p style="margin: 0.25rem 0;">${formatInline(trimmed)}</p>`;
+    });
+
+    return html;
+}
+
+function formatInline(text) {
+    return text
+        .replace(/\*\*(.*?)\*\*/g, "<strong style='color:#ffffff; font-weight:700;'>$1</strong>")
+        .replace(/\*(.*?)\*/g, "<em>$1</em>")
+        .replace(/`([^`]+)`/g, "<code class='code-chip'>$1</code>");
+}
 
 function appendMessage(sender, text, isAi = false, isCritique = false) {
-    const bubble = document.createElement("div");
-    bubble.className = isAi ? "chat-bubble chat-bubble-ai" : "chat-bubble chat-bubble-user";
-    
-    let html = "";
-    if (isAi) {
-        html += `<strong style="color: #38bdf8; display: block; margin-bottom: 0.25rem;">🤖 Project Compass AI:</strong>`;
-        if (isCritique) {
-            html += `<span class="badge badge-amber" style="margin-bottom: 0.4rem; display: inline-block;">🚨 BUILD BREAKER DETECTED</span><br>`;
-        }
-    }
-    // Format simple line breaks and bold
-    const formatted = text
-        .replace(/\n\n/g, "<br><br>")
-        .replace(/\n/g, "<br>")
-        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-        .replace(/\*(.*?)\*/g, "<em>$1</em>");
-    
-    html += formatted;
+    const timeStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const row = document.createElement("div");
+    row.className = isAi ? "msg-row msg-row-ai" : "msg-row msg-row-user";
 
-    // After an AI response, add a subtle tempting prompt
     if (isAi) {
-        html += `<div style="margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.78rem; color: #a5b4fc;">
-            💡 <em>Curious how your own idea scores?</em> <a href="/" style="color: #34d399; font-weight: 700; text-decoration: underline;">Test My Idea Free →</a>
-        </div>`;
+        row.innerHTML = `
+            <div class="msg-avatar msg-avatar-ai">🤖</div>
+            <div class="msg-bubble msg-bubble-ai">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; padding-bottom: 0.35rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                    <span style="font-size: 0.74rem; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 0.35rem;">
+                        ✨ Architecture Defense
+                    </span>
+                    <span style="font-size: 0.68rem; color: #64748b; font-family: var(--font-mono);">${timeStr}</span>
+                </div>
+                ${formatBotText(text)}
+                <div style="margin-top: 0.85rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem;">
+                    <span style="color: #94a3b8;">Want to test your own concept?</span>
+                    <a href="/" style="color: #34d399; font-weight: 700; text-decoration: underline;">Score My Idea Free →</a>
+                </div>
+            </div>
+        `;
+    } else {
+        row.innerHTML = `
+            <div class="msg-avatar msg-avatar-user">👤</div>
+            <div class="msg-bubble msg-bubble-user">
+                <p style="margin: 0;">${text}</p>
+                <div class="msg-timestamp" style="color: #c7d2fe;">${timeStr}</div>
+            </div>
+        `;
     }
 
-    bubble.innerHTML = html;
-    chatMessages.appendChild(bubble);
+    chatMessages.appendChild(row);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
@@ -448,8 +856,9 @@ async function sendMessage(text) {
     chatInput.value = "";
     appendMessage("You", msg, false);
 
-    typingIndicator.style.display = "block";
+    typingIndicator.style.display = "inline-flex";
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    if (sendBtn) sendBtn.disabled = true;
 
     try {
         const res = await fetch("/api/contracts/{{ contract.contract_id }}/challenges/chat", {
@@ -468,6 +877,9 @@ async function sendMessage(text) {
     } catch (e) {
         typingIndicator.style.display = "none";
         appendMessage("AI", "The architecture evaluates this query as an edge-case. Try checking the 60-minute plan on the right, or click 'Test My Idea Free' to run your own project!", true, false);
+    } finally {
+        if (sendBtn) sendBtn.disabled = false;
+        chatInput.focus();
     }
 }
 
@@ -486,6 +898,7 @@ function sendSuggestion(text) {
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".reveal").forEach(el => el.classList.add("visible"));
     renderMiniPie();
+    window.addEventListener("resize", renderMiniPie);
 });
 </script>
 {% endblock %}
