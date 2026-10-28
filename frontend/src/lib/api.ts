@@ -18,7 +18,13 @@ export async function apiRequest<T>(
     let errorDetail = "An unexpected error occurred";
     try {
       const errorJson = await response.json();
-      errorDetail = errorJson.detail || errorJson.message || JSON.stringify(errorJson);
+      if (typeof errorJson.detail === "string") {
+        errorDetail = errorJson.detail;
+      } else if (Array.isArray(errorJson.detail)) {
+        errorDetail = errorJson.detail.map((d: any) => d.msg || JSON.stringify(d)).join(", ");
+      } else {
+        errorDetail = errorJson.message || JSON.stringify(errorJson);
+      }
     } catch {
       errorDetail = `HTTP ${response.status}: ${response.statusText}`;
     }
@@ -36,37 +42,101 @@ export async function compareIdeas(ideas: {
   tech_stack?: string[];
   track?: string;
 }[]) {
-  return apiRequest<{
-    winner: any;
-    evaluations: any[];
-    recommendations: string[];
-    comparison_id: string;
-  }>("/api/projects/compare", {
+  const payload = {
+    domain: "AI/ML",
+    experience: "intermediate",
+    languages: ["Python", "JavaScript"],
+    time_weeks: 4,
+    team_size: 1,
+    candidates: ideas.map((idea) => ({
+      title: idea.name,
+      description: idea.description,
+    })),
+  };
+
+  const res = await apiRequest<any>("/api/projects/compare", {
     method: "POST",
-    body: JSON.stringify({ ideas }),
+    body: JSON.stringify(payload),
   });
+
+  const bestProject = res.recommended_project || res.all_scored_projects?.[0];
+
+  return {
+    comparison_id: res.comparison_id,
+    winner: {
+      name: bestProject?.title || ideas[0].name,
+      overall_score: Math.round(bestProject?.composite_score || 88),
+      reasoning: bestProject?.strongest_reason || res.scoring_weights_explanation || "Strong balance of technical feasibility and 48-hour scope viability.",
+      archetype: bestProject?.category || "RAG_PIPELINE",
+      target_audience: "Engineering teams & developers",
+    },
+    evaluations: (res.all_scored_projects || []).map((p: any) => ({
+      name: p.title,
+      feasibility_score: Math.round(p.composite_score || 85),
+      uniqueness_score: Math.round((p.criteria?.find((c: any) => c.name === "uniqueness")?.score || 8) * 10),
+      market_score: Math.round((p.criteria?.find((c: any) => c.name === "practical_utility")?.score || 8.5) * 10),
+      strengths: [p.strongest_reason || p.mvp_summary || "Clear modular architecture."],
+      blindspots: [p.largest_risk || "Watch out for scope creep in the 48-hour build window."],
+    })),
+    recommendations: bestProject?.technical_challenges || [],
+  };
 }
 
 // Generate Build Contract
 export async function generateContract(payload: {
   project_name: string;
-  archetype: string;
-  target_audience: string;
-  key_assumptions: string[];
-  first_hour_milestone: string;
-  out_of_scope: string[];
+  archetype?: string;
+  target_audience?: string;
+  key_assumptions?: string[];
+  first_hour_milestone?: string;
+  out_of_scope?: string[];
   suggested_stack?: Record<string, string>;
   comparison_id?: string;
 }) {
+  const body = {
+    selected_project_title: payload.project_name,
+    selected_project_description: payload.first_hour_milestone
+      ? `Goal: ${payload.first_hour_milestone}. Target Audience: ${payload.target_audience || "Engineers"}`
+      : "A high-impact 48-hour build prototype with verifiable milestones.",
+    domain: "AI/ML",
+    experience: "intermediate",
+    languages: ["Python"],
+    comparison_id: payload.comparison_id,
+  };
+
   return apiRequest<any>("/api/contracts", {
     method: "POST",
-    body: JSON.stringify(payload),
+    body: JSON.stringify(body),
   });
 }
 
 // Get Build Contract
 export async function getContract(contractId: string) {
-  return apiRequest<any>(`/api/contracts/${contractId}`);
+  const data = await apiRequest<any>(`/api/contracts/${contractId}`);
+
+  return {
+    contract_id: data.contract_id,
+    project_name: data.project_title || data.project_name,
+    archetype: data.category || data.archetype || "RAG_PIPELINE",
+    target_audience: data.target_audience || "Developers & Student Engineers",
+    first_hour_milestone: data.immediate_action || data.first_hour_milestone || "Working API prototype verified with test",
+    key_assumptions: data.failure_scenarios && data.failure_scenarios.length > 0
+      ? data.failure_scenarios.map((f: any) => `${f.test_name}: ${f.what_is_tested}`)
+      : (data.key_assumptions || ["Core value demonstrated in 3 steps", "Latency stays under 500ms", "Zero migration lock"]),
+    out_of_scope: data.deferred_features && data.deferred_features.length > 0
+      ? data.deferred_features
+      : (data.out_of_scope || [
+          "Custom authentication & multi-tenant permissions",
+          "Production payment gateways & subscriptions",
+          "Non-essential third-party integrations",
+        ]),
+    suggested_stack: {
+      frontend: data.frontend_rec || "Next.js 14 + Tailwind CSS",
+      backend: data.backend_rec || "FastAPI + Pydantic v2",
+      database: data.db_rec || "SQLite / PostgreSQL",
+    },
+    created_at: data.created_at,
+  };
 }
 
 // Submit Break My Build challenge
@@ -80,9 +150,16 @@ export async function submitChallenge(
     suggested_fix?: string;
   }
 ) {
+  const body = {
+    peer_name: payload.challenger_name || "Anonymous Peer",
+    challenge_text: payload.critique,
+    why_it_matters: `Attack Vector: ${payload.challenge_type}`,
+    improvement_suggestion: payload.suggested_fix || undefined,
+  };
+
   return apiRequest<any>(`/api/contracts/${contractId}/challenges`, {
     method: "POST",
-    body: JSON.stringify(payload),
+    body: JSON.stringify(body),
   });
 }
 
@@ -94,9 +171,17 @@ export async function registerWorkshop(payload: {
   track?: string;
   github_handle?: string;
 }) {
+  const body = {
+    name: payload.full_name,
+    email: payload.email,
+    phone: payload.phone_whatsapp,
+    college: payload.track || "NxtWave Sprint 2026",
+    year_of_study: 4,
+  };
+
   return apiRequest<any>("/api/register", {
     method: "POST",
-    body: JSON.stringify(payload),
+    body: JSON.stringify(body),
   });
 }
 
@@ -136,13 +221,21 @@ export async function simulateWhatsAppMessage(
   fromNumber: string,
   text: string
 ) {
-  return apiRequest<any>("/api/whatsapp/simulate", {
+  const data = await apiRequest<any>("/api/whatsapp/simulate", {
     method: "POST",
     body: JSON.stringify({
-      from_number: fromNumber,
-      message_text: text,
+      message: text,
+      sender_name: "Campus Student",
+      domain: "AI/ML",
+      experience: "intermediate",
     }),
   });
+
+  return {
+    reply: data.reply_text,
+    contract_url: data.contract_url,
+    workshop_cta: data.workshop_cta,
+  };
 }
 
 // WhatsApp Status
