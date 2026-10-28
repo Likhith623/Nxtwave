@@ -10,16 +10,9 @@ import {
   CheckCircle2,
   Zap,
   Layers,
-  BarChart3,
-  Star,
-  Users,
   Clock,
-  TrendingUp,
-  Cpu,
   Sparkles,
-  ExternalLink,
   ChevronRight,
-  ShieldCheck,
   Terminal,
 } from "lucide-react";
 import { ParticleHero } from "@/components/home/ParticleHero";
@@ -32,11 +25,9 @@ const ARCHETYPES = [
     tag: "NLP / Semantic Search",
     score: 88,
     grade: "Highly Realistic",
-    gradeColor: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30",
-    desc: "Indexes university handbooks and circulars to answer student queries with zero cloud fees.",
+    desc: "Indexes university circulars and handbooks to answer student questions locally with zero API fees.",
     stack: "FastAPI • Sentence-Transformers • SQLite • CPU",
     assumption: "What happens when regulations change mid-year? Older chunks could serve obsolete clauses.",
-    color: "from-indigo-500 to-violet-600",
     icon: "🔍",
   },
   {
@@ -45,24 +36,20 @@ const ARCHETYPES = [
     tag: "Computer Vision",
     score: 91,
     grade: "Optimal Fit",
-    gradeColor: "text-cyan-400 bg-cyan-500/10 border-cyan-500/30",
     desc: "Lightweight MobileNet CNN classifying leaf lesions and suggesting organic remediation steps.",
     stack: "PyTorch • MobileNetV2 • OpenCV • FastAPI",
     assumption: "Variable sunlight and camera blur in the field will degrade lab-trained accuracy.",
-    color: "from-emerald-500 to-teal-600",
     icon: "🌿",
   },
   {
     id: "tabular",
     title: "Placement Package Predictor",
-    tag: "Tabular Machine Learning",
+    tag: "Machine Learning",
     score: 85,
     grade: "Feasible MVP",
-    gradeColor: "text-amber-400 bg-amber-500/10 border-amber-500/30",
     desc: "Gradient boosting model predicting placement readiness and package brackets from coding metrics.",
     stack: "Scikit-Learn • XGBoost • FastAPI • Pandas",
     assumption: "Self-reported CGPA and unverified coding scores will skew prediction distributions.",
-    color: "from-amber-500 to-orange-600",
     icon: "📊",
   },
 ];
@@ -71,32 +58,26 @@ const PILLARS = [
   {
     title: "Multi-Criteria Feasibility Matrix",
     tag: "OBJECTIVE SCORING",
-    desc: "Evaluates your candidate ideas against 6 weighted constraints: Skill Fit (25%), Time Feasibility (20%), Hardware Fit (20%), Scope (15%), Practical Utility (10%), and Testability (10%). Guaranteed 100% reproducible and viva-defensible.",
+    desc: "Evaluates your candidate concepts across 6 weighted dimensions: Skill Fit (25%), Time Feasibility (20%), Hardware Fit (20%), Scope (15%), Practical Utility (10%), and Testability (10%). Guaranteed reproducible and viva-defensible.",
     icon: <Layers className="w-5 h-5 text-indigo-400" />,
-    gradient: "from-indigo-500/20 via-indigo-500/5 to-transparent",
-    border: "border-indigo-500/30",
-    linkText: "Compare Ideas Now →",
     href: "/compare",
+    linkText: "Compare Ideas Now →",
   },
   {
     title: "60-Minute Prototype Blueprint",
     tag: "THE BUILD CONTRACT",
-    desc: "Turns your score into a locked technical specification: required ₹0 tech stack, the single load-bearing failure trap, strict MVP scope boundaries, and an exact 60-minute Canvas pie chart with printable PDF export.",
+    desc: "Converts your evaluation into a locked technical specification: required ₹0 tech stack, the single load-bearing failure trap, strict MVP scope boundaries, and an exact 60-minute Canvas pie chart with printable PDF export.",
     icon: <FileCheck2 className="w-5 h-5 text-cyan-400" />,
-    gradient: "from-cyan-500/20 via-cyan-500/5 to-transparent",
-    border: "border-cyan-500/30",
-    linkText: "View Sample Blueprint →",
     href: "/contract/bc_demo_rag",
+    linkText: "View Sample Blueprint →",
   },
   {
     title: "Peer Review & Stress-Test Arena",
     tag: "BREAK MY BUILD",
-    desc: "Share your build plan to WhatsApp groups. Friends enter a real-time Gemini 2.5 Flash AI Chat to stress-test your edge-cases before viva day, with automated Build Breaker vulnerability detection.",
+    desc: "Share your build link to WhatsApp groups. Friends enter a real-time Gemini 2.5 Flash AI Chat to probe your edge cases before viva day, with automated Build Breaker vulnerability detection.",
     icon: <ShieldAlert className="w-5 h-5 text-amber-400" />,
-    gradient: "from-amber-500/20 via-amber-500/5 to-transparent",
-    border: "border-amber-500/30",
-    linkText: "Explore AI Chat Arena →",
     href: "/challenge/bc_demo_rag",
+    linkText: "Explore AI Chat Arena →",
   },
 ];
 
@@ -155,121 +136,99 @@ export default function HomePage() {
       
       {/* ── BACKGROUND AURORA MESH ─────────────────────────────────────────── */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        <div className="absolute top-[-25%] left-[-15%] w-[800px] h-[800px] rounded-full bg-indigo-600/[0.12] blur-[140px] animate-pulse" />
-        <div className="absolute top-[30%] right-[-20%] w-[750px] h-[750px] rounded-full bg-purple-600/[0.09] blur-[150px]" />
-        <div className="absolute bottom-[-15%] left-[25%] w-[650px] h-[650px] rounded-full bg-cyan-500/[0.08] blur-[130px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.08),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-      </div>
-
-      {/* ── TOP NOTIFICATION TICKER: LIVE WORKSHOP ───────────────────────────── */}
-      <div className="pt-20 sm:pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="rounded-2xl p-3.5 sm:p-4.5 bg-gradient-to-r from-indigo-950/80 via-slate-900/90 to-purple-950/80 border border-indigo-500/30 shadow-2xl backdrop-blur-xl relative overflow-hidden group">
-          <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-all duration-500" />
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3.5 relative z-10">
-            <div className="flex items-center gap-3">
-              <span className="flex-shrink-0 w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-md shadow-orange-500/25">
-                <Zap className="w-4 h-4" />
-              </span>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                    LIVE 60-MIN SPRINT
-                  </span>
-                  <span className="text-xs sm:text-sm font-bold text-white">
-                    Free Live Masterclass: Build Your AI Project in Exactly 60 Minutes
-                  </span>
-                </div>
-                <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5">
-                  Stop spending months on tutorial loops. Scaffold, integrate, and verify a viva-defensible prototype on your laptop.
-                </p>
-              </div>
-            </div>
-            <Link
-              href="/register"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-extrabold text-xs shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition active:scale-95 whitespace-nowrap"
-            >
-              <span>Reserve Free Spot →</span>
-            </Link>
-          </div>
-        </div>
+        <div className="absolute top-[-20%] left-[-10%] w-[700px] h-[700px] rounded-full bg-indigo-600/[0.08] blur-[140px]" />
+        <div className="absolute top-[35%] right-[-15%] w-[650px] h-[650px] rounded-full bg-purple-600/[0.06] blur-[150px]" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[600px] h-[600px] rounded-full bg-cyan-500/[0.05] blur-[130px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
       </div>
 
       {/* ── HERO SECTION ────────────────────────────────────────────────────── */}
-      <section className="relative pt-12 sm:pt-20 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center">
+      <section className="relative pt-28 sm:pt-36 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto flex flex-col items-center text-center">
         <ParticleHero />
 
-        {/* Top Badges */}
-        <div className="relative z-10 inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-mono font-bold bg-indigo-500/10 border border-indigo-500/25 text-indigo-300 mb-6 backdrop-blur-md shadow-lg shadow-indigo-500/5">
+        {/* Sleek Announcement Pill */}
+        <Link
+          href="/register"
+          className="relative z-10 inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-mono font-medium bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 text-slate-300 mb-8 backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-sm"
+        >
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>PROJECT COMPASS 2.0</span>
-          <span className="text-white/20">•</span>
-          <span className="text-cyan-300">NXTWAVE GROWTH SPRINT ENGINE</span>
-        </div>
+          <span className="text-white font-semibold">Live 60-Minute Workshop:</span>
+          <span className="text-slate-400">Build Your Prototype Live</span>
+          <ChevronRight className="w-3.5 h-3.5 text-indigo-400 ml-0.5" />
+        </Link>
 
-        {/* Main Title */}
-        <h1 className="relative z-10 text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.08] max-w-5xl mb-6">
+        {/* Main Headline */}
+        <h1 className="relative z-10 text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.1] max-w-4xl mb-6">
           Stop Guessing Your Final-Year Project. <br />
-          <span className="bg-gradient-to-r from-indigo-300 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
-            Choose, Stress-Test &amp; Prove It in 60 Minutes.
+          <span className="bg-gradient-to-r from-indigo-300 via-cyan-200 to-emerald-300 bg-clip-text text-transparent">
+            Choose, Stress-Test &amp; Prove It.
           </span>
         </h1>
 
         {/* Subtitle */}
-        <p className="relative z-10 max-w-3xl text-sm sm:text-lg text-slate-300 leading-relaxed mb-10 font-normal">
-          The deterministic decision matrix and technical build blueprint engine for engineering students.
+        <p className="relative z-10 max-w-2xl text-base sm:text-lg text-slate-300 leading-relaxed mb-10 font-normal">
+          The deterministic decision matrix and technical blueprint engine for engineering students.
           Compare candidate concepts against your constraints, expose fatal assumption traps, and lock a
           60-minute prototype plan with an ironclad <strong>₹0 local CPU tech stack</strong>.
         </p>
 
         {/* Action Buttons */}
-        <div className="relative z-10 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto mb-16">
+        <div className="relative z-10 flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto mb-14">
           <Link
             href="/compare"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-extrabold text-sm shadow-[0_10px_35px_rgba(99,102,241,0.4)] hover:shadow-[0_15px_45px_rgba(99,102,241,0.6)] hover:-translate-y-0.5 transition-all duration-200 active:scale-95"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 hover:-translate-y-0.5 transition-all duration-200 active:scale-95"
           >
-            <span>🚀 Compare My Project Ideas</span>
+            <span>Compare My Ideas Free</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             href="/whatsapp"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-emerald-500/30 text-emerald-300 font-bold text-sm shadow-lg hover:-translate-y-0.5 transition duration-200 active:scale-95"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-slate-200 font-semibold text-sm transition duration-200 hover:-translate-y-0.5"
           >
             <MessageSquare className="w-4 h-4 text-emerald-400" />
-            <span>Try WhatsApp Campus Bot 📱</span>
-          </Link>
-          <Link
-            href="/contract/bc_demo_rag"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-4 rounded-2xl bg-slate-900/60 hover:bg-slate-800/80 border border-white/10 text-slate-300 font-medium text-xs sm:text-sm hover:-translate-y-0.5 transition duration-200"
-          >
-            <FileCheck2 className="w-4 h-4 text-indigo-400" />
-            <span>Sample 60-Min Plan</span>
+            <span>Try WhatsApp Campus Bot</span>
           </Link>
         </div>
 
+        {/* Trust Badges */}
+        <div className="relative z-10 flex items-center justify-center gap-6 sm:gap-10 text-xs text-slate-400 flex-wrap">
+          <span className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span>₹0 Cloud Fee Guarantee</span>
+          </span>
+          <span className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span>Runs on Student CPU Laptops</span>
+          </span>
+          <span className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span>Zero Login Required</span>
+          </span>
+        </div>
+
         {/* ── INTERACTIVE LIVE PROJECT ARCHETYPE COMPARATOR ──────────────────── */}
-        <div className="relative z-10 w-full max-w-5xl rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-slate-900/95 via-slate-950/90 to-slate-900/95 border border-indigo-500/30 shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-2xl text-left">
+        <div className="relative z-10 w-full max-w-4xl mt-16 rounded-2xl p-6 sm:p-8 bg-slate-900/60 border border-white/10 shadow-2xl backdrop-blur-xl text-left">
           
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-white/10 gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-white/10 gap-4">
             <div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400 block mb-0.5">
-                INTERACTIVE COMPARATOR PREVIEW
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-cyan-400 block mb-1">
+                PRE-SCORED BENCHMARKS
               </span>
-              <h3 className="text-lg sm:text-xl font-extrabold text-white">
-                Pre-Scored Final-Year Archetypes
+              <h3 className="text-lg font-bold text-white">
+                Explore Realistic Project Archetypes
               </h3>
             </div>
             
             {/* Archetype Selector Tabs */}
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-black/50 border border-white/10 overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-black/40 border border-white/10">
               {ARCHETYPES.map((arch) => (
                 <button
                   key={arch.id}
                   onClick={() => setSelectedArchetype(arch)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
                     selectedArchetype.id === arch.id
-                      ? "bg-indigo-600 text-white shadow-md"
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                      ? "bg-indigo-600 text-white shadow-sm"
+                      : "text-slate-400 hover:text-white"
                   }`}
                 >
                   <span>{arch.icon}</span>
@@ -279,33 +238,26 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Active Archetype Deep-Dive Card */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-6 items-start">
+          {/* Active Archetype Content */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pt-6 items-start">
             
-            {/* Left: Summary & Scores */}
-            <div className="lg:col-span-7 space-y-4">
-              <div className="flex items-center justify-between gap-3 flex-wrap">
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl">{selectedArchetype.icon}</span>
-                  <div>
-                    <h4 className="text-base sm:text-lg font-black text-white">
-                      {selectedArchetype.title}
-                    </h4>
-                    <span className="text-xs text-indigo-400 font-medium">
-                      Category: {selectedArchetype.tag}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${selectedArchetype.gradeColor}`}>
-                    {selectedArchetype.grade}
+            {/* Left: Summary */}
+            <div className="md:col-span-7 space-y-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h4 className="text-base font-bold text-white flex items-center gap-2">
+                    <span>{selectedArchetype.icon}</span>
+                    <span>{selectedArchetype.title}</span>
+                  </h4>
+                  <span className="text-xs text-slate-400">
+                    Category: {selectedArchetype.tag}
                   </span>
-                  <div className="px-3 py-1 rounded-xl bg-black/60 border border-white/15 text-center">
-                    <span className="text-[10px] text-slate-400 block font-mono">FEASIBILITY</span>
-                    <strong className="text-sm font-black text-emerald-400 font-mono">
-                      {selectedArchetype.score}/100
-                    </strong>
-                  </div>
+                </div>
+                <div className="px-3 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+                  <span className="text-[9px] text-emerald-400 block font-mono font-bold uppercase">FEASIBILITY</span>
+                  <strong className="text-sm font-bold text-emerald-300 font-mono">
+                    {selectedArchetype.score}/100
+                  </strong>
                 </div>
               </div>
 
@@ -314,9 +266,9 @@ export default function HomePage() {
               </p>
 
               {/* Stack Pill Box */}
-              <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 space-y-1.5">
+              <div className="p-3.5 rounded-xl bg-black/30 border border-white/10 space-y-1">
                 <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block font-bold">
-                  ⚡ ₹0 Local Laptop Stack (Zero Cloud Fee)
+                  ⚡ ₹0 Local Stack (Zero Cloud Fee)
                 </span>
                 <div className="text-xs font-mono font-bold text-cyan-300">
                   {selectedArchetype.stack}
@@ -324,7 +276,7 @@ export default function HomePage() {
               </div>
 
               {/* Critical Trap Box */}
-              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs space-y-1">
+              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs space-y-1">
                 <strong className="text-amber-300 flex items-center gap-1.5 font-bold">
                   <ShieldAlert className="w-3.5 h-3.5" />
                   <span>The Load-Bearing Assumption / Trap:</span>
@@ -336,30 +288,30 @@ export default function HomePage() {
             </div>
 
             {/* Right: 60-Minute Snapshot & CTA */}
-            <div className="lg:col-span-5 p-5 rounded-2xl bg-black/60 border border-white/10 space-y-4 flex flex-col justify-between h-full">
+            <div className="md:col-span-5 p-5 rounded-xl bg-black/40 border border-white/10 space-y-4 flex flex-col justify-between h-full">
               <div className="space-y-3">
                 <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5" />
-                  <span>The 60-Minute Build Timeline</span>
+                  <span>The 60-Minute Timeline</span>
                 </span>
                 <div className="space-y-2 text-xs">
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
-                    <span className="text-slate-300">Min 00-10: Scaffold venv &amp; dependencies</span>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.03]">
+                    <span className="text-slate-300">Min 00-10: Scaffold venv &amp; deps</span>
                     <span className="text-emerald-400 font-mono font-bold">10m</span>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.03]">
                     <span className="text-slate-300">Min 10-25: Ingest data &amp; vectorize</span>
                     <span className="text-indigo-400 font-mono font-bold">15m</span>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
-                    <span className="text-slate-300">Min 25-35: Wire inference logic &amp; tests</span>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.03]">
+                    <span className="text-slate-300">Min 25-35: Wire inference logic</span>
                     <span className="text-purple-400 font-mono font-bold">10m</span>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.03]">
                     <span className="text-slate-300">Min 35-50: Build web UI / chat endpoint</span>
                     <span className="text-cyan-400 font-mono font-bold">15m</span>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.03]">
                     <span className="text-slate-300">Min 50-60: Run failure tests &amp; verify</span>
                     <span className="text-amber-400 font-mono font-bold">10m</span>
                   </div>
@@ -368,9 +320,9 @@ export default function HomePage() {
 
               <Link
                 href={`/compare?from_archetype=${selectedArchetype.id}`}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition shadow-md shadow-indigo-600/30"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition"
               >
-                <span>Score This Idea With My Constraints →</span>
+                <span>Score With My Constraints →</span>
               </Link>
             </div>
           </div>
@@ -378,15 +330,15 @@ export default function HomePage() {
       </section>
 
       {/* ── METRICS STRIP ───────────────────────────────────────────────────── */}
-      <section className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-6 sm:p-8 rounded-3xl bg-slate-900/60 border border-white/10 shadow-2xl backdrop-blur-xl">
+      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 p-6 sm:p-8 rounded-2xl bg-slate-900/40 border border-white/10 backdrop-blur-md">
           {METRICS.map((m, i) => (
-            <div key={i} className="text-center p-3 space-y-1">
-              <div className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight flex items-center justify-center">
+            <div key={i} className="text-center p-2 space-y-1">
+              <div className="text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight flex items-center justify-center">
                 <AnimatedCounter target={m.value} />
                 <span className="text-cyan-400">{m.suffix}</span>
               </div>
-              <strong className="text-xs sm:text-sm font-bold text-slate-200 block">
+              <strong className="text-xs sm:text-sm font-semibold text-slate-200 block">
                 {m.label}
               </strong>
               <p className="text-[11px] text-slate-400">
@@ -397,13 +349,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── THE THREE PILLARS (ZERO STEP LABELS) ────────────────────────────── */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <span className="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
-            ENGINEERING EXCELLENCE
+      {/* ── THE THREE PILLARS (CLEAN & SPACIOUS) ────────────────────────────── */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-12">
+        <div className="text-center max-w-xl mx-auto space-y-2">
+          <span className="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400">
+            SYSTEM CAPABILITIES
           </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             How Project Compass Protects Your Build
           </h2>
           <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
@@ -415,19 +367,14 @@ export default function HomePage() {
           {PILLARS.map((p, i) => (
             <div
               key={i}
-              className={`rounded-3xl p-7 bg-gradient-to-b ${p.gradient} bg-slate-950/80 border ${p.border} shadow-2xl flex flex-col justify-between space-y-6 hover:-translate-y-1 transition-all duration-300 group`}
+              className="rounded-2xl p-7 bg-white/[0.02] hover:bg-white/[0.04] border border-white/10 flex flex-col justify-between space-y-6 transition-all duration-300"
             >
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shadow-inner group-hover:scale-110 transition duration-300">
-                    {p.icon}
-                  </div>
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 bg-black/40 px-2.5 py-1 rounded-md border border-white/5">
-                    {p.tag}
-                  </span>
+                <div className="w-10 h-10 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center">
+                  {p.icon}
                 </div>
 
-                <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition">
+                <h3 className="text-lg font-bold text-white">
                   {p.title}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
@@ -437,7 +384,7 @@ export default function HomePage() {
 
               <Link
                 href={p.href}
-                className="inline-flex items-center gap-2 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition pt-3 border-t border-white/5"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-400 hover:text-indigo-300 transition"
               >
                 <span>{p.linkText}</span>
               </Link>
@@ -447,45 +394,39 @@ export default function HomePage() {
       </section>
 
       {/* ── WHATSAPP SPOTLIGHT BANNER ───────────────────────────────────────── */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="rounded-3xl p-8 sm:p-12 bg-gradient-to-br from-emerald-950/60 via-slate-900 to-slate-950 border border-emerald-500/30 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8">
-          <div className="max-w-xl space-y-4 text-left">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+        <div className="rounded-2xl p-8 sm:p-10 bg-slate-900/60 border border-white/10 flex flex-col lg:flex-row items-center justify-between gap-8">
+          <div className="max-w-xl space-y-3.5 text-left">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               <MessageSquare className="w-3.5 h-3.5" />
-              <span>OFFICIAL WHATSAPP BOT INTEGRATION</span>
+              <span>WHATSAPP CAMPUS BOT</span>
             </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-              Evaluate Projects Directly on WhatsApp. In 10 Seconds.
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Evaluate Projects Directly on WhatsApp
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Final-year students don&apos;t live in emails. Message our WhatsApp bot to compare ideas, generate full 60-minute build blueprints, and test fatal traps from your phone.
+              Message our WhatsApp bot from your phone to compare candidate ideas, generate full 60-minute build blueprints, and test edge-case traps on the go.
             </p>
-            <div className="flex items-center gap-3 pt-2 flex-wrap">
+            <div className="pt-2">
               <Link
                 href="/whatsapp"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs transition shadow-lg shadow-emerald-600/30 active:scale-95"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-md shadow-emerald-600/20"
               >
-                <span>Launch Interactive Phone Simulator →</span>
-              </Link>
-              <Link
-                href="/privacy"
-                className="text-xs text-slate-400 hover:text-slate-200 underline font-medium"
-              >
-                Meta Webhook Policy
+                <span>Launch WhatsApp Phone Simulator →</span>
               </Link>
             </div>
           </div>
 
-          {/* Quick Chat Preview Badge */}
-          <div className="w-full lg:w-80 rounded-2xl p-4 bg-[#111b21] border border-white/10 shadow-2xl space-y-3 font-sans text-left">
+          {/* Quick Chat Snippet Box */}
+          <div className="w-full lg:w-80 rounded-xl p-4 bg-[#111b21] border border-white/10 shadow-xl space-y-2.5 font-sans text-left">
             <div className="flex items-center gap-2 pb-2 border-b border-white/10">
-              <div className="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center text-xs">🧭</div>
+              <div className="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center text-xs">🧭</div>
               <div>
                 <strong className="text-xs text-white block">Project Compass Bot</strong>
-                <span className="text-[10px] text-emerald-400">online · Meta Verified</span>
+                <span className="text-[10px] text-emerald-400">online · Verified</span>
               </div>
             </div>
-            <div className="p-2.5 rounded-xl bg-[#202c33] text-xs text-slate-200 leading-relaxed">
+            <div className="p-2.5 rounded-lg bg-[#202c33] text-xs text-slate-200 leading-relaxed">
               👋 Send me any project idea:
               <br />• <strong>compare: Idea 1 vs Idea 2</strong>
               <br />• <strong>contract: Idea</strong>
@@ -495,24 +436,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── BOTTOM MASTERCLASS CTA ─────────────────────────────────────────── */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center space-y-6">
-        <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-          Ready to Build Your Project This Weekend?
+      {/* ── BOTTOM CALL TO ACTION ───────────────────────────────────────────── */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto text-center space-y-5">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          Ready to Build Your Final-Year Project?
         </h2>
-        <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
-          Zero cloud bills. Zero GPU requirements. Join hundreds of students shipping verified, viva-ready prototypes.
+        <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+          Zero cloud bills. Zero GPU requirements. Build a verified, viva-defensible prototype in 60 minutes.
         </p>
-        <div className="flex items-center justify-center gap-4 flex-wrap pt-2">
+        <div className="flex items-center justify-center gap-3.5 flex-wrap pt-2">
           <Link
             href="/compare"
-            className="px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-sm shadow-xl shadow-indigo-600/40 hover:-translate-y-0.5 transition active:scale-95"
+            className="px-7 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition"
           >
             <span>Start Feasibility Scan Free →</span>
           </Link>
           <Link
             href="/register"
-            className="px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-bold text-sm transition"
+            className="px-7 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-white font-semibold text-sm transition"
           >
             <span>Register for Free Masterclass</span>
           </Link>
