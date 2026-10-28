@@ -446,6 +446,10 @@ main {
   box-shadow: 0 4px 15px rgba(var(--accent-cyan-rgb), 0.35);
   font-weight: 700 !important;
 }
+[data-theme="light"] .btn-primary, [data-theme="light"] a.btn-primary {
+  background: linear-gradient(135deg, #0284c7, #2563eb) !important;
+  color: #ffffff !important;
+}
 .btn-primary:hover, a.btn-primary:hover {
   background: linear-gradient(135deg, #0ea5e9, #2563eb) !important;
   box-shadow: 0 6px 20px rgba(var(--accent-cyan-rgb), 0.5);
@@ -497,6 +501,10 @@ main {
   color: #ffffff !important;
   box-shadow: 0 4px 15px rgba(5, 150, 105, 0.35);
   font-weight: 700 !important;
+}
+[data-theme="light"] .btn-emerald, [data-theme="light"] a.btn-emerald {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: #ffffff !important;
 }
 .btn-emerald:hover, a.btn-emerald:hover {
   background: linear-gradient(135deg, #047857, #065f46) !important;
