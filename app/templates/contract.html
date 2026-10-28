@@ -2,13 +2,130 @@
 
 {% block title %}Build Contract: {{ contract.project_title }} — Project Compass{% endblock %}
 
+{% block head %}
+<!-- Chart.js for 3D-style Pie Chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- html2canvas + jsPDF for PDF download -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  .pie-wrapper {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    filter: drop-shadow(0 12px 32px rgba(6,182,212,0.3));
+  }
+  @keyframes pie-spin-in {
+    from { opacity: 0; transform: scale(0.5) rotate(-90deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+  .pie-wrapper canvas { animation: pie-spin-in 0.8s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+  .big-quote-block {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(139,92,246,0.1));
+    border: 1px solid rgba(6,182,212,0.3);
+    border-radius: 20px;
+    margin: 2.5rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .big-quote-block::before {
+    content: '"';
+    position: absolute;
+    top: -1rem;
+    left: 1.5rem;
+    font-size: 8rem;
+    color: rgba(6,182,212,0.12);
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+  .big-quote-block .quote-text {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0.75rem;
+  }
+  .big-quote-block .quote-sub {
+    font-size: 1rem;
+    color: var(--accent-cyan);
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+  }
+
+  .download-share-bar {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin: 1.5rem 0;
+  }
+
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(16,185,129,0.5); }
+    70%  { box-shadow: 0 0 0 14px rgba(16,185,129,0); }
+    100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+  }
+  .btn-register-final {
+    animation: pulse-ring 2s infinite;
+    font-size: 1.25rem;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .milestone-timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+  .milestone-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.6rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent-cyan), var(--accent-purple));
+  }
+  .milestone-dot {
+    position: absolute;
+    left: -1.6rem;
+    top: 0.25rem;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    border: 2px solid var(--bg-primary);
+    box-shadow: 0 0 8px rgba(6,182,212,0.6);
+  }
+  .milestone-item {
+    position: relative;
+    margin-bottom: 1.75rem;
+  }
+
+  /* Share link row */
+  .share-input-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .share-input-row input { flex: 1; min-width: 200px; }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
-    <!-- ⚡ Workshop Conversion Bar -->
+<div class="container" style="padding-top: 2rem; padding-bottom: 4rem;" id="contractContent">
+
+    <!-- ⚡ TOP Workshop Conversion Banner -->
     <div class="workshop-banner reveal">
         <div class="workshop-content">
-            <h4>⚡ Your Build Contract is Ready! Next Step: Build the Prototype</h4>
-            <p>Don't let this sit as a document. Join NxtWave's free live workshop: <strong>“Build Your First AI Project in 60 Minutes.”</strong></p>
+            <h4>⚡ Your Build Contract Is Ready! Next Step: Build the Prototype</h4>
+            <p>Don't let this sit as a document. Join NxtWave's free live workshop: <strong>"Build Your First AI Project in 60 Minutes."</strong></p>
         </div>
         <div>
             <a href="/register?contract_id={{ contract.contract_id }}" class="btn btn-emerald btn-sm" onclick="handleWorkshopCtaClick('contract_top_banner', '{{ contract.contract_id }}')">
@@ -40,7 +157,11 @@
                 </div>
             </div>
 
+            <!-- Action buttons at top -->
             <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="downloadContractPDF()">
+                    📥 Download PDF
+                </button>
                 <button type="button" class="btn btn-secondary btn-sm" onclick="copyToClipboard(window.location.href, 'Build Contract link copied!')">
                     Copy Contract Link 🔗
                 </button>
@@ -101,7 +222,7 @@
                     <span>⚠️</span> SINGLE POINT OF FAILURE ASSUMPTION:
                 </h5>
                 <p style="font-size: 1.15rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.75rem; line-height: 1.5;">
-                    “{{ contract.critical_assumption }}”
+                    "{{ contract.critical_assumption }}"
                 </p>
                 <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
                     <strong style="color: var(--text-main);">Why this matters:</strong> If this assumption is false, your architecture collapses regardless of how much UI code you write. The failure scenarios below are specifically built to verify this assumption.
@@ -115,10 +236,10 @@
                 <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main);">
                     <span>🧪</span> Proposed Technical Stress Tests
                 </div>
-                <span class="badge badge-amber">Pre-Implementation Verification</span>
+                <span class="badge badge-amber">Proposed Tests — Not Yet Executed</span>
             </div>
             <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
-                Execute these targeted checks before writing weeks of application code.
+                Execute these targeted checks before writing weeks of application code. Honest disclaimer: these are <em>proposed</em> — not yet executed.
             </p>
 
             <div style="display: flex; flex-direction: column; gap: 1.25rem;">
@@ -163,7 +284,6 @@
                 <span>🎯</span> Minimum Viable Prototype (MVP) Boundary
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-                <!-- Essential Features -->
                 <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-md); padding: 1.5rem;">
                     <div style="color: var(--accent-emerald); font-weight: 800; font-size: 1rem; margin-bottom: 0.75rem;">
                         ✅ Essential MVP Features (Build in Week 1):
@@ -174,11 +294,9 @@
                         {% endfor %}
                     </ul>
                 </div>
-
-                <!-- Deferred Features -->
                 <div style="background: rgba(244, 63, 94, 0.05); border: 1px solid rgba(244, 63, 94, 0.25); border-radius: var(--radius-md); padding: 1.5rem;">
                     <div style="color: var(--accent-rose); font-weight: 800; font-size: 1rem; margin-bottom: 0.75rem;">
-                        🚫 Postponed Scope (Do NOT Build for Demo):
+                        🚫 Postponed Scope — DO NOT Build in Week 1:
                     </div>
                     <ul style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.5rem; line-height: 1.5;">
                         {% for feat in contract.deferred_features %}
@@ -189,25 +307,70 @@
             </div>
         </div>
 
-        <!-- Section: 60-Minute Prototype Plan -->
-        <div style="margin-bottom: 2.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
-                <span>⏱️</span> 60-Minute Prototype Milestone Roadmap
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- 🏆 60-MINUTE PROTOTYPE PLAN + 3D PIE CHART                        -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <div style="margin-bottom: 2.5rem;" id="plan60Section">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">
+                <span>⏱️</span> The 60-Minute Prototype Roadmap
             </div>
-            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
-                Four 15-minute milestones to get from an empty folder to a verifiable first prototype.
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.75rem;">
+                Four 15-minute milestones. Start from an empty folder, finish with a verifiable working prototype.
             </p>
-            <div class="stepper-grid">
+
+            <!-- Timeline View -->
+            <div class="milestone-timeline" style="margin-bottom: 2.5rem;">
+                {% set milestone_colors = ['var(--accent-cyan)', 'var(--accent-blue)', 'var(--accent-purple)', 'var(--accent-emerald)'] %}
                 {% for milestone in contract.plan_60min %}
-                <div class="step-card">
-                    <span class="step-badge">{{ milestone.time_window }}</span>
-                    <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">{{ milestone.phase_title }}</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 0.75rem;">{{ milestone.objective }}</p>
-                    <div style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 600; border-top: 1px solid var(--border-subtle); padding-top: 0.5rem;">
-                        <strong>Deliverable:</strong> {{ milestone.deliverable }}
+                {% set idx = loop.index0 %}
+                <div class="milestone-item">
+                    <div class="milestone-dot"></div>
+                    <div class="card" style="padding: 1.25rem; background: var(--bg-tertiary); border-color: var(--border-subtle);">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                            <span class="badge badge-cyan" style="font-family: var(--font-mono);">{{ milestone.time_window }}</span>
+                            <strong style="color: var(--text-main); font-size: 1rem;">{{ milestone.phase_title }}</strong>
+                        </div>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem; line-height: 1.5;">{{ milestone.objective }}</p>
+                        <ul style="padding-left: 1.2rem; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem; line-height: 1.6;">
+                            {% for action in milestone.action_items %}
+                            <li>{{ action }}</li>
+                            {% endfor %}
+                        </ul>
+                        <div style="font-size: 0.82rem; color: var(--accent-cyan); font-weight: 600; border-top: 1px solid var(--border-subtle); padding-top: 0.5rem;">
+                            <strong>✅ Deliverable:</strong> {{ milestone.deliverable }}
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
+            </div>
+
+            <!-- 3D Pie Chart Section -->
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 2rem; text-align: center;">
+                <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">
+                    ⏰ Your 60 Minutes — Visualized
+                </h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Each phase = 15 minutes of focused building. Total = exactly 60 minutes.
+                </p>
+                <div class="pie-wrapper">
+                    <canvas id="plan60Chart" width="300" height="300"></canvas>
+                </div>
+                <!-- Legend -->
+                <div id="pieChartLegend" style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-top: 1.25rem;"></div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- 💬 BIG QUOTE: "This 60 min plan = Workshop"                       -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <div class="big-quote-block reveal">
+            <div class="quote-text">
+                You've just mapped your entire project into 60 minutes.<br>
+                <span style="color: var(--accent-cyan);">That's also exactly how long NxtWave's live workshop is.</span>
+            </div>
+            <div class="quote-sub">
+                🚀 In the workshop, a mentor walks you through building this <em>exact</em> prototype — live on your screen, in real-time.<br>
+                <strong>Same 60 minutes. Zero guessing. 100% working code at the end.</strong>
             </div>
         </div>
 
@@ -223,14 +386,65 @@
             </div>
         </div>
 
-        <!-- Section: Break My Build (Peer Validation) -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- 📥 DOWNLOAD + 🔗 SHARE BAR                                        -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <div class="card reveal" style="padding: 2rem; background: var(--bg-tertiary); border-color: rgba(var(--accent-purple-rgb), 0.3); margin-bottom: 2.5rem;">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <span class="badge badge-purple" style="margin-bottom: 0.5rem;">SHARE & SAVE</span>
+                <h3 style="font-size: 1.35rem; font-weight: 700; color: var(--text-main);">Share Your Build Contract → Get Free Peer Feedback</h3>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                    When classmates open your shared link, they'll see your plan AND discover Project Compass for their own project — free organic growth! 🚀
+                </p>
+            </div>
+
+            <!-- Shareable Link Input -->
+            <div class="share-input-row" style="margin-bottom: 1.25rem;">
+                <input type="text" readonly id="shareUrlInput"
+                    value="{{ request.base_url }}contract/{{ contract.contract_id }}"
+                    class="form-control"
+                    style="font-family: var(--font-mono); font-size: 0.85rem; background: var(--bg-card);">
+                <button type="button" class="btn btn-secondary btn-sm"
+                    onclick="copyShareLink()">
+                    📋 Copy Link
+                </button>
+                <button type="button" class="btn btn-outline btn-sm"
+                    onclick="shareToWhatsApp()">
+                    📱 Share to WhatsApp
+                </button>
+            </div>
+
+            <!-- Download & Action Buttons -->
+            <div class="download-share-bar">
+                <button type="button" class="btn btn-secondary" onclick="downloadContractPDF()">
+                    📥 Download PDF Report
+                </button>
+                <a href="/challenge/{{ contract.contract_id }}" class="btn btn-primary">
+                    🛡️ Invite Peers: Break My Build →
+                </a>
+            </div>
+
+            <!-- WhatsApp share message preview -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
+                <strong style="color: var(--accent-emerald);">📱 Ready-to-Paste WhatsApp Message:</strong><br>
+                <span id="waMsg">Hey! I built my final-year project plan using Project Compass 🧭. Can you find any flaws before my professor does? 😅
+Here's my plan: {{ request.base_url }}contract/{{ contract.contract_id }}
+Also try this free tool — I got my full tech stack in 60 seconds! 🔥</span>
+                <br><br>
+                <button type="button" class="btn btn-outline btn-sm" onclick="copyToClipboard(document.getElementById('waMsg').innerText, '📱 WhatsApp message copied!')">Copy This Message 📋</button>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- 🛡️ PEER VALIDATION / BREAK MY BUILD                               -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
         <div style="border-top: 1px dashed var(--border-light); padding-top: 2.5rem; margin-top: 2.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
                 <div>
                     <span class="badge badge-purple">PEER VALIDATION</span>
                     <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-top: 0.4rem;">Break My Build: Challenge This Project</h3>
                     <p style="font-size: 0.9rem; color: var(--text-secondary);">
-                        Share this link with classmates. When they submit failure edge cases, Project Compass recommends architectural fixes.
+                        Share this link with classmates. When they submit failure edge cases, Project Compass recommends architectural fixes — and shows them Project Compass for their own projects!
                     </p>
                 </div>
                 <a href="/challenge/{{ contract.contract_id }}" class="btn btn-purple">
@@ -241,12 +455,12 @@
             <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); margin-bottom: 1.5rem;">
                 <strong style="color: var(--accent-purple); font-size: 0.95rem;">Peer Prompt to Share:</strong>
                 <p style="font-size: 1.05rem; font-weight: 600; color: var(--text-main); margin: 0.5rem 0 1rem; line-height: 1.5;">
-                    “{{ contract.peer_challenge_prompt }}”
+                    "{{ contract.peer_challenge_prompt }}"
                 </p>
-                <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-                    <input type="text" readonly value="{{ request.base_url }}challenge/{{ contract.contract_id }}" class="form-control" style="max-width: 480px; font-family: var(--font-mono); font-size: 0.85rem;" id="shareUrlInput">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="copyToClipboard(document.getElementById('shareUrlInput').value, 'Shareable peer challenge link copied!')">
-                        Copy Shareable Link 📋
+                <div class="share-input-row">
+                    <input type="text" readonly value="{{ request.base_url }}challenge/{{ contract.contract_id }}" class="form-control" style="max-width: 480px; font-family: var(--font-mono); font-size: 0.85rem;" id="challengeUrlInput">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="copyToClipboard(document.getElementById('challengeUrlInput').value, 'Peer challenge link copied!')">
+                        Copy Challenge Link 📋
                     </button>
                 </div>
             </div>
@@ -277,16 +491,172 @@
             {% endif %}
         </div>
 
-        <!-- Workshop CTA Close -->
-        <div style="text-align: center; padding: 3rem 1.5rem 1rem; border-top: 1px solid var(--border-subtle); margin-top: 2.5rem;">
-            <h3 style="font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">Your Project Plan Is Ready.</h3>
-            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 1.75rem; font-size: 1.05rem;">
-                Now turn this plan into a working prototype in 60 minutes with NxtWave's live hands-on masterclass.
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <!-- 🎯 FINAL REGISTER CTA BLOCK                                        -->
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
+        <div style="text-align: center; padding: 3.5rem 1.5rem 1.5rem; border-top: 1px solid var(--border-subtle); margin-top: 3rem;">
+            <span class="badge badge-emerald" style="margin-bottom: 1rem; font-size: 0.9rem;">🎓 FREE LIVE WORKSHOP — 0₹</span>
+            <h2 style="font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem; letter-spacing: -0.02em;">
+                Your 60-Minute Plan Is Ready.<br>
+                <span style="background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Now Build It Live — Free.</span>
+            </h2>
+            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem; font-size: 1.1rem; line-height: 1.6;">
+                NxtWave's mentor will guide you through building this <strong style="color: var(--text-main);">exact prototype</strong> — live on your laptop — in their free hands-on masterclass. Same 60 minutes. Zero guessing. 100% working code at the end.
             </p>
-            <a href="/register?contract_id={{ contract.contract_id }}" class="btn btn-emerald btn-lg" onclick="handleWorkshopCtaClick('contract_bottom_cta', '{{ contract.contract_id }}')">
-                Register Free for 60-Minute AI Workshop ⚡
-            </a>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; align-items: center; margin-bottom: 1rem;">
+                <a href="/register?contract_id={{ contract.contract_id }}"
+                   class="btn btn-emerald btn-register-final"
+                   onclick="handleWorkshopCtaClick('contract_final_cta', '{{ contract.contract_id }}')">
+                    🚀 Register Free for the 60-Min AI Workshop
+                </a>
+                <button type="button" class="btn btn-secondary btn-lg" onclick="downloadContractPDF()">
+                    📥 Download My Build Contract
+                </button>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-muted);">
+                ✅ Completely free • No credit card required • ₹0 cost • Instant workshop access
+            </p>
         </div>
-    </div>
-</div>
+
+    </div><!-- end card -->
+</div><!-- end container -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+// ─── Chart.js 3D-style Pie Chart ─────────────────────────────────────────────
+const milestones = [
+    {% for m in contract.plan_60min %}
+    { label: "{{ m.phase_title }}", window: "{{ m.time_window }}", minutes: 15 }{% if not loop.last %},{% endif %}
+    {% endfor %}
+];
+
+const PIE_COLORS = ['#06b6d4', '#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#f43f5e'];
+
+function buildPieChart() {
+    const ctx = document.getElementById('plan60Chart');
+    if (!ctx || typeof Chart === 'undefined') return;
+
+    const labels  = milestones.map(m => m.window + ': ' + m.label);
+    const data    = milestones.map(() => 15); // each = 15 min
+    const colors  = PIE_COLORS.slice(0, milestones.length);
+    const hovers  = colors.map(c => c);
+
+    // Build Legend
+    const legendEl = document.getElementById('pieChartLegend');
+    if (legendEl) {
+        legendEl.innerHTML = milestones.map((m, i) => `
+            <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.82rem;color:var(--text-secondary);">
+                <span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${colors[i]};flex-shrink:0;"></span>
+                <span>${m.window} <strong style="color:var(--text-main);">(15 min)</strong></span>
+            </div>`).join('');
+    }
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: colors,
+                hoverBackgroundColor: colors,
+                borderColor: 'rgba(7,10,19,0.8)',
+                borderWidth: 3,
+                hoverOffset: 18,
+            }]
+        },
+        options: {
+            responsive: false,
+            cutout: '35%',
+            rotation: -90,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(13,18,34,0.96)',
+                    borderColor: 'rgba(255,255,255,0.12)',
+                    borderWidth: 1,
+                    padding: 12,
+                    titleFont: { family: 'JetBrains Mono', weight: '700', size: 12 },
+                    bodyFont: { family: 'Inter', size: 13 },
+                    callbacks: {
+                        label: function(ctx) {
+                            return ' ' + ctx.parsed + ' minutes (25% of total build time)';
+                        }
+                    }
+                }
+            },
+            animation: { animateRotate: true, animateScale: true, duration: 1000 }
+        }
+    });
+}
+
+window.addEventListener('load', buildPieChart);
+
+// ─── Shareable link helpers ───────────────────────────────────────────────────
+function copyShareLink() {
+    const url = document.getElementById('shareUrlInput').value;
+    copyToClipboard(url, '🔗 Build Contract link copied! Share it with classmates.');
+}
+
+function shareToWhatsApp() {
+    const contractUrl = document.getElementById('shareUrlInput').value;
+    const text = encodeURIComponent(
+        "Hey! I built my final-year project plan using Project Compass 🧭\n" +
+        "Can you find any flaws before my professor does? 😅\n" +
+        "My plan: " + contractUrl + "\n" +
+        "It's a free tool — try it for your project too! 🔥"
+    );
+    window.open('https://wa.me/?text=' + text, '_blank');
+}
+
+// ─── PDF Download using jsPDF + html2canvas ───────────────────────────────────
+async function downloadContractPDF() {
+    const trigger = event && event.target ? event.target : document.querySelector('[onclick*="downloadContractPDF"]');
+    const origText = trigger ? trigger.innerText : '';
+    if (trigger) { trigger.innerText = '⏳ Generating PDF...'; trigger.disabled = true; }
+
+    try {
+        const { jsPDF } = window.jspdf;
+        const element = document.getElementById('contractContent');
+
+        showToast('📄 Preparing your PDF... this takes a few seconds.', 'info');
+
+        const canvas = await html2canvas(element, {
+            scale: 1.5,
+            useCORS: true,
+            backgroundColor: '#070a13',
+            logging: false,
+            windowWidth: 1100
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.9);
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+        const pdfW = pdf.internal.pageSize.getWidth();
+        const pdfH = pdf.internal.pageSize.getHeight();
+        const canvasRatio = canvas.height / canvas.width;
+        const imgW = pdfW;
+        const imgH = imgW * canvasRatio;
+
+        let yOffset = 0;
+        let remainingH = imgH;
+
+        while (remainingH > 0) {
+            pdf.addImage(imgData, 'JPEG', 0, -yOffset, imgW, imgH);
+            remainingH -= pdfH;
+            yOffset += pdfH;
+            if (remainingH > 0) pdf.addPage();
+        }
+
+        const title = '{{ contract.project_title }}'.substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
+        pdf.save('BuildContract_{{ contract.contract_id }}_' + title + '.pdf');
+        showToast('📥 PDF downloaded! Share it with your team.', 'success');
+    } catch (err) {
+        console.error('PDF error:', err);
+        showToast('PDF generation failed. Try right-click → Print → Save as PDF.', 'error');
+    } finally {
+        if (trigger) { trigger.innerText = origText; trigger.disabled = false; }
+    }
+}
+</script>
 {% endblock %}
