@@ -2,13 +2,13 @@
 
 @layer base {
   :root {
-    --background: #f8fafc;
-    --foreground: #0f172a;
+    --background: #fbfbfd;
+    --foreground: #1d1d1f;
     --card: #ffffff;
-    --card-foreground: #0f172a;
-    --card-border: #e2e8f0;
-    --muted: #64748b;
-    --muted-foreground: #475569;
+    --card-foreground: #1d1d1f;
+    --card-border: rgba(0, 0, 0, 0.08);
+    --muted: #86868b;
+    --muted-foreground: #515154;
     --primary: #4f46e5;
     --primary-foreground: #ffffff;
     --secondary: #0ea5e9;
@@ -16,20 +16,20 @@
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444;
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(226, 232, 240, 0.8);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-    --glow: rgba(79, 70, 229, 0.15);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.05);
+    --glow: rgba(79, 70, 229, 0.12);
   }
 
   .dark {
-    --background: #090d16;
-    --foreground: #f8fafc;
-    --card: #0f172a;
-    --card-foreground: #f8fafc;
-    --card-border: #1e293b;
-    --muted: #94a3b8;
-    --muted-foreground: #cbd5e1;
+    --background: #090a0f;
+    --foreground: #f4f4f6;
+    --card: #11131c;
+    --card-foreground: #f4f4f6;
+    --card-border: rgba(255, 255, 255, 0.08);
+    --muted: #8b8f9e;
+    --muted-foreground: #c2c5d1;
     --primary: #6366f1;
     --primary-foreground: #ffffff;
     --secondary: #38bdf8;
@@ -37,151 +37,107 @@
     --success: #34d399;
     --warning: #fbbf24;
     --danger: #f87171;
-    --glass-bg: rgba(15, 23, 42, 0.75);
+    --glass-bg: rgba(17, 19, 28, 0.8);
     --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    --glow: rgba(99, 102, 241, 0.25);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+    --glow: rgba(99, 102, 241, 0.2);
   }
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-feature-settings: "rlig" 1, "calt" 1;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* Glassmorphism Classes */
+/* Subtle Tech Grid Background */
+.bg-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(120, 120, 150, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120, 120, 150, 0.05) 1px, transparent 1px);
+}
+
+.dark .bg-grid {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+/* Refined Glass Classes */
 .glass-panel {
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
 }
 
 .glass-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
-  border-radius: 1rem;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 1.25rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  transform: translateY(-3px);
   border-color: rgba(99, 102, 241, 0.35);
-  box-shadow: 0 16px 36px 0 var(--glow);
+  box-shadow: 0 12px 30px -4px var(--glow);
+  transform: translateY(-2px);
 }
 
-/* Glow Effects */
-.glow-primary {
-  box-shadow: 0 0 25px var(--glow);
-}
-
-.glow-card {
-  position: relative;
-}
-
-.glow-card::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(168, 85, 247, 0.4), rgba(56, 189, 248, 0.4));
-  border-radius: inherit;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.glow-card:hover::before {
-  opacity: 1;
-}
-
-/* Gradient Text */
+/* Sleek Gradient Text */
 .gradient-text {
-  background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #38bdf8 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.gradient-text-emerald {
-  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+.dark .gradient-text {
+  background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #38bdf8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.gradient-text-amber {
-  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Modern Pill Button */
+.btn-pill {
+  border-radius: 9999px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Shimmer Animation */
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+.btn-pill:hover {
+  transform: scale(1.02);
 }
 
-.animate-shimmer {
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0) 100%);
-  background-size: 200% 100%;
-  animation: shimmer 3s infinite linear;
+.btn-pill:active {
+  transform: scale(0.98);
 }
 
-/* Float Animation */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-.animate-float {
-  animation: float 5s ease-in-out infinite;
-}
-
-/* Pulse Glow */
-@keyframes pulse-glow {
-  0%, 100% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.9;
-    transform: scale(1.04);
-  }
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 4s ease-in-out infinite;
-}
-
-/* Custom Scrollbar */
+/* Clean Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--card-border);
-  border-radius: 4px;
+  background: rgba(140, 140, 160, 0.25);
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted);
+  background: rgba(140, 140, 160, 0.45);
 }

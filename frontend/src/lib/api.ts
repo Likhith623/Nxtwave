@@ -135,6 +135,7 @@ export async function getContract(contractId: string) {
       backend: data.backend_rec || "FastAPI + Pydantic v2",
       database: data.db_rec || "SQLite / PostgreSQL",
     },
+    challenges: data.challenges || [],
     created_at: data.created_at,
   };
 }

@@ -94,7 +94,7 @@ export default function WhatsAppPage() {
     try {
       const response = await simulateWhatsAppMessage("+919390471597", textToSend.trim());
 
-      const botReply = response?.reply || response?.response || response?.message ||
+      const botReply = response?.reply || (response as any)?.response || (response as any)?.message ||
         "✅ Compass Evaluation complete! Your concept was scored with high feasibility.";
 
       const botMsg: ChatMessage = {
@@ -310,3 +310,4 @@ export default function WhatsAppPage() {
     </div>
   );
 }
+
