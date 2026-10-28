@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Growth Campaign Analytics — Project Compass{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <span class="badge badge-purple" style="margin-bottom: 0.4rem;">NXTWAVE GROWTH CHALLENGE METRICS</span>
+            <h1 style="font-size: 2.25rem; color: #ffffff;">Campaign & Funnel Analytics</h1>
+            <p style="color: var(--text-muted); font-size: 0.92rem;">
+                Track real-time project comparisons, Break My Build participation, and 60-Minute Workshop conversion attribution.
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+                <input type="password" id="adminTokenInput" class="form-control" placeholder="Admin Secret Token" style="max-width: 200px; font-size: 0.82rem;" value="compass_growth_admin_secret_2026">
+                <button class="btn btn-secondary btn-sm" onclick="fetchMetrics()">Refresh 🔄</button>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="resetDemoDataAction()">Reset Demo Data ⚠️</button>
+        </div>
+    </div>
+
+    <!-- Alert / Disclosure -->
+    <div style="background-color: rgba(6, 182, 212, 0.08); border-left: 3px solid var(--accent-cyan); padding: 0.85rem 1.25rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 2rem; font-size: 0.88rem; color: var(--text-main);">
+        📊 <strong>Growth Campaign Tracking:</strong> Records UTM attribution across engineering WhatsApp groups, campus clubs, and organic peer challenge links. Registrations in demo mode are distinguished with explicit simulation tags.
+    </div>
+
+    <!-- Top KPI Metric Cards -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-label">Project Comparisons</div>
+            <div class="kpi-value" id="kpiComparisons">-</div>
+            <div class="kpi-sub">Total student submissions</div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-label">Build Contracts</div>
+            <div class="kpi-value" id="kpiContracts" style="color: var(--accent-cyan);">-</div>
+            <div class="kpi-sub">Projects chosen & planned</div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-label">Peer Challenges</div>
+            <div class="kpi-value" id="kpiChallenges" style="color: var(--accent-purple);">-</div>
+            <div class="kpi-sub" id="kpiParticipationRate">- participation rate</div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-label">Workshop CTA Clicks</div>
+            <div class="kpi-value" id="kpiCtaClicks" style="color: var(--accent-amber);">-</div>
+            <div class="kpi-sub">Outbound workshop intent</div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-label">Workshop Registrations</div>
+            <div class="kpi-value" id="kpiRegistrations" style="color: var(--accent-emerald);">-</div>
+            <div class="kpi-sub" id="kpiDemoSub">- demo / - confirmed</div>
+        </div>
+    </div>
+
+    <!-- Funnel Conversion Rates Section -->
+    <div class="card">
+        <div class="card-header">
+            <h3>Stage-to-Stage Conversion Funnel</h3>
+            <span class="badge badge-emerald">Funnel Efficiency</span>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+            <div style="background-color: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius-sm); border-top: 3px solid var(--accent-blue);">
+                <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">Step 1 → Step 2</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #ffffff; margin: 0.2rem 0;" id="funnelCompToContract">-%</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Comparison to Build Contract</div>
+            </div>
+
+            <div style="background-color: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius-sm); border-top: 3px solid var(--accent-cyan);">
+                <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">Step 2 → Step 3</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #ffffff; margin: 0.2rem 0;" id="funnelContractToCta">-%</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Contract to Workshop CTA Click</div>
+            </div>
+
+            <div style="background-color: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius-sm); border-top: 3px solid var(--accent-amber);">
+                <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">Step 3 → Step 4</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #ffffff; margin: 0.2rem 0;" id="funnelCtaToReg">-%</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">CTA Click to Completed Registration</div>
+            </div>
+
+            <div style="background-color: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius-sm); border-top: 3px solid var(--accent-emerald);">
+                <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">End-to-End Conversion</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-emerald); margin: 0.2rem 0;" id="funnelOverall">-%</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Comparison to Registration</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2 Column: Campaign Sources & Recent Registrations -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+        <!-- Campaign Sources -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Campaign Attribution Sources</h3>
+                <span class="badge badge-cyan">UTM Tracking</span>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Channel / Source</th>
+                            <th>Attributed Events</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sourcesTableBody">
+                        <tr><td colspan="2" style="text-align: center; color: var(--text-dark);">Loading attribution data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Registrations -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Recent Workshop Registrations</h3>
+                <span class="badge badge-emerald">Conversion Feed</span>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Source</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="regsTableBody">
+                        <tr><td colspan="3" style="text-align: center; color: var(--text-dark);">Loading registrations...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function fetchMetrics() {
+    const token = document.getElementById("adminTokenInput").value.trim();
+    try {
+        const res = await fetch(`/api/admin/metrics?token=${encodeURIComponent(token)}`);
+        if (!res.ok) {
+            if (res.status === 401) throw new Error("Invalid admin authorization token.");
+            throw new Error("Failed to load metrics");
+        }
+        const data = await res.json();
+        
+        // Populate KPIs
+        document.getElementById("kpiComparisons").innerText = data.total_comparisons;
+        document.getElementById("kpiContracts").innerText = data.total_contracts;
+        document.getElementById("kpiChallenges").innerText = data.total_challenges;
+        document.getElementById("kpiParticipationRate").innerText = `${data.challenge_participation_rate}% participation rate`;
+        document.getElementById("kpiCtaClicks").innerText = data.cta_clicks;
+        document.getElementById("kpiRegistrations").innerText = data.total_registrations;
+        document.getElementById("kpiDemoSub").innerText = `${data.demo_registrations} demo / ${data.confirmed_registrations} confirmed`;
+
+        // Funnel
+        document.getElementById("funnelCompToContract").innerText = `${data.funnel_conversion_rates.comparison_to_contract}%`;
+        document.getElementById("funnelContractToCta").innerText = `${data.funnel_conversion_rates.contract_to_cta}%`;
+        document.getElementById("funnelCtaToReg").innerText = `${data.funnel_conversion_rates.cta_to_registration}%`;
+        document.getElementById("funnelOverall").innerText = `${data.funnel_conversion_rates.comparison_to_registration}%`;
+
+        // Sources table
+        const sourcesBody = document.getElementById("sourcesTableBody");
+        if (data.campaign_sources && data.campaign_sources.length > 0) {
+            sourcesBody.innerHTML = data.campaign_sources.map(s => `
+                <tr>
+                    <td><strong>${s.source}</strong></td>
+                    <td style="font-family: var(--font-mono);">${s.events}</td>
+                </tr>
+            `).join("");
+        } else {
+            sourcesBody.innerHTML = `<tr><td colspan="2" style="text-align:center; color: var(--text-dark);">No channel events recorded yet.</td></tr>`;
+        }
+
+        // Registrations table
+        const regsBody = document.getElementById("regsTableBody");
+        if (data.recent_registrations && data.recent_registrations.length > 0) {
+            regsBody.innerHTML = data.recent_registrations.map(r => `
+                <tr>
+                    <td>
+                        <strong style="color: #ffffff;">${r.name}</strong><br>
+                        <span style="font-size: 0.75rem; color: var(--text-dark);">${r.email_masked}</span>
+                    </td>
+                    <td><span class="badge badge-cyan">${r.source}</span></td>
+                    <td><span class="badge ${r.is_demo ? 'badge-amber' : 'badge-emerald'}">${r.is_demo ? 'SIMULATION' : 'CONFIRMED'}</span></td>
+                </tr>
+            `).join("");
+        } else {
+            regsBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-dark);">No registrations yet.</td></tr>`;
+        }
+
+        showToast("Campaign metrics refreshed.", "success");
+    } catch (err) {
+        showToast(err.message, "error");
+    }
+}
+
+async function resetDemoDataAction() {
+    if (!confirm("Are you sure you want to reset demo records? This will restore baseline presentation data.")) return;
+    const token = document.getElementById("adminTokenInput").value.trim();
+    try {
+        const res = await fetch(`/api/admin/reset?token=${encodeURIComponent(token)}`, { method: "POST" });
+        if (!res.ok) throw new Error("Reset unauthorized or failed");
+        showToast("Demo data successfully reset and re-seeded!", "success");
+        fetchMetrics();
+    } catch (err) {
+        showToast(err.message, "error");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchMetrics();
+});
+</script>
+{% endblock %}
+

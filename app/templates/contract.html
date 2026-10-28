@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}Build Contract: {{ contract.project_title }} — Project Compass{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Workshop Conversion Bar -->
+    <div class="workshop-banner">
+        <div class="workshop-content">
+            <h4>⚡ Your Build Contract is Ready! Next Step: Build the Prototype</h4>
+            <p>Don't just leave this as a document. Join NxtWave's free live workshop: <strong>“Build Your First AI Project in 60 Minutes.”</strong></p>
+        </div>
+        <div>
+            <a href="/register?contract_id={{ contract.contract_id }}" class="btn btn-emerald btn-sm" onclick="handleWorkshopCtaClick('contract_top_banner', '{{ contract.contract_id }}')">
+                Register Free Workshop (0₹) →
+            </a>
+        </div>
+    </div>
+
+    <!-- Contract Paper Box -->
+    <div class="contract-box">
+        <!-- Header -->
+        <div class="contract-header">
+            <div>
+                <span class="badge badge-emerald">OFFICIAL BUILD CONTRACT</span>
+                <span class="contract-id" style="margin-left: 0.5rem;">ID: {{ contract.contract_id }}</span>
+                <h1 style="font-size: 2.2rem; color: #ffffff; margin-top: 0.5rem;">{{ contract.project_title }}</h1>
+                <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;">
+                    Category: <strong style="color: var(--accent-cyan);">{{ contract.category }}</strong> • 
+                    Difficulty: <strong style="color: var(--accent-amber);">{{ contract.difficulty }}</strong> • 
+                    Mode: <strong style="color: var(--accent-emerald);">Deterministic Rules-Based Analysis</strong>
+                </div>
+            </div>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary btn-sm" onclick="copyToClipboard(window.location.href, 'Build Contract link copied!')">
+                    Copy Contract Link 🔗
+                </button>
+                <a href="/challenge/{{ contract.contract_id }}" class="btn btn-primary btn-sm">
+                    Invite Peer to Break My Build 🛡️
+                </a>
+            </div>
+        </div>
+
+        <!-- Original Idea Summary -->
+        <div class="contract-section">
+            <div class="contract-section-title">
+                <span>🎯</span> Scope & Original Concept
+            </div>
+            <p style="background-color: var(--bg-primary); padding: 1rem; border-radius: var(--radius-sm); color: var(--text-muted); font-size: 0.92rem;">
+                {{ contract.original_idea }}
+            </p>
+        </div>
+
+        <!-- Technical Foundation -->
+        <div class="contract-section">
+            <div class="contract-section-title">
+                <span>⚙️</span> Technical Foundation (₹0 Local Execution Stack)
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                <div style="background-color: var(--bg-primary); padding: 1rem; border-radius: var(--radius-sm);">
+                    <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">Frontend Recommendation</div>
+                    <strong style="color: var(--accent-cyan); font-size: 0.95rem;">{{ contract.frontend_rec }}</strong>
+                </div>
+                <div style="background-color: var(--bg-primary); padding: 1rem; border-radius: var(--radius-sm);">
+                    <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">Backend Recommendation</div>
+                    <strong style="color: var(--accent-blue); font-size: 0.95rem;">{{ contract.backend_rec }}</strong>
+                </div>
+                <div style="background-color: var(--bg-primary); padding: 1rem; border-radius: var(--radius-sm);">
+                    <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">AI Model / Engine</div>
+                    <strong style="color: var(--accent-purple); font-size: 0.95rem;">{{ contract.ai_model_rec }}</strong>
+                </div>
+                <div style="background-color: var(--bg-primary); padding: 1rem; border-radius: var(--radius-sm);">
+                    <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">Database</div>
+                    <strong style="color: var(--accent-emerald); font-size: 0.95rem;">{{ contract.db_rec }}</strong>
+                </div>
+            </div>
+            <div style="background-color: var(--bg-secondary); padding: 1rem; border-radius: var(--radius-sm); font-size: 0.88rem; margin-bottom: 0.75rem;">
+                <strong style="color: #ffffff;">Architectural Rationale:</strong> {{ contract.tech_reasoning }}
+            </div>
+            <div style="background-color: var(--bg-secondary); padding: 1rem; border-radius: var(--radius-sm); font-size: 0.88rem;">
+                <strong style="color: #ffffff;">Data & External Dependencies:</strong> {{ contract.required_data }}
+            </div>
+        </div>
+
+        <!-- The Critical Assumption (Load Bearing) -->
+        <div class="contract-section">
+            <div class="contract-section-title">
+                <span>⚠️</span> The Critical Assumption (Load-Bearing Risk)
+            </div>
+            <div class="alert-assumption">
+                <h5><span>⚠️</span> Single Point of Failure Assumption:</h5>
+                <p style="font-size: 1rem; color: #ffffff; font-weight: 500; margin-bottom: 0.5rem;">
+                    “{{ contract.critical_assumption }}”
+                </p>
+                <div style="font-size: 0.84rem; color: var(--text-muted);">
+                    <strong>Why this matters:</strong> If this assumption is false, your architecture collapses regardless of how much UI or code you write. The failure tests below are specifically designed to stress-test this point.
+                </div>
+            </div>
+        </div>
+
+        <!-- Proposed Failure Scenarios -->
+        <div class="contract-section">
+            <div class="contract-section-title">
+                <span>🧪</span> Proposed Technical Stress Tests (Pre-Implementation Verification)
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                <em>Note: These are proposed stress tests designed to expose failure modes before writing weeks of code.</em>
+            </div>
+
+            {% for test in contract.failure_scenarios %}
+            <div class="test-card">
+                <div class="test-card-header">
+                    <div class="test-card-title">
+                        <span class="badge badge-amber" style="margin-right: 0.5rem;">{{ test.test_id }}</span>
+                        {{ test.test_name }}
+                    </div>
+                </div>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                    <strong>What is Tested:</strong> {{ test.what_is_tested }}<br>
+                    <strong style="color: var(--accent-rose);">Why It Matters:</strong> {{ test.why_it_matters }}
+                </p>
+                <div class="test-grid">
+                    <div class="test-cell">
+                        <div class="test-cell-label">Test Procedure</div>
+                        <div>{{ test.test_procedure }}</div>
+                    </div>
+                    <div class="test-cell">
+                        <div class="test-cell-label">Expected Observation</div>
+                        <div>{{ test.expected_observation }}</div>
+                    </div>
+                    <div class="test-cell">
+                        <div class="test-cell-label">Acceptance Criteria</div>
+                        <div style="color: var(--accent-emerald);">{{ test.acceptance_criteria }}</div>
+                    </div>
+                    <div class="test-cell">
+                        <div class="test-cell-label">Remediation if Test Fails</div>
+                        <div style="color: var(--accent-amber);">{{ test.remediation_plan }}</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- MVP Scope Boundary -->
+        <div class="contract-section">
+            <div class="contract-section-title">
+                <span>🎯</span> Minimum Viable Prototype (MVP) Boundary
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+                <!-- Essential Features -->
+                <div style="background-color: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-md); padding: 1.25rem;">
+                    <div style="color: var(--accent-emerald); font-weight: 700; margin-bottom: 0.75rem; font-size: 0.95rem;">
+                        ✅ Essential MVP Features (Build These in Week 1):
+                    </div>
+                    <ul style="margin-left: 1.2rem; font-size: 0.88rem; color: var(--text-main); display: flex; flex-direction: column; gap: 0.4rem;">
+                        {% for feat in contract.mvp_features %}
+                        <li>{{ feat }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Deferred Features -->
+                <div style="background-color: rgba(244, 63, 94, 0.05); border: 1px solid rgba(244, 63, 94, 0.2); border-radius: var(--radius-md); padding: 1.25rem;">
+                    <div style="color: var(--accent-rose); font-weight: 700; margin-bottom: 0.75rem; font-size: 0.95rem;">
+                        🚫 Postponed Scope (Do NOT Build These in Prototype):
+                    </div>
+                    <ul style="margin-left: 1.2rem; font-size: 0.88rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.4rem;">
+                        {% for feat in contract.deferred_features %}
+                        <li>{{ feat }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 60-Minute Build Plan -->
+        <div class="contract-section">
+            <div class="contract-section-title">
+                <span>⏱️</span> 60-Minute Prototype Milestone Roadmap
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                Four 15-minute milestones to get from empty folder to a verifiable first prototype.
+            </p>
+            <div class="timeline">
+                {% for milestone in contract.plan_60min %}
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-time">{{ milestone.time_window }}</div>
+                    <div class="timeline-title">{{ milestone.phase_title }}</div>
+                    <div class="timeline-desc">{{ milestone.objective }}</div>
+                    <div style="margin-top: 0.4rem; font-size: 0.82rem; color: var(--accent-cyan);">
+                        <strong>Deliverable:</strong> {{ milestone.deliverable }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Immediate Next Action -->
+        <div class="contract-section">
+            <div class="contract-section-title">
+                <span>🚀</span> Immediate Next Action (Start in 5 Minutes)
+            </div>
+            <div style="background: linear-gradient(90deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1)); border: 1px solid var(--accent-cyan); border-radius: var(--radius-md); padding: 1.25rem;">
+                <div style="font-size: 1.05rem; font-weight: 600; color: #ffffff;">
+                    {{ contract.immediate_action }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Peer Validation / Break My Build Section -->
+        <div class="contract-section" style="border-top: 2px dashed var(--border-subtle); padding-top: 2rem;">
+            <div class="card-header" style="border: none; padding: 0; margin-bottom: 1rem;">
+                <div>
+                    <span class="badge badge-purple">PEER VALIDATION</span>
+                    <h3 style="font-size: 1.4rem; color: #ffffff; margin-top: 0.35rem;">Break My Build: Challenge This Project</h3>
+                    <p style="font-size: 0.88rem; color: var(--text-muted);">
+                        Share this link with classmates. When they suggest failure cases, Project Compass generates structured improvements.
+                    </p>
+                </div>
+                <div>
+                    <a href="/challenge/{{ contract.contract_id }}" class="btn btn-primary">
+                        Open Peer Challenge Page 🛡️ →
+                    </a>
+                </div>
+            </div>
+
+            <div style="background-color: var(--bg-secondary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); margin-bottom: 1.25rem;">
+                <strong style="color: var(--accent-purple);">Peer Prompt to Share:</strong>
+                <p style="font-size: 0.95rem; color: #ffffff; margin: 0.35rem 0 0.85rem;">
+                    “{{ contract.peer_challenge_prompt }}”
+                </p>
+                <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                    <input type="text" readonly value="{{ request.base_url }}challenge/{{ contract.contract_id }}" class="form-control" style="max-width: 480px; font-family: var(--font-mono); font-size: 0.85rem;" id="shareUrlInput">
+                    <button class="btn btn-outline btn-sm" onclick="copyToClipboard(document.getElementById('shareUrlInput').value, 'Shareable peer challenge link copied!')">
+                        Copy Shareable Link 📋
+                    </button>
+                </div>
+            </div>
+
+            <!-- Existing Challenges Feed -->
+            {% if challenges and challenges|length > 0 %}
+            <div style="margin-top: 1.5rem;">
+                <h4 style="font-size: 1rem; color: #ffffff; margin-bottom: 0.75rem;">Community Stress Challenges ({{ challenges|length }} submitted):</h4>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    {% for ch in challenges %}
+                    <div style="background-color: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); border-left: 3px solid var(--accent-purple);">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.4rem;">
+                            <strong style="color: var(--accent-purple);">From: {{ ch.peer_name }}</strong>
+                            <span style="color: var(--text-dark);">{{ ch.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
+                        <div style="font-size: 0.9rem; color: #ffffff; margin-bottom: 0.4rem;">
+                            <strong>Challenge:</strong> {{ ch.challenge_text }}
+                        </div>
+                        <div style="font-size: 0.82rem; color: var(--text-muted);">
+                            <strong>Why it matters:</strong> {{ ch.why_it_matters }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Workshop CTA Close -->
+        <div style="text-align: center; padding: 2.5rem 1.5rem 1rem; border-top: 1px solid var(--border-subtle); margin-top: 2rem;">
+            <h3 style="font-size: 1.6rem; color: #ffffff; margin-bottom: 0.5rem;">Your Project Plan Is Ready.</h3>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 1.5rem;">
+                Now learn how to turn this plan into working code in 60 minutes with NxtWave's live hands-on masterclass.
+            </p>
+            <a href="/register?contract_id={{ contract.contract_id }}" class="btn btn-emerald btn-lg" onclick="handleWorkshopCtaClick('contract_bottom_cta', '{{ contract.contract_id }}')">
+                Register Free for 60-Minute AI Workshop ⚡
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

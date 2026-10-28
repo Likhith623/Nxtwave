@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Project Compass — Choose. Test. Prove.{% endblock %}</title>
+    <meta name="description" content="Stop guessing your final-year AI project. Compare ideas against your constraints, stress-test fatal risks, and build a working 60-minute prototype.">
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Top Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="/" class="brand">
+                <div class="brand-icon">🧭</div>
+                <div>
+                    <div>Project Compass</div>
+                    <div class="brand-tag">Choose. Test. Prove.</div>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/compare">Compare Ideas</a></li>
+                <li><a href="/#samples">Sample Library</a></li>
+                <li><a href="/whatsapp">WhatsApp Bot</a></li>
+                <li><a href="/admin">Growth Analytics</a></li>
+                <li>
+                    <a href="/register" class="btn btn-primary btn-sm" onclick="handleWorkshopCtaClick('navbar_cta')">
+                        Free AI Workshop ⚡
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Application Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div>
+                <strong>Project Compass</strong> — AI-Powered Project Selection & Peer Validation Platform.<br>
+                Built for the <strong>NxtWave Growth Intern Challenge</strong> | 48-Hour Build | <strong>₹0 Development Cost</strong>.
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <a href="/privacy">Privacy Notice</a>
+                <span>•</span>
+                <a href="/whatsapp">WhatsApp Flow</a>
+                <span>•</span>
+                <a href="/admin">Campaign Dashboard</a>
+                <span>•</span>
+                <a href="/register" onclick="handleWorkshopCtaClick('footer_cta')">60-Min Workshop</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+

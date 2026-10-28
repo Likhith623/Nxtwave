@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}WhatsApp Distribution Simulator — Project Compass{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 860px;">
+    <!-- Header -->
+    <div style="margin-bottom: 2rem; text-align: center;">
+        <span class="badge badge-emerald" style="margin-bottom: 0.5rem;">CAMPUS COMMUNITY DISTRIBUTION ADAPTER</span>
+        <h1 style="font-size: 2.25rem; color: #ffffff;">Interactive WhatsApp Bot Simulator</h1>
+        <p style="color: var(--text-muted); max-width: 650px; margin: 0 auto;">
+            Simulate how students in engineering club WhatsApp groups discover Project Compass, test project feasibility in 10 seconds, and convert into workshop registrations.
+        </p>
+    </div>
+
+    <!-- Disclosure Card -->
+    <div class="card" style="padding: 1rem 1.25rem; background-color: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.3); margin-bottom: 2rem;">
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <span style="font-size: 1.5rem;">📱</span>
+            <div style="font-size: 0.88rem; color: var(--text-main);">
+                <strong>Zero-Cost Dry-Run Simulator:</strong> Runs 100% locally using our Python analysis engine. 
+                No Twilio account, paid Meta API tokens, or phone number setup required to demonstrate this flow.
+            </div>
+        </div>
+    </div>
+
+    <!-- Phone Mockup Container -->
+    <div style="max-width: 520px; margin: 0 auto; background-color: #0b141a; border: 4px solid #202c33; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+        <!-- Phone Top Bar -->
+        <div style="background-color: #202c33; padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 0.85rem; border-bottom: 1px solid #2a3942;">
+            <div style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                🧭
+            </div>
+            <div>
+                <strong style="color: #e9edef; font-size: 0.95rem;">Project Compass Bot</strong><br>
+                <span style="font-size: 0.75rem; color: #00a884;">● online (Growth Bot)</span>
+            </div>
+        </div>
+
+        <!-- Chat Log Area -->
+        <div id="chatLog" style="height: 380px; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; background-color: #0b141a; background-image: radial-gradient(#182229 1px, transparent 1px); background-size: 16px 16px;">
+            <!-- Welcome message from bot -->
+            <div style="align-self: flex-start; max-width: 85%; background-color: #202c33; color: #d1d7db; padding: 0.75rem 1rem; border-radius: 8px 8px 8px 0; font-size: 0.88rem; line-height: 1.4;">
+                👋 <strong>Hey there! Welcome to Project Compass.</strong><br><br>
+                Got a final-year AI project idea? Send me a 1-sentence description and I'll analyze its feasibility, biggest risk, and generate your Build Contract link!
+            </div>
+        </div>
+
+        <!-- Pre-set Quick Test Prompts -->
+        <div style="background-color: #111b21; padding: 0.5rem 0.85rem; border-top: 1px solid #222d34; display: flex; gap: 0.4rem; overflow-x: auto;">
+            <button class="chip btn-sm" style="font-size: 0.75rem; background-color: #202c33; border: none; white-space: nowrap;" onclick="fillChatMessage('College handbook chatbot using RAG and PDF documents')">
+                📄 College Policy Bot
+            </button>
+            <button class="chip btn-sm" style="font-size: 0.75rem; background-color: #202c33; border: none; white-space: nowrap;" onclick="fillChatMessage('Plant disease leaf detector using mobile camera photos')">
+                🌿 Plant Disease Vision
+            </button>
+            <button class="chip btn-sm" style="font-size: 0.75rem; background-color: #202c33; border: none; white-space: nowrap;" onclick="fillChatMessage('Student placement salary predictor from coding scores')">
+                📊 Placement Predictor
+            </button>
+        </div>
+
+        <!-- Phone Input Bar -->
+        <form id="chatForm" style="background-color: #202c33; padding: 0.75rem 1rem; display: flex; gap: 0.5rem; align-items: center;">
+            <input type="text" id="chatInput" placeholder="Type a project idea..." class="form-control" style="background-color: #2a3942; border: none; color: #ffffff; font-size: 0.88rem; padding: 0.6rem 0.9rem; border-radius: 20px;" required>
+            <button type="submit" id="chatSendBtn" class="btn btn-emerald btn-sm" style="border-radius: 50%; width: 38px; height: 38px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                ➤
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function fillChatMessage(text) {
+    document.getElementById("chatInput").value = text;
+    document.getElementById("chatInput").focus();
+}
+
+document.getElementById("chatForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const input = document.getElementById("chatInput");
+    const chatLog = document.getElementById("chatLog");
+    const sendBtn = document.getElementById("chatSendBtn");
+    const userMsg = input.value.trim();
+    if (!userMsg) return;
+
+    // Append User Message bubble
+    const userBubble = document.createElement("div");
+    userBubble.style.cssText = "align-self: flex-end; max-width: 85%; background-color: #005c4b; color: #e9edef; padding: 0.75rem 1rem; border-radius: 8px 8px 0 8px; font-size: 0.88rem;";
+    userBubble.innerText = userMsg;
+    chatLog.appendChild(userBubble);
+    chatLog.scrollTop = chatLog.scrollHeight;
+
+    input.value = "";
+    sendBtn.disabled = true;
+
+    // Typing indicator
+    const typingBubble = document.createElement("div");
+    typingBubble.style.cssText = "align-self: flex-start; max-width: 85%; background-color: #202c33; color: #8696a0; padding: 0.5rem 1rem; border-radius: 8px 8px 8px 0; font-size: 0.82rem;";
+    typingBubble.innerText = "Project Compass bot is analyzing...";
+    chatLog.appendChild(typingBubble);
+    chatLog.scrollTop = chatLog.scrollHeight;
+
+    try {
+        const res = await fetch("/api/whatsapp/simulate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: userMsg })
+        });
+        
+        if (!res.ok) throw new Error("Simulator error");
+        const data = await res.json();
+        
+        typingBubble.remove();
+
+        // Append Bot reply bubble
+        const botBubble = document.createElement("div");
+        botBubble.style.cssText = "align-self: flex-start; max-width: 88%; background-color: #202c33; color: #d1d7db; padding: 0.85rem 1rem; border-radius: 8px 8px 8px 0; font-size: 0.85rem; line-height: 1.45; white-space: pre-wrap;";
+        
+        // Convert basic markdown format to HTML
+        let formatted = data.reply_text
+            .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
+            .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: #38bdf8; text-decoration: underline;">$1</a>');
+            
+        botBubble.innerHTML = formatted;
+        chatLog.appendChild(botBubble);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    } catch (err) {
+        typingBubble.innerText = "⚠️ Could not analyze message. Try another idea.";
+    } finally {
+        sendBtn.disabled = false;
+    }
+});
+</script>
+{% endblock %}
+

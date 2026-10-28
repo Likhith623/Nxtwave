@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Project Compass — Stop Guessing. Choose. Test. Prove.{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Workshop Conversion Banner -->
+    <div class="workshop-banner">
+        <div class="workshop-content">
+            <h4>⚡ NxtWave Free Live Workshop: Build Your First AI Project in 60 Minutes</h4>
+            <p>Don't spend 4 months coding the wrong project. Learn how to scaffold, integrate, and test a working AI prototype in one focused session.</p>
+        </div>
+        <div>
+            <a href="/register" class="btn btn-emerald btn-sm" onclick="handleWorkshopCtaClick('hero_top_banner')">
+                Register Free (0₹) →
+            </a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span>🧭</span> NxtWave Growth Intern Challenge • 48-Hour Build • ₹0 Cost
+        </div>
+        <h1>Stop Guessing Your Final-Year AI Project.</h1>
+        <p class="lead">
+            Find the project that fits your skills, identify its biggest failure risks before writing code, 
+            and discover how to build a realistic prototype in 60 minutes.
+        </p>
+        <div class="hero-actions">
+            <a href="/compare" class="btn btn-primary btn-lg">
+                Find My Best-Fit Project 🎯
+            </a>
+            <a href="/contract/bc_demo_rag" class="btn btn-secondary btn-lg">
+                See a Sample Build Contract 📋
+            </a>
+        </div>
+    </section>
+
+    <!-- The 3 Core Questions Section -->
+    <section style="margin: 3.5rem 0 2rem;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 style="font-size: 1.85rem; color: #ffffff;">How Project Compass Solves the Final-Year Dilemma</h2>
+            <p style="color: var(--text-muted); max-width: 650px; margin: 0.5rem auto 0;">
+                Traditional project generators dump generic ideas. Project Compass provides an end-to-end engineering validation workflow.
+            </p>
+        </div>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <span class="step-num">01 / WHY</span>
+                <div class="step-icon cyan">🤔</div>
+                <h3>Why Use It?</h3>
+                <p>
+                    Final-year students pick overly ambitious AI projects without understanding data needs, model limits, or GPU costs—discovering fatal roadblocks after months of wasted effort.
+                </p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-num">02 / WHAT</span>
+                <div class="step-icon emerald">📋</div>
+                <h3>What Will You Receive?</h3>
+                <p>
+                    A transparent 6-criteria project comparison and a complete <strong>Build Contract</strong>: technical stack, critical assumption, concrete failure tests, MVP boundary, and a 60-minute build plan.
+                </p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-num">03 / HOW</span>
+                <div class="step-icon purple">🛡️</div>
+                <h3>How It Protects Your Build</h3>
+                <p>
+                    With <strong>Break My Build</strong>, friends test your project via a shareable link. They expose edge cases and missing rules before your college viva review.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- The 5-Stage Connected Workflow -->
+    <section class="card" style="margin: 3rem 0; background: linear-gradient(180deg, var(--bg-card), #0d1424);">
+        <div class="card-header">
+            <div>
+                <h2>The Connected Engineering Workflow</h2>
+                <p style="color: var(--text-muted); font-size: 0.88rem;">From uncertainty to a peer-reviewed prototype plan</p>
+            </div>
+            <a href="/compare" class="btn btn-outline btn-sm">Try It Now →</a>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.25rem; margin-top: 1rem;">
+            <div style="background-color: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius-md); border-top: 3px solid var(--accent-cyan);">
+                <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-cyan); font-weight: 700;">STAGE 1</div>
+                <h4 style="margin: 0.4rem 0; color: #ffffff;">Input Constraints</h4>
+                <p style="font-size: 0.82rem; color: var(--text-muted);">Share your experience, weeks available, team size, and hardware limits.</p>
+            </div>
+
+            <div style="background-color: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius-md); border-top: 3px solid var(--accent-blue);">
+                <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-blue); font-weight: 700;">STAGE 2</div>
+                <h4 style="margin: 0.4rem 0; color: #ffffff;">Weighted Scoring</h4>
+                <p style="font-size: 0.82rem; color: var(--text-muted);">Ideas scored transparently across skill-fit, feasibility, and testability.</p>
+            </div>
+
+            <div style="background-color: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius-md); border-top: 3px solid var(--accent-emerald);">
+                <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-emerald); font-weight: 700;">STAGE 3</div>
+                <h4 style="margin: 0.4rem 0; color: #ffffff;">Build Contract</h4>
+                <p style="font-size: 0.82rem; color: var(--text-muted);">A structured artifact defining the critical assumption, MVP, and 4-step build plan.</p>
+            </div>
+
+            <div style="background-color: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius-md); border-top: 3px solid var(--accent-amber);">
+                <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-amber); font-weight: 700;">STAGE 4</div>
+                <h4 style="margin: 0.4rem 0; color: #ffffff;">Break My Build</h4>
+                <p style="font-size: 0.82rem; color: var(--text-muted);">Peers stress-test your design by submitting edge cases and failure scenarios.</p>
+            </div>
+
+            <div style="background-color: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius-md); border-top: 3px solid var(--accent-purple);">
+                <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-purple); font-weight: 700;">STAGE 5</div>
+                <h4 style="margin: 0.4rem 0; color: #ffffff;">Build in 60 Mins</h4>
+                <p style="font-size: 0.82rem; color: var(--text-muted);">Convert your plan into code at NxtWave's free hands-on prototype workshop.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sample Project Library Section -->
+    <section id="samples" style="margin: 3.5rem 0;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h2 style="font-size: 1.85rem; color: #ffffff;">Explore 5 Realistic Project Archetypes</h2>
+                <p style="color: var(--text-muted);">Pre-analyzed projects demonstrating realistic scope, risks, and technical contracts.</p>
+            </div>
+            <a href="/compare" class="btn btn-secondary btn-sm">Enter Your Own Ideas →</a>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+            <!-- Project 1 -->
+            <div class="card" style="margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <span class="badge badge-cyan">RAG & NLP</span>
+                    <span class="badge badge-emerald">Intermediate</span>
+                </div>
+                <h3 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 0.4rem;">AI College-Policy QA Assistant</h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    An interactive assistant grounded in college academic regulations with exact source citations and out-of-domain rejection.
+                </p>
+                <div style="background-color: var(--bg-primary); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.82rem; margin-bottom: 1.25rem;">
+                    <strong style="color: var(--accent-amber);">Fatal Risk:</strong> Hallucinating policy clauses not present in reference PDF handbook.
+                </div>
+                <a href="/contract/bc_demo_rag" class="btn btn-outline btn-sm" style="width: 100%;">
+                    View Sample Build Contract →
+                </a>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="card" style="margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <span class="badge badge-purple">Computer Vision</span>
+                    <span class="badge badge-cyan">Beginner-Friendly</span>
+                </div>
+                <h3 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 0.4rem;">Plant Disease Image Classifier</h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    MobileNet CNN classifier identifying crop leaf diseases from photos and suggesting organic remediation steps.
+                </p>
+                <div style="background-color: var(--bg-primary); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.82rem; margin-bottom: 1.25rem;">
+                    <strong style="color: var(--accent-amber);">Fatal Risk:</strong> Overfitting on clean lab photos and failing under real sunlight & shadows.
+                </div>
+                <a href="/compare" class="btn btn-outline btn-sm" style="width: 100%;">
+                    Test Plant Disease Project →
+                </a>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="card" style="margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <span class="badge badge-cyan">EdTech / NLP</span>
+                    <span class="badge badge-emerald">Intermediate</span>
+                </div>
+                <h3 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 0.4rem;">AI Study Assistant & Quiz Generator</h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    Ingests lecture notes and generates adaptive multiple-choice quizzes with distractor analysis and instant feedback.
+                </p>
+                <div style="background-color: var(--bg-primary); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.82rem; margin-bottom: 1.25rem;">
+                    <strong style="color: var(--accent-amber);">Fatal Risk:</strong> Generating ambiguous or factually unsupported distractor options.
+                </div>
+                <a href="/compare" class="btn btn-outline btn-sm" style="width: 100%;">
+                    Test Quiz Assistant Project →
+                </a>
+            </div>
+
+            <!-- Project 4 -->
+            <div class="card" style="margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <span class="badge badge-purple">Edge AI / Vision</span>
+                    <span class="badge badge-emerald">Intermediate</span>
+                </div>
+                <h3 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 0.4rem;">Smart Waste Classification for Recycling</h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    Webcam-based image recognition classifying recyclable vs organic waste items to support campus sustainability.
+                </p>
+                <div style="background-color: var(--bg-primary); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.82rem; margin-bottom: 1.25rem;">
+                    <strong style="color: var(--accent-amber);">Fatal Risk:</strong> Composite waste items (e.g., plastic bottle with paper wrapper) breaking single-label models.
+                </div>
+                <a href="/compare" class="btn btn-outline btn-sm" style="width: 100%;">
+                    Test Waste Classifier Project →
+                </a>
+            </div>
+
+            <!-- Project 5 -->
+            <div class="card" style="margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <span class="badge badge-amber">Tabular ML</span>
+                    <span class="badge badge-cyan">Beginner-Friendly</span>
+                </div>
+                <h3 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 0.4rem;">Student Placement & Skill-Gap Platform</h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    Scikit-learn tree model predicting placement readiness from coding and academic records with SHAP explainability.
+                </p>
+                <div style="background-color: var(--bg-primary); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.82rem; margin-bottom: 1.25rem;">
+                    <strong style="color: var(--accent-amber);">Fatal Risk:</strong> Spurious correlations in small campus cohorts misrepresenting student skill gaps.
+                </div>
+                <a href="/compare" class="btn btn-outline btn-sm" style="width: 100%;">
+                    Test Placement Platform →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom Workshop Conversion CTA -->
+    <section class="card" style="text-align: center; padding: 3rem 1.5rem; background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(17, 25, 46, 0.8) 100%);">
+        <h2 style="font-size: 2rem; color: #ffffff; margin-bottom: 0.75rem;">Ready to Turn Your Idea Into a Working Prototype?</h2>
+        <p style="color: var(--text-muted); max-width: 650px; margin: 0 auto 2rem; font-size: 1.05rem;">
+            Join NxtWave's free live online workshop: <strong>“Build Your First AI Project in 60 Minutes.”</strong> 
+            Learn how to scaffold, build, and demonstrate an AI prototype on your laptop without expensive cloud GPUs.
+        </p>
+        <a href="/register" class="btn btn-emerald btn-lg" onclick="handleWorkshopCtaClick('bottom_conversion_card')">
+            Claim Your Free Workshop Spot (0₹) ⚡
+        </a>
+    </section>
+</div>
+{% endblock %}
+
