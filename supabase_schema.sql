@@ -1,5 +1,5 @@
 -- ==============================================================================
--- PROJECT COMPASS: COMPLETE SUPABASE POSTGRESQL SCHEMA & SEED DATA
+-- PROJECT COMPASS: COMPLETE SUPABASE POSTGRESQL SCHEMA & SEED DATA (FIXED)
 -- NxtWave Growth Intern Challenge | 48-Hour Build | Supabase Database Setup
 -- ==============================================================================
 -- Instructions:
@@ -8,7 +8,7 @@
 -- 3. Click "New Query", paste this entire script, and click "Run" (or Ctrl + Enter).
 -- ==============================================================================
 
--- 1. CLEANUP (Optional reset: drops existing tables if re-running)
+-- 1. CLEANUP (Drops existing tables if re-running)
 DROP TABLE IF EXISTS analytics_events CASCADE;
 DROP TABLE IF EXISTS workshop_registrations CASCADE;
 DROP TABLE IF EXISTS peer_challenges CASCADE;
@@ -16,13 +16,13 @@ DROP TABLE IF EXISTS build_contracts CASCADE;
 DROP TABLE IF EXISTS project_comparisons CASCADE;
 
 -- ==============================================================================
--- 2. CREATE TABLES
+-- 2. CREATE TABLES (With automatic ID generation defaults)
 -- ==============================================================================
 
 -- Table: project_comparisons
 CREATE TABLE project_comparisons (
     id SERIAL PRIMARY KEY,
-    comparison_id VARCHAR(64) UNIQUE NOT NULL,
+    comparison_id VARCHAR(64) UNIQUE NOT NULL DEFAULT ('cmp_' || substr(md5(random()::text), 1, 10)),
     domain VARCHAR(64) NOT NULL,
     experience VARCHAR(32) NOT NULL,
     languages VARCHAR(256) NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE project_comparisons (
 -- Table: build_contracts
 CREATE TABLE build_contracts (
     id SERIAL PRIMARY KEY,
-    contract_id VARCHAR(64) UNIQUE NOT NULL,
+    contract_id VARCHAR(64) UNIQUE NOT NULL DEFAULT ('bc_' || substr(md5(random()::text), 1, 10)),
     comparison_id VARCHAR(64),
     project_title VARCHAR(256) NOT NULL,
     original_idea TEXT NOT NULL,
@@ -66,7 +66,7 @@ CREATE TABLE build_contracts (
 -- Table: peer_challenges (Break My Build feature)
 CREATE TABLE peer_challenges (
     id SERIAL PRIMARY KEY,
-    challenge_id VARCHAR(64) UNIQUE NOT NULL,
+    challenge_id VARCHAR(64) UNIQUE NOT NULL DEFAULT ('ch_' || substr(md5(random()::text), 1, 10)),
     contract_id VARCHAR(64) NOT NULL REFERENCES build_contracts(contract_id) ON DELETE CASCADE,
     peer_name VARCHAR(128) DEFAULT 'Anonymous Peer',
     challenge_text TEXT NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE peer_challenges (
 -- Table: workshop_registrations
 CREATE TABLE workshop_registrations (
     id SERIAL PRIMARY KEY,
-    registration_id VARCHAR(64) UNIQUE NOT NULL,
+    registration_id VARCHAR(64) UNIQUE NOT NULL DEFAULT ('reg_' || substr(md5(random()::text), 1, 10)),
     name VARCHAR(128) NOT NULL,
     email VARCHAR(256) NOT NULL,
     phone VARCHAR(32),
@@ -96,7 +96,7 @@ CREATE TABLE workshop_registrations (
 -- Table: analytics_events
 CREATE TABLE analytics_events (
     id SERIAL PRIMARY KEY,
-    event_id VARCHAR(64) UNIQUE NOT NULL,
+    event_id VARCHAR(64) UNIQUE NOT NULL DEFAULT ('evt_' || substr(md5(random()::text), 1, 10)),
     event_name VARCHAR(64) NOT NULL,
     contract_id VARCHAR(64),
     utm_source VARCHAR(64),
@@ -136,7 +136,6 @@ CREATE INDEX idx_analytics_events_created ON analytics_events(created_at);
 -- ==============================================================================
 -- 4. ROW LEVEL SECURITY (RLS) POLICIES FOR SUPABASE
 -- ==============================================================================
--- Allows public anonymous access for student workflow without forcing student logins
 
 ALTER TABLE project_comparisons ENABLE ROW LEVEL SECURITY;
 ALTER TABLE build_contracts ENABLE ROW LEVEL SECURITY;
@@ -244,13 +243,13 @@ INSERT INTO workshop_registrations (
     TRUE
 );
 
--- 5.5 Sample Analytics Events
-INSERT INTO analytics_events (event_name, contract_id, utm_source, utm_medium, utm_campaign) VALUES
-    ('page_view', NULL, 'campus_club', 'whatsapp', 'growth_challenge'),
-    ('comparison_completed', NULL, 'campus_club', 'whatsapp', 'growth_challenge'),
-    ('build_contract_created', 'bc_demo_rag', 'campus_club', 'whatsapp', 'growth_challenge'),
-    ('workshop_cta_clicked', 'bc_demo_rag', 'campus_club', 'whatsapp', 'growth_challenge'),
-    ('registration_completed', 'bc_demo_rag', 'campus_club', 'whatsapp', 'growth_challenge');
+-- 5.5 Sample Analytics Events (With explicit event_ids)
+INSERT INTO analytics_events (event_id, event_name, contract_id, utm_source, utm_medium, utm_campaign) VALUES
+    ('evt_demo_01', 'page_view', NULL, 'campus_club', 'whatsapp', 'growth_challenge'),
+    ('evt_demo_02', 'comparison_completed', NULL, 'campus_club', 'whatsapp', 'growth_challenge'),
+    ('evt_demo_03', 'build_contract_created', 'bc_demo_rag', 'campus_club', 'whatsapp', 'growth_challenge'),
+    ('evt_demo_04', 'workshop_cta_clicked', 'bc_demo_rag', 'campus_club', 'whatsapp', 'growth_challenge'),
+    ('evt_demo_05', 'registration_completed', 'bc_demo_rag', 'campus_club', 'whatsapp', 'growth_challenge');
 
 -- ==============================================================================
 -- END OF SCRIPT. All tables, indexes, RLS policies, and seed data created.
