@@ -2,16 +2,29 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 from app.config import settings
 
-# Configure SQLite engine with thread safety for FastAPI
+db_url = settings.DATABASE_URL
+# SQLAlchemy 2.0 requires postgresql:// instead of postgres://
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+# Configure connection args
 connect_args = {}
-if settings.DATABASE_URL.startswith("sqlite"):
+pool_kwargs = {}
+if db_url.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
+else:
+    # Postgres configuration (e.g. Supabase connection pooler)
+    pool_kwargs = {
+        "pool_pre_ping": True,
+        "pool_recycle": 300
+    }
 
 engine = create_engine(
-    settings.DATABASE_URL,
+    db_url,
     connect_args=connect_args,
     echo=False,
-    future=True
+    future=True,
+    **pool_kwargs
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
