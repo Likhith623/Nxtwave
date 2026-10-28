@@ -1,67 +1,155 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>{% block title %}Project Compass — Choose. Test. Prove.{% endblock %}</title>
-    <meta name="description" content="Stop guessing your final-year AI project. Compare ideas against your constraints, stress-test fatal risks, and build a working 60-minute prototype.">
+    <meta name="description" content="AI Project Selection, Technical Feasibility Stress-Testing, and Peer Validation Platform for Engineering Students. Built for the NxtWave Growth Intern Challenge.">
+    <meta name="theme-color" content="#070a13">
+    
+    <!-- OpenGraph / Social Meta Tags -->
+    <meta property="og:title" content="Project Compass — Choose. Test. Prove.">
+    <meta property="og:description" content="Stop guessing your final-year AI project. Compare ideas against your constraints, stress-test fatal risks, and build a working 60-minute prototype.">
+    <meta property="og:type" content="website">
+
+    <!-- Zero-CDN Native Stylesheet -->
     <link rel="stylesheet" href="/static/css/style.css">
     {% block head %}{% endblock %}
 </head>
 <body>
-    <!-- Top Navigation -->
-    <header class="navbar">
+    <!-- 🧭 Glassmorphism Navigation Bar -->
+    <header class="navbar" id="mainNavbar">
         <div class="nav-container">
             <a href="/" class="brand">
                 <div class="brand-icon">🧭</div>
-                <div>
-                    <div>Project Compass</div>
-                    <div class="brand-tag">Choose. Test. Prove.</div>
+                <div class="brand-title">
+                    <span class="brand-name">Project Compass</span>
+                    <span class="brand-tag">Choose • Test • Prove</span>
                 </div>
             </a>
+
+            <!-- Desktop Nav Links -->
             <ul class="nav-links">
-                <li><a href="/compare">Compare Ideas</a></li>
-                <li><a href="/#samples">Sample Library</a></li>
-                <li><a href="/whatsapp">WhatsApp Bot</a></li>
-                <li><a href="/admin">Growth Analytics</a></li>
-                <li>
-                    <a href="/register" class="btn btn-primary btn-sm" onclick="handleWorkshopCtaClick('navbar_cta')">
-                        Free AI Workshop ⚡
-                    </a>
-                </li>
+                <li><a href="/compare" class="nav-link">Compare Ideas</a></li>
+                <li><a href="/#samples" class="nav-link">Archetypes</a></li>
+                <li><a href="/whatsapp" class="nav-link">WhatsApp Bot 📱</a></li>
+                <li><a href="/admin" class="nav-link">Analytics</a></li>
             </ul>
+
+            <!-- Right Controls: Theme Toggle + Workshop CTA + Hamburger -->
+            <div class="nav-right-actions">
+                <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+
+                <a href="/register" class="btn btn-emerald btn-sm" onclick="handleWorkshopCtaClick('navbar_cta')">
+                    Free AI Workshop ⚡
+                </a>
+
+                <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle mobile menu">
+                    ☰
+                </button>
+            </div>
         </div>
+
+        <!-- Mobile Drawer Menu -->
+        <nav class="mobile-menu" id="mobileMenu">
+            <a href="/compare" class="nav-link">🎯 Compare Project Ideas</a>
+            <a href="/#samples" class="nav-link">📚 Sample Archetypes</a>
+            <a href="/whatsapp" class="nav-link">📱 WhatsApp Bot Flow</a>
+            <a href="/admin" class="nav-link">📊 Growth Analytics</a>
+            <a href="/privacy" class="nav-link">🔒 Privacy & Terms</a>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding-top:0.75rem; border-top:1px solid var(--border-subtle);">
+                <span style="font-size:0.85rem; font-weight:600; color:var(--text-secondary);">Switch Theme</span>
+                <button type="button" class="theme-toggle-btn" id="mobileThemeToggleBtn" aria-label="Toggle theme mobile">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+            <a href="/register" class="btn btn-emerald btn-block" onclick="handleWorkshopCtaClick('mobile_menu_cta')">
+                Register for Workshop (0₹) ⚡
+            </a>
+        </nav>
     </header>
 
-    <!-- Main Content Area -->
+    <!-- Main Content Injection -->
     <main>
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Toast Notification Container -->
+    <!-- Global Toast Container -->
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Application Footer -->
     <footer class="footer">
-        <div class="footer-container">
-            <div>
-                <strong>Project Compass</strong> — AI-Powered Project Selection & Peer Validation Platform.<br>
-                Built for the <strong>NxtWave Growth Intern Challenge</strong> | 48-Hour Build | <strong>₹0 Development Cost</strong>.
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand Info -->
+                <div class="footer-col">
+                    <div class="brand" style="margin-bottom: 1rem;">
+                        <div class="brand-icon">🧭</div>
+                        <div class="brand-title">
+                            <span class="brand-name">Project Compass</span>
+                            <span class="brand-tag">Choose • Test • Prove</span>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.6;">
+                        Helping final-year engineering students move from idea paralysis to a validated technical Build Contract. 
+                        Scaffold, stress-test, and deploy a working AI prototype in 60 minutes.
+                    </p>
+                    <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--bg-tertiary); padding: 0.4rem 0.85rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 700; color: var(--accent-cyan); border: 1px solid var(--border-subtle);">
+                        <span>🏆</span> NxtWave Growth Intern Challenge • 48-Hour Build • ₹0 Cost
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Platform -->
+                <div class="footer-col">
+                    <h5>Platform</h5>
+                    <ul class="footer-links">
+                        <li><a href="/compare">Idea Comparison Engine</a></li>
+                        <li><a href="/contract/bc_demo_rag">Sample Build Contract</a></li>
+                        <li><a href="/#samples">5 Realistic Archetypes</a></li>
+                        <li><a href="/challenge/bc_demo_rag">Break My Build Arena</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Distribution & Growth -->
+                <div class="footer-col">
+                    <h5>Channels</h5>
+                    <ul class="footer-links">
+                        <li><a href="/whatsapp">WhatsApp Cloud API Bot</a></li>
+                        <li><a href="/register">Build in 60 Mins Workshop</a></li>
+                        <li><a href="/admin">Campaign Dashboard</a></li>
+                        <li><a href="/privacy">Zero-Spam Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Zero-Cost Tech Stack -->
+                <div class="footer-col">
+                    <h5>Engineering</h5>
+                    <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 0.75rem;">
+                        Built with <strong>Python 3.11, FastAPI, SQLAlchemy</strong>, deterministic multi-criteria scoring, and Meta WhatsApp Cloud API.
+                    </p>
+                    <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-emerald);">
+                        ● Status: Systems Operational (₹0 Cost)
+                    </div>
+                </div>
             </div>
-            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-                <a href="/privacy">Privacy Notice</a>
-                <span>•</span>
-                <a href="/whatsapp">WhatsApp Flow</a>
-                <span>•</span>
-                <a href="/admin">Campaign Dashboard</a>
-                <span>•</span>
-                <a href="/register" onclick="handleWorkshopCtaClick('footer_cta')">60-Min Workshop</a>
+
+            <div class="footer-bottom">
+                <div>
+                    &copy; 2026 Project Compass. All rights reserved. Built with passion for NxtWave.
+                </div>
+                <div style="display: flex; gap: 1.5rem; align-items: center;">
+                    <a href="/privacy">Privacy Notice</a>
+                    <a href="/whatsapp">Meta Cloud API Flow</a>
+                    <a href="/admin">Growth Metrics</a>
+                </div>
             </div>
         </div>
     </footer>
 
+    <!-- Client Script -->
     <script src="/static/js/app.js"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
-

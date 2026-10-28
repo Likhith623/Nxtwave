@@ -3,12 +3,12 @@
 {% block title %}Build Contract: {{ contract.project_title }} — Project Compass{% endblock %}
 
 {% block content %}
-<div class="container">
-    <!-- Workshop Conversion Bar -->
-    <div class="workshop-banner">
+<div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <!-- ⚡ Workshop Conversion Bar -->
+    <div class="workshop-banner reveal">
         <div class="workshop-content">
             <h4>⚡ Your Build Contract is Ready! Next Step: Build the Prototype</h4>
-            <p>Don't just leave this as a document. Join NxtWave's free live workshop: <strong>“Build Your First AI Project in 60 Minutes.”</strong></p>
+            <p>Don't let this sit as a document. Join NxtWave's free live workshop: <strong>“Build Your First AI Project in 60 Minutes.”</strong></p>
         </div>
         <div>
             <a href="/register?contract_id={{ contract.contract_id }}" class="btn btn-emerald btn-sm" onclick="handleWorkshopCtaClick('contract_top_banner', '{{ contract.contract_id }}')">
@@ -17,22 +17,31 @@
         </div>
     </div>
 
-    <!-- Contract Paper Box -->
-    <div class="contract-box">
-        <!-- Header -->
-        <div class="contract-header">
+    <!-- Contract Master Card -->
+    <div class="card reveal" style="padding: 2.5rem; background: var(--bg-card); border-color: rgba(var(--accent-emerald-rgb), 0.3);">
+        <!-- Contract Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 2rem; margin-bottom: 2rem;">
             <div>
-                <span class="badge badge-emerald">OFFICIAL BUILD CONTRACT</span>
-                <span class="contract-id" style="margin-left: 0.5rem;">ID: {{ contract.contract_id }}</span>
-                <h1 style="font-size: 2.2rem; color: #ffffff; margin-top: 0.5rem;">{{ contract.project_title }}</h1>
-                <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 0.25rem;">
-                    Category: <strong style="color: var(--accent-cyan);">{{ contract.category }}</strong> • 
-                    Difficulty: <strong style="color: var(--accent-amber);">{{ contract.difficulty }}</strong> • 
-                    Mode: <strong style="color: var(--accent-emerald);">Deterministic Rules-Based Analysis</strong>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                    <span class="badge badge-emerald">OFFICIAL BUILD CONTRACT</span>
+                    <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-cyan); background: var(--bg-tertiary); padding: 0.2rem 0.6rem; border-radius: var(--radius-sm);">
+                        ID: {{ contract.contract_id }}
+                    </span>
+                </div>
+                <h1 style="font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin-bottom: 0.5rem;">
+                    {{ contract.project_title }}
+                </h1>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); display: flex; gap: 1.25rem; flex-wrap: wrap;">
+                    <span>Category: <strong style="color: var(--accent-cyan);">{{ contract.category }}</strong></span>
+                    <span>•</span>
+                    <span>Difficulty: <strong style="color: var(--accent-amber);">{{ contract.difficulty|title }}</strong></span>
+                    <span>•</span>
+                    <span>Engine: <strong style="color: var(--accent-emerald);">Deterministic Rules-Based Analysis</strong></span>
                 </div>
             </div>
+
             <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                <button class="btn btn-secondary btn-sm" onclick="copyToClipboard(window.location.href, 'Build Contract link copied!')">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="copyToClipboard(window.location.href, 'Build Contract link copied!')">
                     Copy Contract Link 🔗
                 </button>
                 <a href="/challenge/{{ contract.contract_id }}" class="btn btn-primary btn-sm">
@@ -41,118 +50,125 @@
             </div>
         </div>
 
-        <!-- Original Idea Summary -->
-        <div class="contract-section">
-            <div class="contract-section-title">
+        <!-- Section: Concept & Scope -->
+        <div style="margin-bottom: 2.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
                 <span>🎯</span> Scope & Original Concept
             </div>
-            <p style="background-color: var(--bg-primary); padding: 1rem; border-radius: var(--radius-sm); color: var(--text-muted); font-size: 0.92rem;">
+            <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent-cyan); color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
                 {{ contract.original_idea }}
-            </p>
+            </div>
         </div>
 
-        <!-- Technical Foundation -->
-        <div class="contract-section">
-            <div class="contract-section-title">
+        <!-- Section: Technical Stack -->
+        <div style="margin-bottom: 2.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
                 <span>⚙️</span> Technical Foundation (₹0 Local Execution Stack)
             </div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
-                <div style="background-color: var(--bg-primary); padding: 1rem; border-radius: var(--radius-sm);">
-                    <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">Frontend Recommendation</div>
-                    <strong style="color: var(--accent-cyan); font-size: 0.95rem;">{{ contract.frontend_rec }}</strong>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+                <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">Frontend</div>
+                    <strong style="color: var(--accent-cyan); font-size: 1rem;">{{ contract.frontend_rec }}</strong>
                 </div>
-                <div style="background-color: var(--bg-primary); padding: 1rem; border-radius: var(--radius-sm);">
-                    <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">Backend Recommendation</div>
-                    <strong style="color: var(--accent-blue); font-size: 0.95rem;">{{ contract.backend_rec }}</strong>
+                <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">Backend</div>
+                    <strong style="color: var(--accent-blue); font-size: 1rem;">{{ contract.backend_rec }}</strong>
                 </div>
-                <div style="background-color: var(--bg-primary); padding: 1rem; border-radius: var(--radius-sm);">
-                    <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">AI Model / Engine</div>
-                    <strong style="color: var(--accent-purple); font-size: 0.95rem;">{{ contract.ai_model_rec }}</strong>
+                <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">AI Model / Engine</div>
+                    <strong style="color: var(--accent-purple); font-size: 1rem;">{{ contract.ai_model_rec }}</strong>
                 </div>
-                <div style="background-color: var(--bg-primary); padding: 1rem; border-radius: var(--radius-sm);">
-                    <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">Database</div>
-                    <strong style="color: var(--accent-emerald); font-size: 0.95rem;">{{ contract.db_rec }}</strong>
+                <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">Database</div>
+                    <strong style="color: var(--accent-emerald); font-size: 1rem;">{{ contract.db_rec }}</strong>
                 </div>
             </div>
-            <div style="background-color: var(--bg-secondary); padding: 1rem; border-radius: var(--radius-sm); font-size: 0.88rem; margin-bottom: 0.75rem;">
-                <strong style="color: #ffffff;">Architectural Rationale:</strong> {{ contract.tech_reasoning }}
+            <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.75rem; border: 1px solid var(--border-subtle);">
+                <strong style="color: var(--text-main);">Architectural Rationale:</strong> <span style="color: var(--text-secondary);">{{ contract.tech_reasoning }}</span>
             </div>
-            <div style="background-color: var(--bg-secondary); padding: 1rem; border-radius: var(--radius-sm); font-size: 0.88rem;">
-                <strong style="color: #ffffff;">Data & External Dependencies:</strong> {{ contract.required_data }}
+            <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); font-size: 0.9rem; line-height: 1.6; border: 1px solid var(--border-subtle);">
+                <strong style="color: var(--text-main);">Data & Dependencies:</strong> <span style="color: var(--text-secondary);">{{ contract.required_data }}</span>
             </div>
         </div>
 
-        <!-- The Critical Assumption (Load Bearing) -->
-        <div class="contract-section">
-            <div class="contract-section-title">
+        <!-- Section: The Critical Assumption -->
+        <div style="margin-bottom: 2.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
                 <span>⚠️</span> The Critical Assumption (Load-Bearing Risk)
             </div>
-            <div class="alert-assumption">
-                <h5><span>⚠️</span> Single Point of Failure Assumption:</h5>
-                <p style="font-size: 1rem; color: #ffffff; font-weight: 500; margin-bottom: 0.5rem;">
+            <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid var(--accent-amber); border-radius: var(--radius-md); padding: 1.5rem;">
+                <h5 style="color: var(--accent-amber); font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+                    <span>⚠️</span> SINGLE POINT OF FAILURE ASSUMPTION:
+                </h5>
+                <p style="font-size: 1.15rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.75rem; line-height: 1.5;">
                     “{{ contract.critical_assumption }}”
                 </p>
-                <div style="font-size: 0.84rem; color: var(--text-muted);">
-                    <strong>Why this matters:</strong> If this assumption is false, your architecture collapses regardless of how much UI or code you write. The failure tests below are specifically designed to stress-test this point.
+                <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
+                    <strong style="color: var(--text-main);">Why this matters:</strong> If this assumption is false, your architecture collapses regardless of how much UI code you write. The failure scenarios below are specifically built to verify this assumption.
                 </div>
             </div>
         </div>
 
-        <!-- Proposed Failure Scenarios -->
-        <div class="contract-section">
-            <div class="contract-section-title">
-                <span>🧪</span> Proposed Technical Stress Tests (Pre-Implementation Verification)
+        <!-- Section: Proposed Failure Tests -->
+        <div style="margin-bottom: 2.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main);">
+                    <span>🧪</span> Proposed Technical Stress Tests
+                </div>
+                <span class="badge badge-amber">Pre-Implementation Verification</span>
             </div>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
-                <em>Note: These are proposed stress tests designed to expose failure modes before writing weeks of code.</em>
-            </div>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                Execute these targeted checks before writing weeks of application code.
+            </p>
 
-            {% for test in contract.failure_scenarios %}
-            <div class="test-card">
-                <div class="test-card-header">
-                    <div class="test-card-title">
-                        <span class="badge badge-amber" style="margin-right: 0.5rem;">{{ test.test_id }}</span>
-                        {{ test.test_name }}
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                {% for test in contract.failure_scenarios %}
+                <div class="card" style="padding: 1.5rem; background: var(--bg-tertiary); border-color: var(--border-subtle);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-main);">
+                            <span class="badge badge-amber" style="margin-right: 0.5rem;">{{ test.test_id }}</span>
+                            {{ test.test_name }}
+                        </div>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5;">
+                        <strong style="color: var(--text-main);">What is Tested:</strong> {{ test.what_is_tested }}<br>
+                        <strong style="color: var(--accent-rose);">Why It Matters:</strong> {{ test.why_it_matters }}
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; font-size: 0.85rem;">
+                        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Test Procedure</div>
+                            <div style="color: var(--text-main);">{{ test.test_procedure }}</div>
+                        </div>
+                        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Expected Observation</div>
+                            <div style="color: var(--text-main);">{{ test.expected_observation }}</div>
+                        </div>
+                        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Acceptance Criteria</div>
+                            <div style="color: var(--accent-emerald); font-weight: 600;">{{ test.acceptance_criteria }}</div>
+                        </div>
+                        <div style="background: var(--bg-card); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Remediation if Fails</div>
+                            <div style="color: var(--accent-amber); font-weight: 600;">{{ test.remediation_plan }}</div>
+                        </div>
                     </div>
                 </div>
-                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-                    <strong>What is Tested:</strong> {{ test.what_is_tested }}<br>
-                    <strong style="color: var(--accent-rose);">Why It Matters:</strong> {{ test.why_it_matters }}
-                </p>
-                <div class="test-grid">
-                    <div class="test-cell">
-                        <div class="test-cell-label">Test Procedure</div>
-                        <div>{{ test.test_procedure }}</div>
-                    </div>
-                    <div class="test-cell">
-                        <div class="test-cell-label">Expected Observation</div>
-                        <div>{{ test.expected_observation }}</div>
-                    </div>
-                    <div class="test-cell">
-                        <div class="test-cell-label">Acceptance Criteria</div>
-                        <div style="color: var(--accent-emerald);">{{ test.acceptance_criteria }}</div>
-                    </div>
-                    <div class="test-cell">
-                        <div class="test-cell-label">Remediation if Test Fails</div>
-                        <div style="color: var(--accent-amber);">{{ test.remediation_plan }}</div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
 
-        <!-- MVP Scope Boundary -->
-        <div class="contract-section">
-            <div class="contract-section-title">
+        <!-- Section: MVP Boundary -->
+        <div style="margin-bottom: 2.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
                 <span>🎯</span> Minimum Viable Prototype (MVP) Boundary
             </div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
                 <!-- Essential Features -->
-                <div style="background-color: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-md); padding: 1.25rem;">
-                    <div style="color: var(--accent-emerald); font-weight: 700; margin-bottom: 0.75rem; font-size: 0.95rem;">
-                        ✅ Essential MVP Features (Build These in Week 1):
+                <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-md); padding: 1.5rem;">
+                    <div style="color: var(--accent-emerald); font-weight: 800; font-size: 1rem; margin-bottom: 0.75rem;">
+                        ✅ Essential MVP Features (Build in Week 1):
                     </div>
-                    <ul style="margin-left: 1.2rem; font-size: 0.88rem; color: var(--text-main); display: flex; flex-direction: column; gap: 0.4rem;">
+                    <ul style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-main); display: flex; flex-direction: column; gap: 0.5rem; line-height: 1.5;">
                         {% for feat in contract.mvp_features %}
                         <li>{{ feat }}</li>
                         {% endfor %}
@@ -160,11 +176,11 @@
                 </div>
 
                 <!-- Deferred Features -->
-                <div style="background-color: rgba(244, 63, 94, 0.05); border: 1px solid rgba(244, 63, 94, 0.2); border-radius: var(--radius-md); padding: 1.25rem;">
-                    <div style="color: var(--accent-rose); font-weight: 700; margin-bottom: 0.75rem; font-size: 0.95rem;">
-                        🚫 Postponed Scope (Do NOT Build These in Prototype):
+                <div style="background: rgba(244, 63, 94, 0.05); border: 1px solid rgba(244, 63, 94, 0.25); border-radius: var(--radius-md); padding: 1.5rem;">
+                    <div style="color: var(--accent-rose); font-weight: 800; font-size: 1rem; margin-bottom: 0.75rem;">
+                        🚫 Postponed Scope (Do NOT Build for Demo):
                     </div>
-                    <ul style="margin-left: 1.2rem; font-size: 0.88rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.4rem;">
+                    <ul style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.5rem; line-height: 1.5;">
                         {% for feat in contract.deferred_features %}
                         <li>{{ feat }}</li>
                         {% endfor %}
@@ -173,22 +189,21 @@
             </div>
         </div>
 
-        <!-- 60-Minute Build Plan -->
-        <div class="contract-section">
-            <div class="contract-section-title">
+        <!-- Section: 60-Minute Prototype Plan -->
+        <div style="margin-bottom: 2.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
                 <span>⏱️</span> 60-Minute Prototype Milestone Roadmap
             </div>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
-                Four 15-minute milestones to get from empty folder to a verifiable first prototype.
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                Four 15-minute milestones to get from an empty folder to a verifiable first prototype.
             </p>
-            <div class="timeline">
+            <div class="stepper-grid">
                 {% for milestone in contract.plan_60min %}
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-time">{{ milestone.time_window }}</div>
-                    <div class="timeline-title">{{ milestone.phase_title }}</div>
-                    <div class="timeline-desc">{{ milestone.objective }}</div>
-                    <div style="margin-top: 0.4rem; font-size: 0.82rem; color: var(--accent-cyan);">
+                <div class="step-card">
+                    <span class="step-badge">{{ milestone.time_window }}</span>
+                    <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">{{ milestone.phase_title }}</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 0.75rem;">{{ milestone.objective }}</p>
+                    <div style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 600; border-top: 1px solid var(--border-subtle); padding-top: 0.5rem;">
                         <strong>Deliverable:</strong> {{ milestone.deliverable }}
                     </div>
                 </div>
@@ -196,63 +211,63 @@
             </div>
         </div>
 
-        <!-- Immediate Next Action -->
-        <div class="contract-section">
-            <div class="contract-section-title">
+        <!-- Section: Immediate Next Action -->
+        <div style="margin-bottom: 2.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
                 <span>🚀</span> Immediate Next Action (Start in 5 Minutes)
             </div>
-            <div style="background: linear-gradient(90deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1)); border: 1px solid var(--accent-cyan); border-radius: var(--radius-md); padding: 1.25rem;">
-                <div style="font-size: 1.05rem; font-weight: 600; color: #ffffff;">
+            <div style="background: linear-gradient(135deg, rgba(var(--accent-cyan-rgb), 0.15), rgba(var(--accent-blue-rgb), 0.15)); border: 1px solid var(--accent-cyan); border-radius: var(--radius-md); padding: 1.5rem;">
+                <div style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); line-height: 1.5;">
                     {{ contract.immediate_action }}
                 </div>
             </div>
         </div>
 
-        <!-- Peer Validation / Break My Build Section -->
-        <div class="contract-section" style="border-top: 2px dashed var(--border-subtle); padding-top: 2rem;">
-            <div class="card-header" style="border: none; padding: 0; margin-bottom: 1rem;">
+        <!-- Section: Break My Build (Peer Validation) -->
+        <div style="border-top: 1px dashed var(--border-light); padding-top: 2.5rem; margin-top: 2.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
                 <div>
                     <span class="badge badge-purple">PEER VALIDATION</span>
-                    <h3 style="font-size: 1.4rem; color: #ffffff; margin-top: 0.35rem;">Break My Build: Challenge This Project</h3>
-                    <p style="font-size: 0.88rem; color: var(--text-muted);">
-                        Share this link with classmates. When they suggest failure cases, Project Compass generates structured improvements.
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-top: 0.4rem;">Break My Build: Challenge This Project</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                        Share this link with classmates. When they submit failure edge cases, Project Compass recommends architectural fixes.
                     </p>
                 </div>
-                <div>
-                    <a href="/challenge/{{ contract.contract_id }}" class="btn btn-primary">
-                        Open Peer Challenge Page 🛡️ →
-                    </a>
-                </div>
+                <a href="/challenge/{{ contract.contract_id }}" class="btn btn-purple">
+                    Open Peer Challenge Arena 🛡️ →
+                </a>
             </div>
 
-            <div style="background-color: var(--bg-secondary); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); margin-bottom: 1.25rem;">
-                <strong style="color: var(--accent-purple);">Peer Prompt to Share:</strong>
-                <p style="font-size: 0.95rem; color: #ffffff; margin: 0.35rem 0 0.85rem;">
+            <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); margin-bottom: 1.5rem;">
+                <strong style="color: var(--accent-purple); font-size: 0.95rem;">Peer Prompt to Share:</strong>
+                <p style="font-size: 1.05rem; font-weight: 600; color: var(--text-main); margin: 0.5rem 0 1rem; line-height: 1.5;">
                     “{{ contract.peer_challenge_prompt }}”
                 </p>
                 <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
                     <input type="text" readonly value="{{ request.base_url }}challenge/{{ contract.contract_id }}" class="form-control" style="max-width: 480px; font-family: var(--font-mono); font-size: 0.85rem;" id="shareUrlInput">
-                    <button class="btn btn-outline btn-sm" onclick="copyToClipboard(document.getElementById('shareUrlInput').value, 'Shareable peer challenge link copied!')">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="copyToClipboard(document.getElementById('shareUrlInput').value, 'Shareable peer challenge link copied!')">
                         Copy Shareable Link 📋
                     </button>
                 </div>
             </div>
 
-            <!-- Existing Challenges Feed -->
+            <!-- Existing Peer Challenges -->
             {% if challenges and challenges|length > 0 %}
-            <div style="margin-top: 1.5rem;">
-                <h4 style="font-size: 1rem; color: #ffffff; margin-bottom: 0.75rem;">Community Stress Challenges ({{ challenges|length }} submitted):</h4>
+            <div style="margin-top: 2rem;">
+                <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 1rem;">
+                    Community Stress Challenges ({{ challenges|length }} submitted):
+                </h4>
                 <div style="display: flex; flex-direction: column; gap: 1rem;">
                     {% for ch in challenges %}
-                    <div style="background-color: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); border-left: 3px solid var(--accent-purple);">
-                        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.4rem;">
+                    <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent-purple); border: 1px solid var(--border-subtle);">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem;">
                             <strong style="color: var(--accent-purple);">From: {{ ch.peer_name }}</strong>
-                            <span style="color: var(--text-dark);">{{ ch.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                            <span style="color: var(--text-muted); font-size: 0.8rem;">{{ ch.created_at.strftime('%Y-%m-%d %H:%M') if ch.created_at else '' }}</span>
                         </div>
-                        <div style="font-size: 0.9rem; color: #ffffff; margin-bottom: 0.4rem;">
-                            <strong>Challenge:</strong> {{ ch.challenge_text }}
+                        <div style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 0.4rem; font-weight: 600;">
+                            Challenge: {{ ch.challenge_text }}
                         </div>
-                        <div style="font-size: 0.82rem; color: var(--text-muted);">
+                        <div style="font-size: 0.85rem; color: var(--text-secondary);">
                             <strong>Why it matters:</strong> {{ ch.why_it_matters }}
                         </div>
                     </div>
@@ -263,10 +278,10 @@
         </div>
 
         <!-- Workshop CTA Close -->
-        <div style="text-align: center; padding: 2.5rem 1.5rem 1rem; border-top: 1px solid var(--border-subtle); margin-top: 2rem;">
-            <h3 style="font-size: 1.6rem; color: #ffffff; margin-bottom: 0.5rem;">Your Project Plan Is Ready.</h3>
-            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 1.5rem;">
-                Now learn how to turn this plan into working code in 60 minutes with NxtWave's live hands-on masterclass.
+        <div style="text-align: center; padding: 3rem 1.5rem 1rem; border-top: 1px solid var(--border-subtle); margin-top: 2.5rem;">
+            <h3 style="font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">Your Project Plan Is Ready.</h3>
+            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 1.75rem; font-size: 1.05rem;">
+                Now turn this plan into a working prototype in 60 minutes with NxtWave's live hands-on masterclass.
             </p>
             <a href="/register?contract_id={{ contract.contract_id }}" class="btn btn-emerald btn-lg" onclick="handleWorkshopCtaClick('contract_bottom_cta', '{{ contract.contract_id }}')">
                 Register Free for 60-Minute AI Workshop ⚡
@@ -275,4 +290,3 @@
     </div>
 </div>
 {% endblock %}
-
