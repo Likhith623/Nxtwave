@@ -328,6 +328,8 @@ function renderResults(data, userConstraints) {
         const isBestFit = proj.is_best_fit;
         const card = document.createElement("div");
         card.className = "card";
+        card.style.background = "var(--bg-card)";
+        card.style.color = "var(--text-main)";
         card.style.borderColor = isBestFit ? "var(--accent-emerald)" : "var(--border-subtle)";
         card.style.padding = "0";
         card.style.overflow = "hidden";
@@ -336,8 +338,8 @@ function renderResults(data, userConstraints) {
         }
 
         let badgeHtml = isBestFit 
-            ? `<span class="badge badge-emerald" style="font-size: 0.82rem;">★ BEST-FIT RECOMMENDATION (RANK #${proj.rank})</span>`
-            : `<span class="badge badge-cyan">RANK #${proj.rank}</span>`;
+            ? `<span style="background: rgba(255, 255, 255, 0.22); color: #ffffff !important; font-weight: 800; font-size: 0.78rem; padding: 0.35rem 0.85rem; border-radius: 9999px; border: 1.5px solid rgba(255, 255, 255, 0.45); letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">★ BEST-FIT RECOMMENDATION (RANK #${proj.rank})</span>`
+            : `<span style="background: rgba(255, 255, 255, 0.15); color: #ffffff !important; font-weight: 700; font-size: 0.76rem; padding: 0.3rem 0.75rem; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.3);">RANK #${proj.rank}</span>`;
 
         const scoreColor = proj.composite_score >= 75 ? '#10b981' : proj.composite_score >= 55 ? '#f59e0b' : '#f43f5e';
         const verdictHeadline = proj.composite_score >= 75
@@ -356,14 +358,14 @@ function renderResults(data, userConstraints) {
             return `
             <div style="margin-bottom: 0.9rem;">
                 <div style="display: grid; grid-template-columns: 160px 48px 1fr 48px; align-items: center; gap: 0.75rem; font-size: 0.88rem;">
-                    <strong style="color: var(--text-main);">${displayLabel}</strong>
-                    <span style="color: var(--text-muted); font-family: var(--font-mono); font-size: 0.8rem;">${Math.round(c.weight * 100)}%</span>
-                    <div style="height: 12px; background: rgba(255,255,255,0.07); border-radius: 999px; overflow: hidden;">
+                    <strong style="color: var(--text-main); font-size: 0.88rem;">${displayLabel}</strong>
+                    <span style="color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600;">${Math.round(c.weight * 100)}%</span>
+                    <div style="height: 12px; background: rgba(148, 163, 184, 0.22); border-radius: 999px; overflow: hidden; border: 1px solid var(--border-subtle);">
                         <div style="width: ${scoreOut100}%; height: 100%; background: ${barColor}; border-radius: 999px; transition: width 0.8s ease;"></div>
                     </div>
                     <span style="font-family: var(--font-mono); font-weight: 800; color: var(--text-main); text-align: right;">${scoreOut100}</span>
                 </div>
-                <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.2rem; padding-left: 220px;">${c.reason}</div>
+                <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.25rem; padding-left: 220px; line-height: 1.4;">${c.reason}</div>
             </div>
             `;
         }).join("");
@@ -384,7 +386,7 @@ function renderResults(data, userConstraints) {
                 <div style="display: flex; align-items: center; gap: 1.75rem; flex-wrap: wrap; margin-bottom: 1.75rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle);">
                     <div style="position: relative; width: 104px; height: 104px; flex-shrink: 0;">
                         <svg width="104" height="104" viewBox="0 0 100 100" style="transform: rotate(-90deg);">
-                            <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="10"></circle>
+                            <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-opacity="0.12" stroke-width="10"></circle>
                             <circle cx="50" cy="50" r="42" fill="none" stroke="${scoreColor}" stroke-width="10"
                                 stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}" stroke-linecap="round"></circle>
                         </svg>
@@ -449,18 +451,18 @@ function renderResults(data, userConstraints) {
                 </div>
 
                 <!-- Slide 2 Bottom CTA Bar: "Your idea scored XX/100... Generate Build Plan →" -->
-                <div style="background: #131129; border: 1px solid rgba(99, 102, 241, 0.35); border-radius: 18px; padding: 1.35rem 1.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem;">
+                <div style="background: linear-gradient(135deg, #1e1b4b, #312e81); border: 1.5px solid rgba(99, 102, 241, 0.5); border-radius: 18px; padding: 1.4rem 1.85rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);">
                     <div style="flex: 1; min-width: 240px;">
-                        <div style="font-size: 1.1rem; font-weight: 800; color: #ffffff; line-height: 1.4;">
+                        <div style="font-size: 1.12rem; font-weight: 800; color: #ffffff; line-height: 1.4;">
                             “Your idea scored ${Math.round(proj.composite_score)}/100. Unlock your complete 60-minute build blueprint, failure tests & 60-minute pie chart.”
                         </div>
-                        <div style="font-size: 0.82rem; color: #a5b4fc; margin-top: 0.25rem;">
-                            Includes: ₹0 Tech Stack · Load-Bearing Assumption · Proposed Failure Tests · Scope Boundaries · <strong>Interactive 60-Minute Pie Chart</strong>
+                        <div style="font-size: 0.84rem; color: #c7d2fe; margin-top: 0.35rem; line-height: 1.4;">
+                            Includes: ₹0 Tech Stack · Load-Bearing Assumption · Proposed Failure Tests · Scope Boundaries · <strong style="color: #ffffff;">Interactive 60-Minute Pie Chart</strong>
                         </div>
                     </div>
                     <button type="button"
                         class="btn btn-lg"
-                        style="background: linear-gradient(135deg, #f43f5e, #fb7185); color: #ffffff; font-weight: 800; border-radius: 999px; padding: 0.85rem 1.85rem; box-shadow: 0 8px 24px rgba(244, 63, 94, 0.35); border: none; cursor: pointer; white-space: nowrap;"
+                        style="background: linear-gradient(135deg, #f43f5e, #fb7185); color: #ffffff !important; font-weight: 800; border-radius: 999px; padding: 0.85rem 1.85rem; box-shadow: 0 8px 24px rgba(244, 63, 94, 0.4); border: none; cursor: pointer; white-space: nowrap;"
                         onclick="generateContractForProject('${escape(proj.title)}', '${escape(proj.description)}', '${data.comparison_id}')">
                         Generate Build Plan →
                     </button>
