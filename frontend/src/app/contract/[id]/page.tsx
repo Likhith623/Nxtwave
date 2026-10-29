@@ -270,6 +270,8 @@ export default function ContractPage({
       return item;
     });
 
+    const isDark = typeof document !== "undefined" && document.documentElement.classList.contains("dark");
+
     // 1. Draw 3D Extruded Layers
     for (let layer = depth; layer >= 1; layer--) {
       computed.forEach((s) => {
@@ -277,7 +279,7 @@ export default function ContractPage({
         ctx.ellipse(cx, cy + layer, rx, ry, 0, s.startAngle, s.endAngle);
         ctx.lineTo(cx, cy + layer);
         ctx.closePath();
-        ctx.fillStyle = "#1e1b4b";
+        ctx.fillStyle = isDark ? "#1e1b4b" : "#c7d2fe";
         ctx.fill();
       });
     }
@@ -291,7 +293,7 @@ export default function ContractPage({
       ctx.fillStyle = s.color || "#6366f1";
       ctx.fill();
       ctx.lineWidth = 1.5;
-      ctx.strokeStyle = "#0b1020";
+      ctx.strokeStyle = isDark ? "#0b1020" : "#ffffff";
       ctx.stroke();
 
       const labelRadius = rx * 0.65;
@@ -307,17 +309,17 @@ export default function ContractPage({
     // 3. Center Hole
     ctx.beginPath();
     ctx.ellipse(cx, cy, rx * 0.33, ry * 0.33, 0, 0, Math.PI * 2);
-    ctx.fillStyle = "#090e1a";
+    ctx.fillStyle = isDark ? "#090e1a" : "#ffffff";
     ctx.fill();
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgba(99,102,241,0.6)";
+    ctx.strokeStyle = isDark ? "rgba(99,102,241,0.6)" : "rgba(99,102,241,0.3)";
     ctx.stroke();
 
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = isDark ? "#ffffff" : "#0f172a";
     ctx.font = "900 13px Inter, sans-serif";
     ctx.textAlign = "center";
     ctx.fillText("60m", cx, cy - 3);
-    ctx.fillStyle = "#34d399";
+    ctx.fillStyle = isDark ? "#34d399" : "#059669";
     ctx.font = "bold 8px monospace";
     ctx.fillText("TOTAL", cx, cy + 9);
   }, [activeSlices, activeSlice, pieMode]);
@@ -538,13 +540,13 @@ export default function ContractPage({
           </div>
 
           {/* Right Column: 60-Minute Pie Chart */}
-          <div className="lg:col-span-5 p-5 rounded-2xl bg-slate-950/90 text-white border border-indigo-500/40 flex flex-col justify-between items-center shadow-xl">
+          <div className="lg:col-span-5 p-5 rounded-2xl bg-white dark:bg-slate-950/90 text-slate-900 dark:text-white border border-slate-200 dark:border-indigo-500/40 flex flex-col justify-between items-center shadow-lg dark:shadow-xl">
             <div className="w-full flex justify-between items-center mb-2">
               <div>
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400 block">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 block">
                   EXACTLY 60 MINUTES
                 </span>
-                <h4 className="text-sm font-extrabold text-white">60-Min Build Pie Chart</h4>
+                <h4 className="text-sm font-extrabold text-slate-900 dark:text-white">60-Min Build Pie Chart</h4>
               </div>
               <div className="flex gap-1">
                 <button
@@ -553,7 +555,7 @@ export default function ContractPage({
                   className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition ${
                     pieMode === "classic5"
                       ? "bg-indigo-600 text-white shadow-sm"
-                      : "bg-white/10 text-slate-200 hover:bg-white/20 hover:text-white"
+                      : "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/20 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
                   Classic 5 (60m)
@@ -564,7 +566,7 @@ export default function ContractPage({
                   className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition ${
                     pieMode === "detailed"
                       ? "bg-indigo-600 text-white shadow-sm"
-                      : "bg-white/10 text-slate-200 hover:bg-white/20 hover:text-white"
+                      : "bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/20 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
                   Detailed 8 (60m)
@@ -578,7 +580,7 @@ export default function ContractPage({
             </div>
 
             {/* Dynamic Legend */}
-            <div className="w-full grid grid-cols-2 gap-1.5 text-[11px] text-slate-300 pt-2 border-t border-white/10">
+            <div className="w-full grid grid-cols-2 gap-1.5 text-[11px] text-slate-600 dark:text-slate-300 pt-2 border-t border-slate-200 dark:border-white/10">
               {activeSlices.map((s, idx) => (
                 <div key={idx} className="flex items-center gap-1.5 truncate">
                   <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: s.color }} />
@@ -587,7 +589,7 @@ export default function ContractPage({
               ))}
             </div>
 
-            <div className="w-full text-center mt-3 pt-2 border-t border-white/5 text-[11px] font-mono text-emerald-400 font-bold">
+            <div className="w-full text-center mt-3 pt-2 border-t border-slate-100 dark:border-white/5 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
               TOTAL TIME: 60 MINS · ₹0 CLOUD COST
             </div>
           </div>
