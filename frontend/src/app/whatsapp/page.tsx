@@ -186,18 +186,18 @@ export default function WhatsAppPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans space-y-10 text-slate-100">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans space-y-10 text-slate-900 dark:text-slate-100">
 
       {/* ── HEADER ──────────────────────────────────────────────────────────── */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span>OFFICIAL META CLOUD API · IN-BROWSER SIMULATOR</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+        <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
           WhatsApp Campus Bot Experience
         </h1>
-        <p className="text-xs sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto">
+        <p className="text-xs sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
           Final-year engineering students live on WhatsApp, not on desktop dashboards. Experience the exact conversational pipeline tested across 40+ colleges.
         </p>
       </div>

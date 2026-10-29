@@ -483,17 +483,17 @@ main {
 
 .btn-outline, a.btn-outline {
   background: transparent;
-  color: var(--text-main) !important;
+  color: var(--text-main);
   border-color: var(--border-light);
 }
 [data-theme="light"] .btn-outline, [data-theme="light"] a.btn-outline {
-  color: #0f172a !important;
-  border-color: #cbd5e1 !important;
+  color: #0f172a;
+  border-color: #cbd5e1;
 }
 .btn-outline:hover, a.btn-outline:hover {
   background: var(--bg-tertiary);
   border-color: var(--accent-cyan);
-  color: var(--accent-cyan) !important;
+  color: var(--accent-cyan);
 }
 
 .btn-emerald, a.btn-emerald {

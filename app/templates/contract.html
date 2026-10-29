@@ -71,6 +71,29 @@
     overflow: hidden;
   }
 
+  /* Ensure Pie Chart Panel Mode Buttons are crystal-clear in both Light & Dark modes */
+  .step2-pie-panel #btnClassic5,
+  [data-theme="light"] .step2-pie-panel #btnClassic5 {
+    background: #4f46e5 !important;
+    border: 1px solid #6366f1 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+  }
+  .step2-pie-panel #btnDetailed8,
+  [data-theme="light"] .step2-pie-panel #btnDetailed8 {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #e2e8f0 !important;
+    font-weight: 700 !important;
+  }
+  .step2-pie-panel #btnClassic5:hover,
+  .step2-pie-panel #btnDetailed8:hover,
+  [data-theme="light"] .step2-pie-panel #btnClassic5:hover,
+  [data-theme="light"] .step2-pie-panel #btnDetailed8:hover {
+    color: #ffffff !important;
+    border-color: #818cf8 !important;
+  }
+
   /* Slide 3 Bottom Workshop Bar */
   .step2-bottom-workshop-bar {
     background: linear-gradient(135deg, #0b1020 0%, #151a30 50%, #0d1326 100%);
@@ -303,11 +326,11 @@
                             60-Min Build Pie Chart
                         </h3>
                     </div>
-                    <div class="no-print" style="display: flex; gap: 0.25rem;">
-                        <button type="button" class="btn btn-outline btn-sm" id="btnClassic5" onclick="setChartMode('classic5')" style="font-size: 0.72rem; padding: 0.2rem 0.5rem; background: rgba(99,102,241,0.25); border-color: #6366f1; color: #ffffff;">
+                    <div class="no-print" style="display: flex; gap: 0.35rem;">
+                        <button type="button" class="btn btn-sm" id="btnClassic5" onclick="setChartMode('classic5')" style="font-size: 0.75rem; padding: 0.25rem 0.65rem; background: #4f46e5; border: 1px solid #6366f1; color: #ffffff !important; font-weight: 700; border-radius: 8px;">
                             Classic 5 (60m)
                         </button>
-                        <button type="button" class="btn btn-outline btn-sm" id="btnDetailed8" onclick="setChartMode('detailed')" style="font-size: 0.72rem; padding: 0.2rem 0.5rem; color: #94a3b8;">
+                        <button type="button" class="btn btn-sm" id="btnDetailed8" onclick="setChartMode('detailed')" style="font-size: 0.75rem; padding: 0.25rem 0.65rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25); color: #e2e8f0 !important; font-weight: 700; border-radius: 8px;">
                             Detailed 8 (60m)
                         </button>
                     </div>
@@ -724,25 +747,25 @@ function setChartMode(mode) {
     const btnDetailed = document.getElementById("btnDetailed8");
     if (mode === "classic5") {
         if (btnClassic) {
-            btnClassic.style.background = "rgba(99,102,241,0.25)";
-            btnClassic.style.borderColor = "#6366f1";
-            btnClassic.style.color = "#ffffff";
+            btnClassic.style.setProperty("background", "#4f46e5", "important");
+            btnClassic.style.setProperty("border-color", "#6366f1", "important");
+            btnClassic.style.setProperty("color", "#ffffff", "important");
         }
         if (btnDetailed) {
-            btnDetailed.style.background = "transparent";
-            btnDetailed.style.borderColor = "var(--border-subtle)";
-            btnDetailed.style.color = "#94a3b8";
+            btnDetailed.style.setProperty("background", "rgba(255, 255, 255, 0.08)", "important");
+            btnDetailed.style.setProperty("border-color", "rgba(255, 255, 255, 0.25)", "important");
+            btnDetailed.style.setProperty("color", "#e2e8f0", "important");
         }
     } else {
         if (btnDetailed) {
-            btnDetailed.style.background = "rgba(99,102,241,0.25)";
-            btnDetailed.style.borderColor = "#6366f1";
-            btnDetailed.style.color = "#ffffff";
+            btnDetailed.style.setProperty("background", "#4f46e5", "important");
+            btnDetailed.style.setProperty("border-color", "#6366f1", "important");
+            btnDetailed.style.setProperty("color", "#ffffff", "important");
         }
         if (btnClassic) {
-            btnClassic.style.background = "transparent";
-            btnClassic.style.borderColor = "var(--border-subtle)";
-            btnClassic.style.color = "#94a3b8";
+            btnClassic.style.setProperty("background", "rgba(255, 255, 255, 0.08)", "important");
+            btnClassic.style.setProperty("border-color", "rgba(255, 255, 255, 0.25)", "important");
+            btnClassic.style.setProperty("color", "#e2e8f0", "important");
         }
     }
     renderPieChart();

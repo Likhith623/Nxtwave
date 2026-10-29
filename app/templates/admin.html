@@ -8,7 +8,7 @@
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
         <div>
             <span class="badge badge-purple" style="margin-bottom: 0.4rem;">NXTWAVE GROWTH CHALLENGE METRICS</span>
-            <h1 style="font-size: 2.25rem; color: #ffffff;">Campaign & Funnel Analytics</h1>
+            <h1 style="font-size: 2.25rem; color: var(--text-main);">Campaign & Funnel Analytics</h1>
             <p style="color: var(--text-muted); font-size: 0.92rem;">
                 Track real-time project comparisons, Break My Build participation, and 60-Minute Workshop conversion attribution.
             </p>
@@ -70,19 +70,19 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
             <div style="background-color: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius-sm); border-top: 3px solid var(--accent-blue);">
                 <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">Compare → Contract</div>
-                <div style="font-size: 1.5rem; font-weight: 700; color: #ffffff; margin: 0.2rem 0;" id="funnelCompToContract">-%</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0.2rem 0;" id="funnelCompToContract">-%</div>
                 <div style="font-size: 0.8rem; color: var(--text-muted);">Comparison to Build Contract</div>
             </div>
 
             <div style="background-color: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius-sm); border-top: 3px solid var(--accent-cyan);">
                 <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">Contract → Workshop CTA</div>
-                <div style="font-size: 1.5rem; font-weight: 700; color: #ffffff; margin: 0.2rem 0;" id="funnelContractToCta">-%</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0.2rem 0;" id="funnelContractToCta">-%</div>
                 <div style="font-size: 0.8rem; color: var(--text-muted);">Contract to Workshop CTA Click</div>
             </div>
 
             <div style="background-color: var(--bg-primary); padding: 1.25rem; border-radius: var(--radius-sm); border-top: 3px solid var(--accent-amber);">
                 <div style="font-size: 0.75rem; color: var(--text-dark); text-transform: uppercase;">CTA → Registration</div>
-                <div style="font-size: 1.5rem; font-weight: 700; color: #ffffff; margin: 0.2rem 0;" id="funnelCtaToReg">-%</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0.2rem 0;" id="funnelCtaToReg">-%</div>
                 <div style="font-size: 0.8rem; color: var(--text-muted);">CTA Click to Completed Registration</div>
             </div>
 
@@ -188,7 +188,7 @@ async function fetchMetrics() {
             regsBody.innerHTML = data.recent_registrations.map(r => `
                 <tr>
                     <td>
-                        <strong style="color: #ffffff;">${r.name}</strong><br>
+                        <strong style="color: var(--text-main);">${r.name}</strong><br>
                         <span style="font-size: 0.75rem; color: var(--text-dark);">${r.email_masked}</span>
                     </td>
                     <td><span class="badge badge-cyan">${r.source}</span></td>

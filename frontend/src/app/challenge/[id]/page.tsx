@@ -56,8 +56,8 @@ function FormattedBotMessage({ text }: { text: string }) {
   return (
     <div className="space-y-2 text-xs sm:text-[13px] leading-relaxed">
       {isBreaker && (
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 mb-1 animate-pulse">
-          <AlertTriangle className="w-3 h-3 text-amber-400" />
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/40 mb-1 animate-pulse">
+          <AlertTriangle className="w-3 h-3 text-amber-500 dark:text-amber-400" />
           <span>BUILD BREAKER DETECTED</span>
         </div>
       )}
@@ -71,7 +71,7 @@ function FormattedBotMessage({ text }: { text: string }) {
           return (
             <div
               key={idx}
-              className="p-3 my-1.5 rounded-xl bg-amber-500/10 border-l-4 border-amber-500 text-amber-200 italic font-medium text-xs"
+              className="p-3 my-1.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border-l-4 border-amber-500 text-amber-900 dark:text-amber-200 italic font-medium text-xs"
             >
               “{quoteContent}”
             </div>
@@ -83,7 +83,7 @@ function FormattedBotMessage({ text }: { text: string }) {
           const bulletContent = line.replace(/^[-•]\s*/, "");
           return (
             <div key={idx} className="flex items-start gap-2 pl-2">
-              <span className="text-cyan-400 mt-0.5">•</span>
+              <span className="text-cyan-600 dark:text-cyan-400 mt-0.5">•</span>
               <span>{formatInlineMarkdown(bulletContent)}</span>
             </div>
           );
@@ -102,7 +102,7 @@ function formatInlineMarkdown(content: string) {
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**")) {
       return (
-        <strong key={i} className="font-bold text-white">
+        <strong key={i} className="font-bold text-slate-900 dark:text-white">
           {part.slice(2, -2)}
         </strong>
       );
@@ -111,7 +111,7 @@ function formatInlineMarkdown(content: string) {
       return (
         <code
           key={i}
-          className="px-1.5 py-0.5 rounded-md bg-black/50 border border-white/10 font-mono text-[11px] text-cyan-300"
+          className="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-white/10 font-mono text-[11px] text-cyan-700 dark:text-cyan-300"
         >
           {part.slice(1, -1)}
         </code>
@@ -119,7 +119,7 @@ function formatInlineMarkdown(content: string) {
     }
     if (part.startsWith("*") && part.endsWith("*")) {
       return (
-        <em key={i} className="italic text-slate-200">
+        <em key={i} className="italic text-slate-700 dark:text-slate-200">
           {part.slice(1, -1)}
         </em>
       );
@@ -368,50 +368,50 @@ export default function ChallengePage({
   const criticalAssumption = contract?.critical_assumption || "Students will primarily query policies explicitly stated in the indexed PDF handbook.";
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans space-y-6 text-slate-100">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans space-y-6 text-slate-900 dark:text-slate-100">
 
       {/* ── TOP HEADER ──────────────────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-white/10">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-white/10">
         <div>
           <div className="flex gap-2 flex-wrap mb-2">
-            <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/25">
+            <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/25">
               ⚡ PEER REVIEW &amp; AI STRESS-TEST ARENA
             </span>
-            <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/25">
+            <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/25">
               POWERED BY GEMINI 2.5 FLASH
             </span>
-            <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/25">
+            <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/25">
               ZERO LOGIN REQUIRED
             </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
-            Peer Review &amp; <span className="bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">AI Stress-Test Arena</span>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+            Peer Review &amp; <span className="bg-gradient-to-r from-cyan-600 to-indigo-600 dark:from-cyan-400 dark:to-indigo-400 bg-clip-text text-transparent">AI Stress-Test Arena</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-3xl leading-relaxed">
-            Your classmate shared their final-year AI project plan for <strong className="text-white">{projectTitle}</strong> (Score: <strong className="text-emerald-400">{feasibilityScore}/100</strong>). Chat with the AI architect, probe edge cases, or test if your own idea can beat their score!
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 max-w-3xl leading-relaxed">
+            Your classmate shared their final-year AI project plan for <strong className="text-slate-900 dark:text-white">{projectTitle}</strong> (Score: <strong className="text-emerald-600 dark:text-emerald-400">{feasibilityScore}/100</strong>). Chat with the AI architect, probe edge cases, or test if your own idea can beat their score!
           </p>
         </div>
 
         <Link
           href={`/contract/${contractId}`}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-slate-200 transition whitespace-nowrap"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-200 border border-slate-200 dark:border-white/10 text-xs font-bold transition whitespace-nowrap"
         >
-          <FileCheck2 className="w-4 h-4 text-cyan-400" />
+          <FileCheck2 className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
           <span>View Full Contract Spec →</span>
         </Link>
       </div>
 
       {/* ── 🔥 TEMPTING RE-ENGAGEMENT VIRAL BANNER ───────────────────────────── */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-amber-950/70 via-slate-900 to-indigo-950/70 border-2 border-amber-500/40 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden group">
+      <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-amber-50 via-slate-50 to-indigo-50 dark:from-amber-950/70 dark:via-slate-900 dark:to-indigo-950/70 border-2 border-amber-300 dark:border-amber-500/40 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden group text-slate-900 dark:text-white">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-110 transition duration-300">
             🔥
           </div>
           <div>
-            <strong className="text-base sm:text-lg font-black text-white block tracking-tight">
+            <strong className="text-base sm:text-lg font-black text-slate-900 dark:text-white block tracking-tight">
               “Wait… what would MY final-year idea score?!”
             </strong>
-            <span className="text-xs sm:text-sm text-slate-300">
+            <span className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
               Curious if your project is feasible or has fatal viva traps? Run a free feasibility scan across 6 weighted criteria with ₹0 local cloud costs.
             </span>
           </div>
@@ -428,66 +428,66 @@ export default function ChallengePage({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
 
         {/* ── LEFT: INTERACTIVE AI ARCHITECT CHAT ROOM (7 COLS) ─────────────── */}
-        <div className="lg:col-span-7 rounded-3xl bg-slate-950 border border-indigo-500/35 flex flex-col h-[680px] shadow-[0_25px_60px_rgba(0,0,0,0.8)] overflow-hidden relative">
+        <div className="lg:col-span-7 rounded-3xl bg-white dark:bg-[#080d1a] border border-slate-200 dark:border-white/10 flex flex-col h-[680px] shadow-2xl overflow-hidden relative">
 
           {/* Chat Window Header */}
-          <div className="p-4 bg-slate-900/90 border-b border-white/10 flex items-center justify-between gap-3 backdrop-blur-md z-10">
+          <div className="p-4 bg-slate-50 dark:bg-[#111827] border-b border-slate-200 dark:border-white/10 flex items-center justify-between gap-3 z-10">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-md relative">
                 <Bot className="w-5 h-5" />
-                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-slate-900 animate-pulse" />
+                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-white dark:border-slate-900 animate-pulse" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-xs sm:text-sm font-bold text-white">Project Compass AI Architect</h3>
-                  <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">Project Compass AI Architect</h3>
+                  <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30">
                     Gemini 2.5 Flash
                   </span>
                 </div>
-                <span className="text-[11px] text-slate-400">
-                  Stress-Testing: <strong className="text-slate-200">{projectTitle}</strong>
+                <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Stress-Testing: <strong className="text-slate-800 dark:text-slate-200">{projectTitle}</strong>
                 </span>
               </div>
             </div>
 
             <Link
               href="/"
-              className="px-3 py-1.5 rounded-xl text-xs font-bold text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition whitespace-nowrap hidden sm:inline-block"
+              className="px-3 py-1.5 rounded-xl text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition whitespace-nowrap hidden sm:inline-block"
             >
               Test My Own Idea 🚀
             </Link>
           </div>
 
           {/* Quick Challenge Prompt Carousel */}
-          <div className="px-3.5 py-2.5 bg-slate-900/60 border-b border-white/5 flex gap-2 overflow-x-auto no-scrollbar select-none">
+          <div className="px-3.5 py-2.5 bg-slate-100/70 dark:bg-slate-900/60 border-b border-slate-200 dark:border-white/5 flex gap-2 overflow-x-auto no-scrollbar select-none">
             <button
               onClick={() => handleSendMessage("What happens if college circulars or fee rules change in 2026?")}
-              className="flex-shrink-0 px-3 py-1.5 rounded-full bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/30 text-[11px] font-semibold text-indigo-200 transition active:scale-95"
+              className="flex-shrink-0 px-3 py-1.5 rounded-full bg-slate-200/80 hover:bg-slate-300 dark:bg-indigo-500/15 dark:hover:bg-indigo-500/25 border border-slate-300 dark:border-indigo-500/30 text-[11px] font-semibold text-slate-700 dark:text-indigo-200 hover:text-slate-900 dark:hover:text-white transition active:scale-95"
             >
               ⚡ What if fees/regulations change?
             </button>
             <button
               onClick={() => handleSendMessage("Can this prototype run on an 8GB RAM student laptop without GPU?")}
-              className="flex-shrink-0 px-3 py-1.5 rounded-full bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/30 text-[11px] font-semibold text-indigo-200 transition active:scale-95"
+              className="flex-shrink-0 px-3 py-1.5 rounded-full bg-slate-200/80 hover:bg-slate-300 dark:bg-indigo-500/15 dark:hover:bg-indigo-500/25 border border-slate-300 dark:border-indigo-500/30 text-[11px] font-semibold text-slate-700 dark:text-indigo-200 hover:text-slate-900 dark:hover:text-white transition active:scale-95"
             >
               💻 Can it run on CPU for ₹0?
             </button>
             <button
               onClick={() => handleSendMessage("What if a student queries unlisted policies outside the handbook?")}
-              className="flex-shrink-0 px-3 py-1.5 rounded-full bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/30 text-[11px] font-semibold text-indigo-200 transition active:scale-95"
+              className="flex-shrink-0 px-3 py-1.5 rounded-full bg-slate-200/80 hover:bg-slate-300 dark:bg-indigo-500/15 dark:hover:bg-indigo-500/25 border border-slate-300 dark:border-indigo-500/30 text-[11px] font-semibold text-slate-700 dark:text-indigo-200 hover:text-slate-900 dark:hover:text-white transition active:scale-95"
             >
               ❓ Unlisted query hallucination test
             </button>
             <button
               onClick={() => handleSendMessage("What trap questions will my professor ask during the project viva?")}
-              className="flex-shrink-0 px-3 py-1.5 rounded-full bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/30 text-[11px] font-semibold text-indigo-200 transition active:scale-95"
+              className="flex-shrink-0 px-3 py-1.5 rounded-full bg-slate-200/80 hover:bg-slate-300 dark:bg-indigo-500/15 dark:hover:bg-indigo-500/25 border border-slate-300 dark:border-indigo-500/30 text-[11px] font-semibold text-slate-700 dark:text-indigo-200 hover:text-slate-900 dark:hover:text-white transition active:scale-95"
             >
               🎓 Viva presentation trap test
             </button>
           </div>
 
           {/* Messages Scroll Area */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 font-sans bg-slate-950/80">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 font-sans bg-slate-50/50 dark:bg-slate-950/70">
             {messages.map((m) => {
               const isBot = m.sender === "bot";
               return (
@@ -496,22 +496,22 @@ export default function ChallengePage({
                   className={`flex ${isBot ? "justify-start" : "justify-end"} items-start gap-2.5`}
                 >
                   {isBot && (
-                    <div className="w-8 h-8 rounded-full bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-cyan-400 flex-shrink-0 mt-0.5">
+                    <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-600/30 border border-indigo-200 dark:border-indigo-500/40 flex items-center justify-center text-cyan-600 dark:text-cyan-400 flex-shrink-0 mt-0.5">
                       <Bot className="w-4 h-4" />
                     </div>
                   )}
 
                   <div
-                    className={`max-w-[85%] rounded-2xl p-4 text-xs sm:text-[13px] leading-relaxed shadow-lg relative ${
+                    className={`max-w-[85%] rounded-2xl p-4 text-xs sm:text-[13px] leading-relaxed shadow-sm relative ${
                       isBot
-                        ? "bg-slate-900/90 text-slate-100 rounded-tl-2xs border border-white/10"
+                        ? "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded-tl-2xs border border-slate-200 dark:border-white/10"
                         : "bg-indigo-600 text-white rounded-tr-2xs shadow-indigo-600/30"
                     }`}
                   >
                     {isBot ? (
                       <div>
-                        <div className="flex items-center justify-between gap-2 pb-1.5 mb-2 border-b border-white/10 text-[11px]">
-                          <span className="font-bold text-cyan-400 flex items-center gap-1">
+                        <div className="flex items-center justify-between gap-2 pb-1.5 mb-2 border-b border-slate-100 dark:border-white/10 text-[11px]">
+                          <span className="font-bold text-cyan-600 dark:text-cyan-400 flex items-center gap-1">
                             <Sparkles className="w-3 h-3" />
                             <span>Architecture Defense</span>
                           </span>
@@ -519,11 +519,11 @@ export default function ChallengePage({
                             <button
                               type="button"
                               onClick={() => copyBotMessage(m.id, m.text)}
-                              className="p-1 rounded-md hover:bg-white/10 text-slate-400 hover:text-slate-200 transition"
+                              className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
                               title="Copy AI Critique"
                             >
                               {copiedMsgId === m.id ? (
-                                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
                               ) : (
                                 <Copy className="w-3.5 h-3.5" />
                               )}
@@ -533,9 +533,9 @@ export default function ChallengePage({
                         </div>
                         <FormattedBotMessage text={m.text} />
                         
-                        <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px]">
-                          <span className="text-slate-400">Want to test your own concept?</span>
-                          <Link href="/" className="text-emerald-400 hover:text-emerald-300 font-bold underline flex items-center gap-1">
+                        <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-white/10 flex items-center justify-between text-[11px]">
+                          <span className="text-slate-500 dark:text-slate-400">Want to test your own concept?</span>
+                          <Link href="/" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 font-bold underline flex items-center gap-1">
                             <span>Score My Idea Free →</span>
                           </Link>
                         </div>
@@ -562,15 +562,15 @@ export default function ChallengePage({
             {/* Typing Indicator with 3 animated bouncing dots */}
             {sending && (
               <div className="flex items-center gap-2.5 justify-start">
-                <div className="w-8 h-8 rounded-full bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-cyan-400 flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-600/30 border border-indigo-200 dark:border-indigo-500/40 flex items-center justify-center text-cyan-600 dark:text-cyan-400 flex-shrink-0">
                   <Bot className="w-4 h-4" />
                 </div>
-                <div className="p-3.5 rounded-2xl rounded-tl-2xs bg-slate-900/90 border border-white/10 flex items-center gap-2 text-xs text-slate-400">
-                  <span className="text-xs font-medium text-slate-300">Gemini 2.5 Flash is stress-testing</span>
+                <div className="p-3.5 rounded-2xl rounded-tl-2xs bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-medium text-slate-700 dark:text-slate-300">Gemini 2.5 Flash is stress-testing</span>
                   <div className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:-0.3s]" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:-0.15s]" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 animate-bounce [animation-delay:-0.3s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 animate-bounce [animation-delay:-0.15s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 animate-bounce" />
                   </div>
                 </div>
               </div>
@@ -579,7 +579,7 @@ export default function ChallengePage({
           </div>
 
           {/* Chat Input Bar */}
-          <div className="p-3 bg-slate-900/90 backdrop-blur-md border-t border-white/10 flex items-center gap-2.5 z-10">
+          <div className="p-3 bg-white dark:bg-[#0c1222] border-t border-slate-200 dark:border-white/10 flex items-center gap-2.5 z-10">
             <div className="relative flex-1">
               <input
                 type="text"
@@ -588,9 +588,9 @@ export default function ChallengePage({
                 onChange={(e) => setInputMsg(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                 disabled={sending}
-                className="w-full bg-slate-950 text-white pl-4 pr-12 py-3.5 rounded-2xl text-xs sm:text-sm focus:outline-none placeholder:text-slate-500 border border-white/10 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition"
+                className="w-full bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-white pl-4 pr-12 py-3.5 rounded-2xl text-xs sm:text-sm focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 border border-slate-200 dark:border-white/10 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition"
               />
-              <span className="hidden sm:inline-block absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold text-slate-500 bg-white/5 border border-white/10">
+              <span className="hidden sm:inline-block absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold text-slate-500 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10">
                 ↵
               </span>
             </div>
@@ -610,34 +610,34 @@ export default function ChallengePage({
         <div className="lg:col-span-5 space-y-5">
 
           {/* Project Spec Card */}
-          <div className="p-6 rounded-3xl bg-gradient-to-b from-slate-900 to-slate-950 border border-white/10 shadow-2xl space-y-5">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400">
+          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 shadow-2xl space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
                 CLASSMATE'S LOCKED SPEC
               </span>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                 SCORE {feasibilityScore}/100
               </span>
             </div>
 
             <div>
-              <h2 className="text-xl font-black text-white">{projectTitle}</h2>
-              <span className="text-xs text-indigo-400 font-medium">Category: {contract?.category || "AI/ML"}</span>
+              <h2 className="text-xl font-black text-slate-900 dark:text-white">{projectTitle}</h2>
+              <span className="text-xs text-indigo-600 dark:text-indigo-400 font-medium">Category: {contract?.category || "AI/ML"}</span>
             </div>
 
             {/* Load-Bearing Trap Alert */}
-            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-1 text-xs">
-              <div className="flex items-center gap-1.5 text-amber-300 font-bold">
+            <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 space-y-1 text-xs">
+              <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-300 font-bold">
                 <ShieldAlert className="w-4 h-4" />
                 <span>The Load-Bearing Assumption / Trap:</span>
               </div>
-              <p className="text-slate-300 italic leading-relaxed">
+              <p className="text-slate-700 dark:text-slate-300 italic leading-relaxed">
                 “{criticalAssumption}”
               </p>
             </div>
 
             {/* 3D 60-Minute Canvas Pie Chart */}
-            <div className="p-4 rounded-2xl bg-black/50 border border-white/10 space-y-3">
+            <div className="p-4 rounded-2xl bg-slate-950 text-white border border-indigo-500/30 shadow-lg space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-mono font-bold text-slate-300">
                   60-Minute Prototype Plan
@@ -665,25 +665,25 @@ export default function ChallengePage({
 
             {/* ₹0 Local Tech Stack Summary */}
             <div className="space-y-2 text-xs">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-bold block">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-slate-600 dark:text-slate-400 font-bold block">
                 ⚡ ₹0 Stack (Local CPU)
               </span>
               <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
-                <div className="p-2 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-slate-400 block text-[9px]">BACKEND</span>
-                  <span className="text-cyan-300 font-bold">{contract?.backend_rec || "FastAPI"}</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
+                  <span className="text-slate-500 dark:text-slate-400 block text-[9px]">BACKEND</span>
+                  <span className="text-cyan-700 dark:text-cyan-300 font-bold">{contract?.backend_rec || "FastAPI"}</span>
                 </div>
-                <div className="p-2 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-slate-400 block text-[9px]">AI MODEL</span>
-                  <span className="text-cyan-300 font-bold truncate block">{contract?.ai_model_rec || "CPU Embeddings"}</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
+                  <span className="text-slate-500 dark:text-slate-400 block text-[9px]">AI MODEL</span>
+                  <span className="text-cyan-700 dark:text-cyan-300 font-bold truncate block">{contract?.ai_model_rec || "CPU Embeddings"}</span>
                 </div>
-                <div className="p-2 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-slate-400 block text-[9px]">DATABASE</span>
-                  <span className="text-cyan-300 font-bold">{contract?.db_rec || "SQLite ₹0"}</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
+                  <span className="text-slate-500 dark:text-slate-400 block text-[9px]">DATABASE</span>
+                  <span className="text-cyan-700 dark:text-cyan-300 font-bold">{contract?.db_rec || "SQLite ₹0"}</span>
                 </div>
-                <div className="p-2 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-slate-400 block text-[9px]">FRONTEND</span>
-                  <span className="text-cyan-300 font-bold">{contract?.frontend_rec || "Next.js 14"}</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
+                  <span className="text-slate-500 dark:text-slate-400 block text-[9px]">FRONTEND</span>
+                  <span className="text-cyan-700 dark:text-cyan-300 font-bold">{contract?.frontend_rec || "Next.js 14"}</span>
                 </div>
               </div>
             </div>

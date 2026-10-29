@@ -149,24 +149,24 @@ export default function HomePage() {
         {/* Sleek Announcement Pill */}
         <Link
           href="/register"
-          className="relative z-10 inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-mono font-medium bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 text-slate-300 mb-8 backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-sm"
+          className="relative z-10 inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-mono font-medium bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.03] dark:hover:bg-white/[0.06] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 mb-8 backdrop-blur-md transition-all duration-300 hover:scale-[1.02] shadow-sm"
         >
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-white font-semibold">Live 60-Minute Workshop:</span>
-          <span className="text-slate-400">Build Your Prototype Live</span>
-          <ChevronRight className="w-3.5 h-3.5 text-indigo-400 ml-0.5" />
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-slate-900 dark:text-white font-semibold">Live 60-Minute Workshop:</span>
+          <span className="text-slate-500 dark:text-slate-400">Build Your Prototype Live</span>
+          <ChevronRight className="w-3.5 h-3.5 text-indigo-500 ml-0.5" />
         </Link>
 
         {/* Main Headline */}
-        <h1 className="relative z-10 text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.1] max-w-4xl mb-6">
+        <h1 className="relative z-10 text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1] max-w-4xl mb-6">
           Stop Guessing Your Final-Year Project. <br />
-          <span className="bg-gradient-to-r from-indigo-300 via-cyan-200 to-emerald-300 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-500 dark:from-indigo-300 dark:via-cyan-200 dark:to-emerald-300 bg-clip-text text-transparent">
             Choose, Stress-Test &amp; Prove It.
           </span>
         </h1>
 
         {/* Subtitle */}
-        <p className="relative z-10 max-w-2xl text-base sm:text-lg text-slate-300 leading-relaxed mb-10 font-normal">
+        <p className="relative z-10 max-w-2xl text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-10 font-normal">
           The deterministic decision matrix and technical blueprint engine for engineering students.
           Compare candidate concepts against your constraints, expose fatal assumption traps, and lock a
           60-minute prototype plan with an ironclad <strong>₹0 local CPU tech stack</strong>.
@@ -183,44 +183,44 @@ export default function HomePage() {
           </Link>
           <Link
             href="/whatsapp"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-slate-200 font-semibold text-sm transition duration-200 hover:-translate-y-0.5"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.04] dark:hover:bg-white/[0.08] border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200 font-semibold text-sm transition duration-200 hover:-translate-y-0.5"
           >
-            <MessageSquare className="w-4 h-4 text-emerald-400" />
+            <MessageSquare className="w-4 h-4 text-emerald-500" />
             <span>Try WhatsApp Campus Bot</span>
           </Link>
         </div>
 
         {/* Trust Badges */}
-        <div className="relative z-10 flex items-center justify-center gap-6 sm:gap-10 text-xs text-slate-400 flex-wrap">
+        <div className="relative z-10 flex items-center justify-center gap-6 sm:gap-10 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
           <span className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
             <span>₹0 Cloud Fee Guarantee</span>
           </span>
           <span className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
             <span>Runs on Student CPU Laptops</span>
           </span>
           <span className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
             <span>Zero Login Required</span>
           </span>
         </div>
 
         {/* ── INTERACTIVE LIVE PROJECT ARCHETYPE COMPARATOR ──────────────────── */}
-        <div className="relative z-10 w-full max-w-4xl mt-16 rounded-2xl p-6 sm:p-8 bg-slate-900/60 border border-white/10 shadow-2xl backdrop-blur-xl text-left">
+        <div className="relative z-10 w-full max-w-4xl mt-16 rounded-2xl p-6 sm:p-8 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 shadow-2xl backdrop-blur-xl text-left">
           
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-white/10 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-slate-200 dark:border-white/10 gap-4">
             <div>
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-cyan-400 block mb-1">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-indigo-600 dark:text-cyan-400 block mb-1">
                 PRE-SCORED BENCHMARKS
               </span>
-              <h3 className="text-lg font-bold text-white">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                 Explore Realistic Project Archetypes
               </h3>
             </div>
             
             {/* Archetype Selector Tabs */}
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-black/40 border border-white/10">
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-white/10">
               {ARCHETYPES.map((arch) => (
                 <button
                   key={arch.id}
@@ -228,7 +228,7 @@ export default function HomePage() {
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
                     selectedArchetype.id === arch.id
                       ? "bg-indigo-600 text-white shadow-sm"
-                      : "text-slate-400 hover:text-white"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
                   <span>{arch.icon}</span>
@@ -245,75 +245,75 @@ export default function HomePage() {
             <div className="md:col-span-7 space-y-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <h4 className="text-base font-bold text-white flex items-center gap-2">
+                  <h4 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <span>{selectedArchetype.icon}</span>
                     <span>{selectedArchetype.title}</span>
                   </h4>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
                     Category: {selectedArchetype.tag}
                   </span>
                 </div>
                 <div className="px-3 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
-                  <span className="text-[9px] text-emerald-400 block font-mono font-bold uppercase">FEASIBILITY</span>
-                  <strong className="text-sm font-bold text-emerald-300 font-mono">
+                  <span className="text-[9px] text-emerald-600 dark:text-emerald-400 block font-mono font-bold uppercase">FEASIBILITY</span>
+                  <strong className="text-sm font-bold text-emerald-700 dark:text-emerald-300 font-mono">
                     {selectedArchetype.score}/100
                   </strong>
                 </div>
               </div>
 
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                 {selectedArchetype.desc}
               </p>
 
               {/* Stack Pill Box */}
-              <div className="p-3.5 rounded-xl bg-black/30 border border-white/10 space-y-1">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block font-bold">
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-200 dark:border-white/10 space-y-1">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 block font-bold">
                   ⚡ ₹0 Local Stack (Zero Cloud Fee)
                 </span>
-                <div className="text-xs font-mono font-bold text-cyan-300">
+                <div className="text-xs font-mono font-bold text-indigo-600 dark:text-cyan-300">
                   {selectedArchetype.stack}
                 </div>
               </div>
 
               {/* Critical Trap Box */}
               <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs space-y-1">
-                <strong className="text-amber-300 flex items-center gap-1.5 font-bold">
-                  <ShieldAlert className="w-3.5 h-3.5" />
+                <strong className="text-amber-700 dark:text-amber-300 flex items-center gap-1.5 font-bold">
+                  <ShieldAlert className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                   <span>The Load-Bearing Assumption / Trap:</span>
                 </strong>
-                <p className="text-slate-300 italic">
+                <p className="text-slate-700 dark:text-slate-300 italic">
                   “{selectedArchetype.assumption}”
                 </p>
               </div>
             </div>
 
             {/* Right: 60-Minute Snapshot & CTA */}
-            <div className="md:col-span-5 p-5 rounded-xl bg-black/40 border border-white/10 space-y-4 flex flex-col justify-between h-full">
+            <div className="md:col-span-5 p-5 rounded-xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/10 space-y-4 flex flex-col justify-between h-full">
               <div className="space-y-3">
-                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5" />
                   <span>The 60-Minute Timeline</span>
                 </span>
                 <div className="space-y-2 text-xs">
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.03]">
-                    <span className="text-slate-300">Min 00-10: Scaffold venv &amp; deps</span>
-                    <span className="text-emerald-400 font-mono font-bold">10m</span>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-white/[0.03] border border-slate-200/60 dark:border-transparent">
+                    <span className="text-slate-700 dark:text-slate-300">Min 00-10: Scaffold venv &amp; deps</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-mono font-bold">10m</span>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.03]">
-                    <span className="text-slate-300">Min 10-25: Ingest data &amp; vectorize</span>
-                    <span className="text-indigo-400 font-mono font-bold">15m</span>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-white/[0.03] border border-slate-200/60 dark:border-transparent">
+                    <span className="text-slate-700 dark:text-slate-300">Min 10-25: Ingest data &amp; vectorize</span>
+                    <span className="text-indigo-600 dark:text-indigo-400 font-mono font-bold">15m</span>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.03]">
-                    <span className="text-slate-300">Min 25-35: Wire inference logic</span>
-                    <span className="text-purple-400 font-mono font-bold">10m</span>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-white/[0.03] border border-slate-200/60 dark:border-transparent">
+                    <span className="text-slate-700 dark:text-slate-300">Min 25-35: Wire inference logic</span>
+                    <span className="text-purple-600 dark:text-purple-400 font-mono font-bold">10m</span>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.03]">
-                    <span className="text-slate-300">Min 35-50: Build web UI / chat endpoint</span>
-                    <span className="text-cyan-400 font-mono font-bold">15m</span>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-white/[0.03] border border-slate-200/60 dark:border-transparent">
+                    <span className="text-slate-700 dark:text-slate-300">Min 35-50: Build web UI / chat endpoint</span>
+                    <span className="text-cyan-600 dark:text-cyan-400 font-mono font-bold">15m</span>
                   </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/[0.03]">
-                    <span className="text-slate-300">Min 50-60: Run failure tests &amp; verify</span>
-                    <span className="text-amber-400 font-mono font-bold">10m</span>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-white/[0.03] border border-slate-200/60 dark:border-transparent">
+                    <span className="text-slate-700 dark:text-slate-300">Min 50-60: Run failure tests &amp; verify</span>
+                    <span className="text-amber-600 dark:text-amber-400 font-mono font-bold">10m</span>
                   </div>
                 </div>
               </div>
@@ -331,17 +331,17 @@ export default function HomePage() {
 
       {/* ── METRICS STRIP ───────────────────────────────────────────────────── */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 p-6 sm:p-8 rounded-2xl bg-slate-900/40 border border-white/10 backdrop-blur-md">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 p-6 sm:p-8 rounded-2xl bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-white/10 shadow-lg backdrop-blur-md">
           {METRICS.map((m, i) => (
             <div key={i} className="text-center p-2 space-y-1">
-              <div className="text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight flex items-center justify-center">
+              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight flex items-center justify-center">
                 <AnimatedCounter target={m.value} />
-                <span className="text-cyan-400">{m.suffix}</span>
+                <span className="text-indigo-600 dark:text-cyan-400">{m.suffix}</span>
               </div>
-              <strong className="text-xs sm:text-sm font-semibold text-slate-200 block">
+              <strong className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 block">
                 {m.label}
               </strong>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 {m.subtext}
               </p>
             </div>
@@ -352,13 +352,13 @@ export default function HomePage() {
       {/* ── THE THREE PILLARS (CLEAN & SPACIOUS) ────────────────────────────── */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-12">
         <div className="text-center max-w-xl mx-auto space-y-2">
-          <span className="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400">
+          <span className="text-xs font-mono font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
             SYSTEM CAPABILITIES
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             How Project Compass Protects Your Build
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
             Eliminating guesswork through deterministic scoring, ironclad architecture blueprints, and AI-powered peer stress-testing.
           </p>
         </div>
@@ -367,24 +367,24 @@ export default function HomePage() {
           {PILLARS.map((p, i) => (
             <div
               key={i}
-              className="rounded-2xl p-7 bg-white/[0.02] hover:bg-white/[0.04] border border-white/10 flex flex-col justify-between space-y-6 transition-all duration-300"
+              className="rounded-2xl p-7 bg-white dark:bg-white/[0.02] hover:bg-slate-50 dark:hover:bg-white/[0.04] border border-slate-200 dark:border-white/10 shadow-sm flex flex-col justify-between space-y-6 transition-all duration-300"
             >
               <div className="space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-white/[0.05] border border-indigo-100 dark:border-white/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
                   {p.icon}
                 </div>
 
-                <h3 className="text-lg font-bold text-white">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                   {p.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                   {p.desc}
                 </p>
               </div>
 
               <Link
                 href={p.href}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-400 hover:text-indigo-300 transition"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition"
               >
                 <span>{p.linkText}</span>
               </Link>
@@ -395,16 +395,16 @@ export default function HomePage() {
 
       {/* ── WHATSAPP SPOTLIGHT BANNER ───────────────────────────────────────── */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div className="rounded-2xl p-8 sm:p-10 bg-slate-900/60 border border-white/10 flex flex-col lg:flex-row items-center justify-between gap-8">
+        <div className="rounded-2xl p-8 sm:p-10 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 shadow-lg flex flex-col lg:flex-row items-center justify-between gap-8">
           <div className="max-w-xl space-y-3.5 text-left">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
               <MessageSquare className="w-3.5 h-3.5" />
               <span>WHATSAPP CAMPUS BOT</span>
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Evaluate Projects Directly on WhatsApp
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
               Message our WhatsApp bot from your phone to compare candidate ideas, generate full 60-minute build blueprints, and test edge-case traps on the go.
             </p>
             <div className="pt-2">
@@ -438,10 +438,10 @@ export default function HomePage() {
 
       {/* ── BOTTOM CALL TO ACTION ───────────────────────────────────────────── */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto text-center space-y-5">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           Ready to Build Your Final-Year Project?
         </h2>
-        <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-lg mx-auto leading-relaxed">
           Zero cloud bills. Zero GPU requirements. Build a verified, viva-defensible prototype in 60 minutes.
         </p>
         <div className="flex items-center justify-center gap-3.5 flex-wrap pt-2">
@@ -453,7 +453,7 @@ export default function HomePage() {
           </Link>
           <Link
             href="/register"
-            className="px-7 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-white font-semibold text-sm transition"
+            className="px-7 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.04] dark:hover:bg-white/[0.08] border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white font-semibold text-sm transition"
           >
             <span>Register for Free Masterclass</span>
           </Link>

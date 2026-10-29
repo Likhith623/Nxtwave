@@ -354,10 +354,10 @@ export default function ContractPage({
 
   if (!contract) {
     return (
-      <div className="max-w-xl mx-auto my-20 p-8 glass-card text-center">
+      <div className="max-w-xl mx-auto my-20 p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-xl text-center">
         <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-white mb-2">Blueprint Not Found</h2>
-        <p className="text-sm text-slate-400 mb-6">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Blueprint Not Found</h2>
+        <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
           Contract ID &quot;{contractId}&quot; could not be located in the database.
         </p>
         <Link
@@ -382,16 +382,16 @@ export default function ContractPage({
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 font-sans">
       
       {/* Top Header & Action Bar */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-white/10">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-white/10">
         <div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mb-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-bold bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 mb-2">
             <span>⚡ PROTOTYPE BLUEPRINT LOCKED · SCORE {feasibilityScore}/100</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
             {projectTitle}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-3xl leading-relaxed">
-            <strong className="text-white">A Build Plan That Leaves Nothing Out:</strong> Required ₹0 local stack, hidden assumptions, concrete failure tests, strict scope limits, and your <strong>exact 60-minute build pie chart</strong>.
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 max-w-3xl leading-relaxed">
+            <strong className="text-slate-900 dark:text-white">A Build Plan That Leaves Nothing Out:</strong> Required ₹0 local stack, hidden assumptions, concrete failure tests, strict scope limits, and your <strong>exact 60-minute build pie chart</strong>.
           </p>
         </div>
 
@@ -399,14 +399,14 @@ export default function ContractPage({
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={downloadPDF}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-200 transition"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-200 border border-slate-200 dark:border-white/10 text-xs font-semibold transition"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Download PDF</span>
           </button>
           <button
             onClick={copyShareLink}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-200 transition"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-200 border border-slate-200 dark:border-white/10 text-xs font-semibold transition"
           >
             <Copy className="w-3.5 h-3.5" />
             <span>{copied ? "Copied!" : "Copy Link"}</span>
@@ -428,26 +428,26 @@ export default function ContractPage({
       </div>
 
       {/* Main Master Card */}
-      <div className="glass-panel rounded-3xl p-6 sm:p-9 border border-indigo-500/30 shadow-2xl relative space-y-8 bg-gradient-to-b from-slate-950/80 via-slate-900/60 to-slate-950/80">
+      <div className="rounded-3xl p-6 sm:p-9 bg-white dark:bg-gradient-to-b dark:from-slate-950/80 dark:via-slate-900/60 dark:to-slate-950/80 border border-slate-200 dark:border-indigo-500/30 shadow-2xl relative space-y-8">
         
         {/* Project Metadata Banner */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-white/10">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-white/10">
           <div>
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-400 block mb-1">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 block mb-1">
               OFFICIAL BUILD CONTRACT LOCKED · SCORE {feasibilityScore}/100
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-white">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
               {projectTitle}
             </h2>
-            <div className="text-xs text-slate-400 mt-1 flex items-center gap-3 flex-wrap">
-              <span>Category: <strong className="text-indigo-400">{contract.category}</strong></span>
+            <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 flex items-center gap-3 flex-wrap">
+              <span>Category: <strong className="text-indigo-600 dark:text-indigo-400">{contract.category}</strong></span>
               <span>•</span>
-              <span>Target Time: <strong className="text-emerald-400">Exactly 60 Minutes</strong></span>
+              <span>Target Time: <strong className="text-emerald-600 dark:text-emerald-400">Exactly 60 Minutes</strong></span>
               <span>•</span>
-              <span>Cloud Budget: <strong className="text-emerald-400">₹0 Local CPU</strong></span>
+              <span>Cloud Budget: <strong className="text-emerald-600 dark:text-emerald-400">₹0 Local CPU</strong></span>
             </div>
           </div>
-          <div className="px-3 py-1.5 rounded-lg bg-black/40 border border-white/10 font-mono text-xs text-indigo-300 font-bold">
+          <div className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-white/10 font-mono text-xs text-indigo-600 dark:text-indigo-300 font-bold">
             ID: {contract.contract_id || contractId}
           </div>
         </div>
@@ -459,78 +459,78 @@ export default function ContractPage({
           <div className="lg:col-span-7 flex flex-col justify-between gap-3">
             
             {/* Tech Stack */}
-            <a href="#sec1" className="p-3.5 rounded-2xl bg-slate-900/40 hover:bg-slate-800/60 border border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
-              <span className="w-8 h-8 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+            <a href="#sec1" className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-900/40 dark:hover:bg-slate-800/60 border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
+              <span className="w-8 h-8 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 dark:text-rose-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
                 <Cpu className="w-4 h-4" />
               </span>
               <div>
-                <strong className="text-sm font-bold text-white block">₹0 Tech Stack</strong>
-                <span className="text-xs text-slate-300 leading-snug">
+                <strong className="text-sm font-bold text-slate-900 dark:text-white block">₹0 Tech Stack</strong>
+                <span className="text-xs text-slate-600 dark:text-slate-300 leading-snug">
                   FastAPI + SQLite + free local embeddings. No cloud bill. Runs directly on laptop.
                 </span>
               </div>
             </a>
 
             {/* Load-Bearing Assumption */}
-            <a href="#sec2" className="p-3.5 rounded-2xl bg-slate-900/40 hover:bg-slate-800/60 border border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
-              <span className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+            <a href="#sec2" className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-900/40 dark:hover:bg-slate-800/60 border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
+              <span className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
                 <AlertTriangle className="w-4 h-4" />
               </span>
               <div>
-                <strong className="text-sm font-bold text-white block">Load-Bearing Assumption</strong>
-                <span className="text-xs text-slate-300 leading-snug">
+                <strong className="text-sm font-bold text-slate-900 dark:text-white block">Load-Bearing Assumption</strong>
+                <span className="text-xs text-slate-600 dark:text-slate-300 leading-snug">
                   The one hidden risk that sinks the project: &ldquo;{contract.critical_assumption?.slice(0, 85)}...&rdquo;
                 </span>
               </div>
             </a>
 
             {/* Failure Tests */}
-            <a href="#sec3" className="p-3.5 rounded-2xl bg-slate-900/40 hover:bg-slate-800/60 border border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
-              <span className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+            <a href="#sec3" className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-900/40 dark:hover:bg-slate-800/60 border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
+              <span className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
                 <ShieldAlert className="w-4 h-4" />
               </span>
               <div>
-                <strong className="text-sm font-bold text-white block">Failure Tests</strong>
-                <span className="text-xs text-slate-300 leading-snug">
+                <strong className="text-sm font-bold text-slate-900 dark:text-white block">Failure Tests</strong>
+                <span className="text-xs text-slate-600 dark:text-slate-300 leading-snug">
                   2–3 targeted stress tests: what to test, expected output, and remediation plans.
                 </span>
               </div>
             </a>
 
             {/* Scope Boundary */}
-            <a href="#sec4" className="p-3.5 rounded-2xl bg-slate-900/40 hover:bg-slate-800/60 border border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
-              <span className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+            <a href="#sec4" className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-900/40 dark:hover:bg-slate-800/60 border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
+              <span className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
                 <Target className="w-4 h-4" />
               </span>
               <div>
-                <strong className="text-sm font-bold text-white block">Scope Boundary</strong>
-                <span className="text-xs text-slate-300 leading-snug">
+                <strong className="text-sm font-bold text-slate-900 dark:text-white block">Scope Boundary</strong>
+                <span className="text-xs text-slate-600 dark:text-slate-300 leading-snug">
                   Essential MVP features vs what NOT to build in Week 1 (no payments, no complex logins).
                 </span>
               </div>
             </a>
 
             {/* 60-Minute Prototype Plan */}
-            <a href="#sec5" className="p-3.5 rounded-2xl bg-slate-900/40 hover:bg-slate-800/60 border border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
-              <span className="w-8 h-8 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+            <a href="#sec5" className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-900/40 dark:hover:bg-slate-800/60 border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
+              <span className="w-8 h-8 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-600 dark:text-violet-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
                 <Clock className="w-4 h-4" />
               </span>
               <div>
-                <strong className="text-sm font-bold text-white block">60-Minute Prototype Plan</strong>
-                <span className="text-xs text-slate-300 leading-snug">
+                <strong className="text-sm font-bold text-slate-900 dark:text-white block">60-Minute Prototype Plan</strong>
+                <span className="text-xs text-slate-600 dark:text-slate-300 leading-snug">
                   Milestones that add up to exactly an hour: scaffold, data ingest, core AI, UI wire-up, verify.
                 </span>
               </div>
             </a>
 
             {/* Day-1 Launch Action */}
-            <a href="#sec6" className="p-3.5 rounded-2xl bg-slate-900/40 hover:bg-slate-800/60 border border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
-              <span className="w-8 h-8 rounded-xl bg-pink-500/10 border border-pink-500/20 text-pink-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+            <a href="#sec6" className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-900/40 dark:hover:bg-slate-800/60 border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
+              <span className="w-8 h-8 rounded-xl bg-pink-500/10 border border-pink-500/20 text-pink-600 dark:text-pink-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
                 <Zap className="w-4 h-4" />
               </span>
               <div>
-                <strong className="text-sm font-bold text-white block">Day-1 Launch Action</strong>
-                <span className="text-xs text-slate-300 leading-snug">
+                <strong className="text-sm font-bold text-slate-900 dark:text-white block">Day-1 Launch Action</strong>
+                <span className="text-xs text-slate-600 dark:text-slate-300 leading-snug">
                   One task you can do right now to build momentum immediately.
                 </span>
               </div>
@@ -538,7 +538,7 @@ export default function ContractPage({
           </div>
 
           {/* Right Column: 60-Minute Pie Chart */}
-          <div className="lg:col-span-5 p-5 rounded-2xl bg-slate-950/90 border border-indigo-500/40 flex flex-col justify-between items-center shadow-xl">
+          <div className="lg:col-span-5 p-5 rounded-2xl bg-slate-950/90 text-white border border-indigo-500/40 flex flex-col justify-between items-center shadow-xl">
             <div className="w-full flex justify-between items-center mb-2">
               <div>
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400 block">
@@ -552,8 +552,8 @@ export default function ContractPage({
                   onClick={() => setPieMode("classic5")}
                   className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition ${
                     pieMode === "classic5"
-                      ? "bg-indigo-600 text-white"
-                      : "bg-white/5 text-slate-400 hover:text-white"
+                      ? "bg-indigo-600 text-white shadow-sm"
+                      : "bg-white/10 text-slate-200 hover:bg-white/20 hover:text-white"
                   }`}
                 >
                   Classic 5 (60m)
@@ -563,8 +563,8 @@ export default function ContractPage({
                   onClick={() => setPieMode("detailed")}
                   className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition ${
                     pieMode === "detailed"
-                      ? "bg-indigo-600 text-white"
-                      : "bg-white/5 text-slate-400 hover:text-white"
+                      ? "bg-indigo-600 text-white shadow-sm"
+                      : "bg-white/10 text-slate-200 hover:bg-white/20 hover:text-white"
                   }`}
                 >
                   Detailed 8 (60m)
@@ -594,23 +594,23 @@ export default function ContractPage({
         </div>
 
         {/* BOTTOM WORKSHOP BAR: 60 MINS = 60 MINS LIVE WORKSHOP */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 border-2 border-indigo-500/50 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-5">
+        <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-indigo-50 via-purple-50 to-cyan-50 dark:from-slate-950 dark:via-indigo-950 dark:to-slate-900 border-2 border-indigo-200 dark:border-indigo-500/50 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-5 text-slate-900 dark:text-white">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-indigo-600 text-white font-black text-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-600/50">
               60
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-extrabold text-white leading-tight">
+              <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
                 “This plan takes exactly 60 minutes. So does our workshop. Come build it live.”
               </h3>
-              <p className="text-xs sm:text-sm text-slate-300 mt-1">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">
                 Your plan is ready! Learn how to build this exact prototype in 60 minutes at NxtWave&apos;s free live workshop.
               </p>
             </div>
           </div>
           <Link
             href={`/register?contract_id=${contract.contract_id || contractId}`}
-            className="w-full md:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-emerald-500/30 transition whitespace-nowrap text-center"
+            className="w-full md:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-black text-xs sm:text-sm shadow-lg shadow-emerald-500/30 transition whitespace-nowrap text-center"
           >
             <span>Join the workshop →</span>
           </Link>
@@ -619,96 +619,96 @@ export default function ContractPage({
         {/* DETAILED TECHNICAL EXECUTION PANELS */}
 
         {/* The ₹0 Tech Stack */}
-        <div id="sec1" className="pt-6 border-t border-white/10 space-y-3">
+        <div id="sec1" className="pt-6 border-t border-slate-200 dark:border-white/10 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Cpu className="w-4 h-4 text-rose-500" />
               <span>₹0 Tech Stack (Everything Required to Build)</span>
             </h3>
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
               ₹0 Cloud Fees
             </span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10">
-              <span className="text-[10px] font-mono text-slate-400 uppercase block mb-1">Frontend</span>
-              <strong className="text-xs text-white block">{stack.frontend || contract.frontend_rec || "Next.js / HTML5"}</strong>
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white">
+              <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase block mb-1">Frontend</span>
+              <strong className="text-xs text-slate-900 dark:text-white block">{stack.frontend || contract.frontend_rec || "Next.js / HTML5"}</strong>
             </div>
-            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10">
-              <span className="text-[10px] font-mono text-slate-400 uppercase block mb-1">Backend</span>
-              <strong className="text-xs text-blue-400 block">{stack.backend || contract.backend_rec || "FastAPI"}</strong>
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white">
+              <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase block mb-1">Backend</span>
+              <strong className="text-xs text-blue-600 dark:text-blue-400 block">{stack.backend || contract.backend_rec || "FastAPI"}</strong>
             </div>
-            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10">
-              <span className="text-[10px] font-mono text-slate-400 uppercase block mb-1">AI Model</span>
-              <strong className="text-xs text-violet-400 block">{stack.ai_model || contract.ai_model_rec || "Sentence-Transformers on CPU"}</strong>
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white">
+              <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase block mb-1">AI Model</span>
+              <strong className="text-xs text-violet-600 dark:text-violet-400 block">{stack.ai_model || contract.ai_model_rec || "Sentence-Transformers on CPU"}</strong>
             </div>
-            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10">
-              <span className="text-[10px] font-mono text-slate-400 uppercase block mb-1">Database</span>
-              <strong className="text-xs text-emerald-400 block">{stack.database || contract.db_rec || "Local SQLite (₹0)"}</strong>
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white">
+              <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase block mb-1">Database</span>
+              <strong className="text-xs text-emerald-600 dark:text-emerald-400 block">{stack.database || contract.db_rec || "Local SQLite (₹0)"}</strong>
             </div>
           </div>
           {contract.tech_reasoning && (
-            <div className="p-3.5 rounded-xl bg-white/5 border-l-2 border-indigo-500 text-xs text-slate-300">
-              <strong className="text-white">Architectural Rationale: </strong>{contract.tech_reasoning}
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/5 border-l-2 border-indigo-500 text-xs text-slate-700 dark:text-slate-300">
+              <strong className="text-slate-900 dark:text-white">Architectural Rationale: </strong>{contract.tech_reasoning}
             </div>
           )}
         </div>
 
         {/* Load-Bearing Assumption */}
-        <div id="sec2" className="pt-6 border-t border-white/10 space-y-3">
+        <div id="sec2" className="pt-6 border-t border-slate-200 dark:border-white/10 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-500" />
               <span>The “Load-Bearing Assumption” (The Trap &amp; Key Limitation)</span>
             </h3>
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
               Single Point of Failure
             </span>
           </div>
-          <div className="p-4 rounded-xl bg-amber-500/10 border-l-4 border-amber-500 space-y-2">
-            <p className="text-sm sm:text-base font-bold text-white leading-relaxed">
+          <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-500/10 border-l-4 border-amber-500 space-y-2">
+            <p className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-relaxed">
               &ldquo;{contract.critical_assumption}&rdquo;
             </p>
-            <p className="text-xs text-slate-300">
-              <strong>What happens when someone asks an unlisted question?</strong> If this assumption proves false during your professor&apos;s viva review and your code lacks a confidence threshold, the model hallucinates and the project fails review.
+            <p className="text-xs text-slate-700 dark:text-slate-300">
+              <strong className="text-slate-900 dark:text-white">What happens when someone asks an unlisted question?</strong> If this assumption proves false during your professor&apos;s viva review and your code lacks a confidence threshold, the model hallucinates and the project fails review.
             </p>
           </div>
         </div>
 
         {/* Concrete Failure Tests */}
-        <div id="sec3" className="pt-6 border-t border-white/10 space-y-3">
+        <div id="sec3" className="pt-6 border-t border-slate-200 dark:border-white/10 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <ListChecks className="w-4 h-4 text-indigo-400" />
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <ListChecks className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
               <span>Concrete Failure Tests</span>
             </h3>
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
               Proposed Tests — Not Yet Executed
             </span>
           </div>
           <div className="space-y-3">
             {failureScenarios.map((test: any, i: number) => (
-              <div key={i} className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2.5">
+              <div key={i} className="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <strong className="text-sm font-bold text-white">{test.test_name}</strong>
-                  <span className="px-2 py-0.5 rounded font-mono text-[10px] bg-white/10 text-indigo-300 font-bold">{test.test_id || `TST-0${i + 1}`}</span>
+                  <strong className="text-sm font-bold text-slate-900 dark:text-white">{test.test_name}</strong>
+                  <span className="px-2 py-0.5 rounded font-mono text-[10px] bg-slate-200 dark:bg-white/10 text-indigo-700 dark:text-indigo-300 font-bold">{test.test_id || `TST-0${i + 1}`}</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                  <div className="p-2.5 rounded bg-black/30 border border-white/5">
-                    <strong className="text-slate-400 block mb-0.5">What to Test:</strong>
-                    <span className="text-slate-200">{test.what_is_tested}</span>
+                  <div className="p-2.5 rounded bg-white dark:bg-black/30 border border-slate-200 dark:border-white/5">
+                    <strong className="text-slate-500 dark:text-slate-400 block mb-0.5">What to Test:</strong>
+                    <span className="text-slate-800 dark:text-slate-200">{test.what_is_tested}</span>
                   </div>
-                  <div className="p-2.5 rounded bg-black/30 border border-white/5">
-                    <strong className="text-slate-400 block mb-0.5">What to Expect:</strong>
-                    <span className="text-slate-200">{test.expected_observation}</span>
+                  <div className="p-2.5 rounded bg-white dark:bg-black/30 border border-slate-200 dark:border-white/5">
+                    <strong className="text-slate-500 dark:text-slate-400 block mb-0.5">What to Expect:</strong>
+                    <span className="text-slate-800 dark:text-slate-200">{test.expected_observation}</span>
                   </div>
-                  <div className="p-2.5 rounded bg-black/30 border border-white/5">
-                    <strong className="text-emerald-400 block mb-0.5">Acceptance Criteria:</strong>
-                    <span className="text-slate-200">{test.acceptance_criteria}</span>
+                  <div className="p-2.5 rounded bg-white dark:bg-black/30 border border-slate-200 dark:border-white/5">
+                    <strong className="text-emerald-600 dark:text-emerald-400 block mb-0.5">Acceptance Criteria:</strong>
+                    <span className="text-slate-800 dark:text-slate-200">{test.acceptance_criteria}</span>
                   </div>
-                  <div className="p-2.5 rounded bg-black/30 border border-white/5">
-                    <strong className="text-amber-400 block mb-0.5">How to Fix It:</strong>
-                    <span className="text-slate-200">{test.remediation_plan}</span>
+                  <div className="p-2.5 rounded bg-white dark:bg-black/30 border border-slate-200 dark:border-white/5">
+                    <strong className="text-amber-600 dark:text-amber-400 block mb-0.5">How to Fix It:</strong>
+                    <span className="text-slate-800 dark:text-slate-200">{test.remediation_plan}</span>
                   </div>
                 </div>
               </div>
@@ -717,34 +717,34 @@ export default function ContractPage({
         </div>
 
         {/* Strict Scope Boundary */}
-        <div id="sec4" className="pt-6 border-t border-white/10 space-y-3">
+        <div id="sec4" className="pt-6 border-t border-slate-200 dark:border-white/10 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Target className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Target className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
               <span>Strict Scope Boundary</span>
             </h3>
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
               DO NOT Build in Week 1
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20 space-y-2">
-              <strong className="text-xs font-bold text-emerald-400 block flex items-center gap-1.5">
+              <strong className="text-xs font-bold text-emerald-600 dark:text-emerald-400 block flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>In-Scope (Build in Week 1):</span>
               </strong>
-              <ul className="text-xs text-slate-300 space-y-1.5 pl-3 list-disc">
+              <ul className="text-xs text-slate-700 dark:text-slate-300 space-y-1.5 pl-3 list-disc">
                 {mvpFeatures.map((f: string, i: number) => (
                   <li key={i}>{f}</li>
                 ))}
               </ul>
             </div>
             <div className="p-4 rounded-xl bg-rose-500/5 border border-rose-500/20 space-y-2">
-              <strong className="text-xs font-bold text-rose-400 block flex items-center gap-1.5">
+              <strong className="text-xs font-bold text-rose-600 dark:text-rose-400 block flex items-center gap-1.5">
                 <Ban className="w-3.5 h-3.5" />
                 <span>DO NOT Build in Week 1 (Postpone):</span>
               </strong>
-              <ul className="text-xs text-slate-300 space-y-1.5 pl-3 list-disc">
+              <ul className="text-xs text-slate-700 dark:text-slate-300 space-y-1.5 pl-3 list-disc">
                 {deferredFeatures.map((f: string, i: number) => (
                   <li key={i}>{f}</li>
                 ))}
@@ -754,24 +754,24 @@ export default function ContractPage({
         </div>
 
         {/* The 60-Minute Prototype Plan */}
-        <div id="sec5" className="pt-6 border-t border-white/10 space-y-3">
+        <div id="sec5" className="pt-6 border-t border-slate-200 dark:border-white/10 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Clock className="w-4 h-4 text-indigo-400" />
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Clock className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
               <span>The 60-Minute Prototype Plan</span>
             </h3>
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
               Four 15-Minute Milestones
             </span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {planMilestones.map((m: any, i: number) => (
-              <div key={i} className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1.5">
-                <span className="font-mono text-[10px] text-indigo-400 font-bold uppercase block">{m.time_window || `Minutes ${i * 15}-${(i + 1) * 15}`}</span>
-                <strong className="text-xs font-bold text-white block">{m.phase_title}</strong>
-                <p className="text-[11px] text-slate-300 leading-relaxed">{m.objective}</p>
+              <div key={i} className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white space-y-1.5">
+                <span className="font-mono text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase block">{m.time_window || `Minutes ${i * 15}-${(i + 1) * 15}`}</span>
+                <strong className="text-xs font-bold text-slate-900 dark:text-white block">{m.phase_title}</strong>
+                <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">{m.objective}</p>
                 {m.deliverable && (
-                  <div className="pt-2 border-t border-white/5 text-[10px] text-emerald-400 font-mono">
+                  <div className="pt-2 border-t border-slate-200 dark:border-white/5 text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">
                     ✓ {m.deliverable}
                   </div>
                 )}
@@ -781,33 +781,33 @@ export default function ContractPage({
         </div>
 
         {/* Immediate Next Action */}
-        <div id="sec6" className="pt-6 border-t border-white/10 space-y-3">
+        <div id="sec6" className="pt-6 border-t border-slate-200 dark:border-white/10 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Zap className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Zap className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
               <span>Immediate Next Action (Start in 5 Minutes)</span>
             </h3>
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
               Momentum Trigger
             </span>
           </div>
-          <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-indigo-500/10 border border-emerald-500/30">
-            <strong className="text-xs font-bold text-emerald-300 block mb-1">Day-1 Launch Action:</strong>
-            <p className="font-mono text-xs text-white leading-relaxed">{contract.immediate_action}</p>
+          <div className="p-4 rounded-xl bg-emerald-50 dark:bg-gradient-to-r dark:from-emerald-500/10 dark:via-teal-500/10 dark:to-indigo-500/10 border border-emerald-200 dark:border-emerald-500/30 text-slate-900 dark:text-white">
+            <strong className="text-xs font-bold text-emerald-700 dark:text-emerald-300 block mb-1">Day-1 Launch Action:</strong>
+            <p className="font-mono text-xs text-slate-900 dark:text-white leading-relaxed">{contract.immediate_action}</p>
           </div>
         </div>
 
         {/* VIRAL SHARE LOOP: WHATSAPP GROUP & AI CHAT ROOM */}
-        <div className="pt-8 border-t border-white/10 space-y-4">
+        <div className="pt-8 border-t border-slate-200 dark:border-white/10 space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
                 VIRAL PEER CHALLENGE &amp; SHARE LINK
               </span>
-              <h3 className="text-xl font-bold text-white mt-1">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-1">
                 Share Link to WhatsApp Group — Friends Join AI Chat &amp; Test Your Build
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
                 When you share this link, classmates land in an interactive AI Chat room where they can test edge cases before your professor does!
               </p>
             </div>
@@ -820,17 +820,17 @@ export default function ContractPage({
             </Link>
           </div>
 
-          <div className="p-4 rounded-xl bg-black/40 border border-white/10 space-y-3">
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white space-y-3">
             <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="text"
                 readOnly
                 value={typeof window !== "undefined" ? `${window.location.origin}/challenge/${contract.contract_id || contractId}` : ""}
-                className="flex-1 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 font-mono text-xs text-slate-200"
+                className="flex-1 px-3.5 py-2 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 font-mono text-xs text-slate-800 dark:text-slate-200"
               />
               <button
                 onClick={copyShareLink}
-                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs transition"
+                className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 dark:bg-white/10 dark:hover:bg-white/15 dark:text-white font-semibold text-xs transition"
               >
                 Copy Link
               </button>
