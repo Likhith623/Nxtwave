@@ -353,7 +353,12 @@ def supabase_get_admin_metrics() -> Optional[Dict[str, Any]]:
             source_counts[src] = source_counts.get(src, 0) + 1
 
         campaign_sources = [
-            {"source": src, "registrations": count, "percentage": round((count / total_reg * 100), 1) if total_reg > 0 else 0.0}
+            {
+                "source": src,
+                "events": count,
+                "registrations": count,
+                "percentage": round((count / total_reg * 100), 1) if total_reg > 0 else 0.0,
+            }
             for src, count in sorted(source_counts.items(), key=lambda x: x[1], reverse=True)
         ]
 
@@ -366,12 +371,20 @@ def supabase_get_admin_metrics() -> Optional[Dict[str, Any]]:
                 masked_email = (p1[:3] + "***@" + p2) if len(p1) > 3 else (p1[0] + "***@" + p2)
             else:
                 masked_email = "***"
+            student_name = r.get("name") or r.get("full_name") or "Student"
+            source_val = r.get("utm_source") or r.get("referral_source") or "direct"
             recent_regs.append({
                 "registration_id": r.get("registration_id"),
+                "name": student_name,
+                "full_name": student_name,
                 "masked_email": masked_email,
-                "referral_source": r.get("referral_source"),
-                "utm_source": r.get("utm_source"),
+                "email_masked": masked_email,
+                "email": masked_email,
+                "source": source_val,
+                "referral_source": source_val,
+                "utm_source": source_val,
                 "is_demo": r.get("is_demo", True),
+                "track": r.get("track") or "AI Workshop",
                 "created_at": r.get("created_at"),
             })
 
@@ -385,9 +398,13 @@ def supabase_get_admin_metrics() -> Optional[Dict[str, Any]]:
             "cta_clicks": cta_clicks,
             "challenge_participation_rate": part_rate,
             "funnel_conversion_rates": {
+                "comparison_to_contract": comp_to_contract,
                 "comparisons_to_contracts": comp_to_contract,
+                "contract_to_cta": contract_to_cta,
                 "contracts_to_cta_clicks": contract_to_cta,
+                "cta_to_registration": cta_to_reg,
                 "cta_clicks_to_registrations": cta_to_reg,
+                "comparison_to_registration": overall,
                 "overall_conversion": overall,
             },
             "campaign_sources": campaign_sources,

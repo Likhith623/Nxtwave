@@ -137,9 +137,14 @@ def get_growth_metrics(db: Session) -> Dict[str, Any]:
     regs_data = [
         {
             "id": r.registration_id,
-            "name": r.name,
+            "name": r.name or "Student Participant",
+            "full_name": r.name or "Student Participant",
             "email_masked": f"{r.email[:3]}***@{r.email.split('@')[-1]}" if "@" in r.email else "***",
+            "masked_email": f"{r.email[:3]}***@{r.email.split('@')[-1]}" if "@" in r.email else "***",
+            "email": f"{r.email[:3]}***@{r.email.split('@')[-1]}" if "@" in r.email else "***",
             "source": r.utm_source or r.referral_source or "direct",
+            "referral_source": r.utm_source or r.referral_source or "direct",
+            "utm_source": r.utm_source or r.referral_source or "direct",
             "is_demo": r.is_demo,
             "contract_id": r.contract_id,
             "created_at": r.created_at.strftime("%Y-%m-%d %H:%M") if r.created_at else ""
@@ -176,9 +181,13 @@ def get_growth_metrics(db: Session) -> Dict[str, Any]:
         "challenge_participation_rate": challenge_rate,
         "funnel_conversion_rates": {
             "comparison_to_contract": comp_to_contract_rate,
+            "comparisons_to_contracts": comp_to_contract_rate,
             "contract_to_cta": contract_to_cta_rate,
+            "contracts_to_cta_clicks": contract_to_cta_rate,
             "cta_to_registration": cta_to_reg_rate,
-            "comparison_to_registration": overall_funnel_rate
+            "cta_clicks_to_registrations": cta_to_reg_rate,
+            "comparison_to_registration": overall_funnel_rate,
+            "overall_conversion": overall_funnel_rate
         },
         "campaign_sources": campaign_sources,
         "recent_registrations": regs_data,

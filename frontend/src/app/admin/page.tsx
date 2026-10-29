@@ -409,14 +409,14 @@ export default function AdminPage() {
                           className="even:bg-white/[0.02] odd:bg-transparent hover:bg-white/[0.05] transition-colors"
                         >
                           <td className="py-3 font-medium text-white">
-                            {r.full_name}
+                            {r.full_name || r.name || "Student Participant"}
                           </td>
                           <td className="py-3 text-slate-400 font-mono">
-                            {r.email}
+                            {r.email || r.masked_email || r.email_masked || "***"}
                           </td>
                           <td className="py-3">
                             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-                              {r.track}
+                              {r.track || "60-Min Build Prototype"}
                             </span>
                           </td>
                         </tr>
