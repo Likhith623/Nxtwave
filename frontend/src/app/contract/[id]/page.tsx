@@ -452,15 +452,17 @@ export default function ContractPage({
           </div>
         </div>
 
-        {/* TWO-COLUMN HERO: 6 PILLARS (LEFT) + 60-MIN PIE CHART (RIGHT) */}
+        {/* TWO-COLUMN HERO: 6 KEY PILLARS (LEFT) + 60-MIN PIE CHART (RIGHT) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
-          {/* Left Column: 6 Structured Cards */}
+          {/* Left Column: 6 Structured Pillar Cards */}
           <div className="lg:col-span-7 flex flex-col justify-between gap-3">
             
-            {/* 1. ₹0 Tech Stack */}
-            <a href="#sec1" className="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-start gap-3">
-              <span className="w-7 h-7 rounded-full bg-rose-500 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+            {/* Tech Stack */}
+            <a href="#sec1" className="p-3.5 rounded-2xl bg-slate-900/40 hover:bg-slate-800/60 border border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
+              <span className="w-8 h-8 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+                <Cpu className="w-4 h-4" />
+              </span>
               <div>
                 <strong className="text-sm font-bold text-white block">₹0 Tech Stack</strong>
                 <span className="text-xs text-slate-300 leading-snug">
@@ -469,9 +471,11 @@ export default function ContractPage({
               </div>
             </a>
 
-            {/* 2. Load-Bearing Assumption */}
-            <a href="#sec2" className="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-start gap-3">
-              <span className="w-7 h-7 rounded-full bg-indigo-500 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+            {/* Load-Bearing Assumption */}
+            <a href="#sec2" className="p-3.5 rounded-2xl bg-slate-900/40 hover:bg-slate-800/60 border border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
+              <span className="w-8 h-8 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+                <AlertTriangle className="w-4 h-4" />
+              </span>
               <div>
                 <strong className="text-sm font-bold text-white block">Load-Bearing Assumption</strong>
                 <span className="text-xs text-slate-300 leading-snug">
@@ -480,20 +484,24 @@ export default function ContractPage({
               </div>
             </a>
 
-            {/* 3. Failure Tests */}
-            <a href="#sec3" className="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-start gap-3">
-              <span className="w-7 h-7 rounded-full bg-amber-500 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+            {/* Failure Tests */}
+            <a href="#sec3" className="p-3.5 rounded-2xl bg-slate-900/40 hover:bg-slate-800/60 border border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
+              <span className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+                <ShieldAlert className="w-4 h-4" />
+              </span>
               <div>
                 <strong className="text-sm font-bold text-white block">Failure Tests</strong>
                 <span className="text-xs text-slate-300 leading-snug">
-                  2–3 tests: what to test, what to expect, accept criteria, fix. Labelled &ldquo;Proposed&rdquo;.
+                  2–3 targeted stress tests: what to test, expected output, and remediation plans.
                 </span>
               </div>
             </a>
 
-            {/* 4. Scope Boundary */}
-            <a href="#sec4" className="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-start gap-3">
-              <span className="w-7 h-7 rounded-full bg-emerald-500 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
+            {/* Scope Boundary */}
+            <a href="#sec4" className="p-3.5 rounded-2xl bg-slate-900/40 hover:bg-slate-800/60 border border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
+              <span className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+                <Target className="w-4 h-4" />
+              </span>
               <div>
                 <strong className="text-sm font-bold text-white block">Scope Boundary</strong>
                 <span className="text-xs text-slate-300 leading-snug">
@@ -502,9 +510,11 @@ export default function ContractPage({
               </div>
             </a>
 
-            {/* 5. 60-Minute Prototype Plan */}
-            <a href="#sec5" className="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-start gap-3">
-              <span className="w-7 h-7 rounded-full bg-violet-500 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">5</span>
+            {/* 60-Minute Prototype Plan */}
+            <a href="#sec5" className="p-3.5 rounded-2xl bg-slate-900/40 hover:bg-slate-800/60 border border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
+              <span className="w-8 h-8 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+                <Clock className="w-4 h-4" />
+              </span>
               <div>
                 <strong className="text-sm font-bold text-white block">60-Minute Prototype Plan</strong>
                 <span className="text-xs text-slate-300 leading-snug">
@@ -513,11 +523,13 @@ export default function ContractPage({
               </div>
             </a>
 
-            {/* 6. 5-Minute Next Action */}
-            <a href="#sec6" className="p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition flex items-start gap-3">
-              <span className="w-7 h-7 rounded-full bg-pink-500 text-white font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">6</span>
+            {/* Day-1 Launch Action */}
+            <a href="#sec6" className="p-3.5 rounded-2xl bg-slate-900/40 hover:bg-slate-800/60 border border-white/10 hover:border-indigo-500/40 transition-all flex items-start gap-3.5 group">
+              <span className="w-8 h-8 rounded-xl bg-pink-500/10 border border-pink-500/20 text-pink-400 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+                <Zap className="w-4 h-4" />
+              </span>
               <div>
-                <strong className="text-sm font-bold text-white block">5-Minute Next Action</strong>
+                <strong className="text-sm font-bold text-white block">Day-1 Launch Action</strong>
                 <span className="text-xs text-slate-300 leading-snug">
                   One task you can do right now to build momentum immediately.
                 </span>
@@ -604,14 +616,14 @@ export default function ContractPage({
           </Link>
         </div>
 
-        {/* DETAILED TECHNICAL EXECUTION PANELS (SECTIONS 1 TO 6) */}
+        {/* DETAILED TECHNICAL EXECUTION PANELS */}
 
-        {/* 1. The ₹0 Tech Stack */}
+        {/* The ₹0 Tech Stack */}
         <div id="sec1" className="pt-6 border-t border-white/10 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Cpu className="w-4 h-4 text-rose-500" />
-              <span>1. The ₹0 Tech Stack (Everything Required to Build)</span>
+              <span>₹0 Tech Stack (Everything Required to Build)</span>
             </h3>
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               ₹0 Cloud Fees
@@ -642,12 +654,12 @@ export default function ContractPage({
           )}
         </div>
 
-        {/* 2. Load-Bearing Assumption */}
+        {/* Load-Bearing Assumption */}
         <div id="sec2" className="pt-6 border-t border-white/10 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-500" />
-              <span>2. The “Load-Bearing Assumption” (The Trap &amp; Key Limitation)</span>
+              <span>The “Load-Bearing Assumption” (The Trap &amp; Key Limitation)</span>
             </h3>
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
               Single Point of Failure
@@ -663,12 +675,12 @@ export default function ContractPage({
           </div>
         </div>
 
-        {/* 3. Concrete Failure Tests */}
+        {/* Concrete Failure Tests */}
         <div id="sec3" className="pt-6 border-t border-white/10 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <ListChecks className="w-4 h-4 text-indigo-400" />
-              <span>3. Concrete Failure Tests</span>
+              <span>Concrete Failure Tests</span>
             </h3>
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
               Proposed Tests — Not Yet Executed
@@ -683,19 +695,19 @@ export default function ContractPage({
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
                   <div className="p-2.5 rounded bg-black/30 border border-white/5">
-                    <strong className="text-slate-400 block mb-0.5">1. What to Test:</strong>
+                    <strong className="text-slate-400 block mb-0.5">What to Test:</strong>
                     <span className="text-slate-200">{test.what_is_tested}</span>
                   </div>
                   <div className="p-2.5 rounded bg-black/30 border border-white/5">
-                    <strong className="text-slate-400 block mb-0.5">2. What to Expect:</strong>
+                    <strong className="text-slate-400 block mb-0.5">What to Expect:</strong>
                     <span className="text-slate-200">{test.expected_observation}</span>
                   </div>
                   <div className="p-2.5 rounded bg-black/30 border border-white/5">
-                    <strong className="text-emerald-400 block mb-0.5">3. Acceptance Criteria:</strong>
+                    <strong className="text-emerald-400 block mb-0.5">Acceptance Criteria:</strong>
                     <span className="text-slate-200">{test.acceptance_criteria}</span>
                   </div>
                   <div className="p-2.5 rounded bg-black/30 border border-white/5">
-                    <strong className="text-amber-400 block mb-0.5">4. How to Fix It:</strong>
+                    <strong className="text-amber-400 block mb-0.5">How to Fix It:</strong>
                     <span className="text-slate-200">{test.remediation_plan}</span>
                   </div>
                 </div>
@@ -704,12 +716,12 @@ export default function ContractPage({
           </div>
         </div>
 
-        {/* 4. Strict Scope Boundary */}
+        {/* Strict Scope Boundary */}
         <div id="sec4" className="pt-6 border-t border-white/10 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Target className="w-4 h-4 text-emerald-400" />
-              <span>4. Strict Scope Boundary</span>
+              <span>Strict Scope Boundary</span>
             </h3>
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">
               DO NOT Build in Week 1
@@ -741,12 +753,12 @@ export default function ContractPage({
           </div>
         </div>
 
-        {/* 5. The 60-Minute Prototype Plan */}
+        {/* The 60-Minute Prototype Plan */}
         <div id="sec5" className="pt-6 border-t border-white/10 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Clock className="w-4 h-4 text-indigo-400" />
-              <span>5. The 60-Minute Prototype Plan</span>
+              <span>The 60-Minute Prototype Plan</span>
             </h3>
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
               Four 15-Minute Milestones
@@ -768,12 +780,12 @@ export default function ContractPage({
           </div>
         </div>
 
-        {/* 6. 5-Minute Immediate Next Action */}
+        {/* Immediate Next Action */}
         <div id="sec6" className="pt-6 border-t border-white/10 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Zap className="w-4 h-4 text-emerald-400" />
-              <span>6. Immediate Next Action (Start in 5 Minutes)</span>
+              <span>Immediate Next Action (Start in 5 Minutes)</span>
             </h3>
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               Momentum Trigger

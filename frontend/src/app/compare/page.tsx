@@ -14,6 +14,8 @@ import {
   Lightbulb,
   RefreshCw,
   FileCheck2,
+  Target,
+  Zap,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { compareIdeas, generateContract, trackAnalyticsEvent } from "@/lib/api";
@@ -28,7 +30,7 @@ interface IdeaInput {
 
 const PRESETS = [
   {
-    label: "RAG Support Bot vs Crypto Trading Engine",
+    label: "RAG Support Bot vs Crypto Arbitrage",
     ideas: [
       {
         name: "AI Customer Support Agent",
@@ -45,7 +47,7 @@ const PRESETS = [
     ],
   },
   {
-    label: "WhatsApp Expense Tracker vs Peer Whiteboard",
+    label: "WhatsApp Expense Bot vs Whiteboard",
     ideas: [
       {
         name: "WhatsApp Smart Expense Tracker",
@@ -62,6 +64,8 @@ const PRESETS = [
     ],
   },
 ];
+
+const CARD_BADGES = ["A", "B", "C"];
 
 export default function ComparePage() {
   const router = useRouter();
@@ -155,7 +159,7 @@ export default function ComparePage() {
     // Validation
     for (let i = 0; i < ideas.length; i++) {
       if (!ideas[i].name.trim() || !ideas[i].description.trim()) {
-        error(`Please fill in both name and description for Idea #${i + 1}`);
+        error(`Please fill in both name and description for Idea ${CARD_BADGES[i]}`);
         return;
       }
     }
@@ -174,7 +178,6 @@ export default function ComparePage() {
       const res = await compareIdeas(payload);
       setResult(res);
 
-      // Trigger celebration
       confetti({
         particleCount: 80,
         spread: 60,
@@ -201,7 +204,7 @@ export default function ComparePage() {
         archetype: winner.archetype || "RAG_PIPELINE",
         target_audience: winner.target_audience || "Engineering teams",
         key_assumptions: [
-          `Assumption 1: Core value can be demonstrated within 3 user steps.`,
+          `Assumption 1: Core value can be demonstrated within 3 user interactions.`,
           `Assumption 2: Third-party API quotas and latency will stay under 1.5s.`,
           `Assumption 3: The database schema will not require migrations after hour 2.`,
         ],
@@ -229,350 +232,399 @@ export default function ComparePage() {
     }
   };
 
+  const winnerScore = result?.winner?.overall_score || result?.winner?.score || 89;
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Page Header */}
-      <div className="text-center max-w-3xl mx-auto mb-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 mb-4">
-          <Layers className="w-3.5 h-3.5" />
-          <span>Deterministic Evaluation Matrix</span>
-        </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4">
-          Compare Project Ideas
-        </h1>
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-          Input 2 or 3 candidate project concepts. Project Compass objectively scores each on
-          Feasibility, 48-Hour Scope Viability, and Market Traction to give you a definitive winner.
-        </p>
-      </div>
-
-      {/* Friend Context Loaded Banner */}
-      {sourceContractId && (
-        <div className="glass-card p-4 sm:p-5 mb-6 border-2 border-indigo-500/40 bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-cyan-500/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-400 block mb-1">
-              🔗 LOADED CONTEXT FROM SHARED BLUEPRINT ({sourceContractId})
+    <div className="min-h-screen bg-[#07090e] text-slate-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        {/* Page Header */}
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-4 backdrop-blur-sm">
+            <Layers className="w-3.5 h-3.5 text-indigo-400" />
+            <span>Deterministic Decision Engine</span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4">
+            <span className="bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+              Compare Project Concepts
             </span>
-            <h4 className="text-sm font-bold text-white">
-              Friend&apos;s project loaded into Idea #1!
-            </h4>
-            <p className="text-xs text-slate-300 mt-0.5">
-              Refine their scope, or enter your own idea in Idea #2 to compare head-to-head and generate your own 60-min build plan.
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Link
-              href={`/contract/${sourceContractId}`}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/10 hover:bg-white/15 text-white transition whitespace-nowrap"
-            >
-              View Friend&apos;s Blueprint
-            </Link>
-            <Link
-              href={`/challenge/${sourceContractId}`}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-600 hover:bg-purple-500 text-white transition whitespace-nowrap"
-            >
-              Break Their Build 🛡️
-            </Link>
-          </div>
+          </h1>
+          <p className="text-base sm:text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto">
+            Benchmark candidate architectures side-by-side. Objectively scored across
+            Feasibility, 48-Hour Scope Viability, and Market Traction.
+          </p>
         </div>
-      )}
 
-      {/* Preset Quick Fill Bar */}
-      <div className="glass-card p-4 mb-8 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
-          <Lightbulb className="w-4 h-4 text-amber-500" />
-          <span>Quick Test Presets:</span>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {PRESETS.map((p, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => loadPreset(p)}
-              className="text-xs px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition"
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Form Section */}
-      <form onSubmit={handleCompare} className="space-y-8">
-        <div className={`grid grid-cols-1 ${ideas.length === 3 ? "lg:grid-cols-3" : "md:grid-cols-2"} gap-6`}>
-          {ideas.map((idea, idx) => (
-            <div
-              key={idx}
-              className="glass-card p-6 sm:p-7 relative border-t-4 border-t-indigo-500 flex flex-col justify-between"
-            >
+        {/* Friend Context Loaded Banner */}
+        {sourceContractId && (
+          <div className="relative overflow-hidden rounded-2xl border border-indigo-500/30 bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-cyan-500/10 p-5 mb-8 backdrop-blur-md">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-                    Idea #{idx + 1}
-                  </span>
-                  {idx === 2 && (
-                    <button
-                      type="button"
-                      onClick={removeThirdIdea}
-                      className="p-1 rounded-md text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition"
-                      title="Remove Idea #3"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-
-                <div className="space-y-4">
-                  {/* Title */}
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
-                      Project Name *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. AI Customer Support Agent"
-                      value={idea.name}
-                      onChange={(e) => handleIdeaChange(idx, "name", e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                  </div>
-
-                  {/* Description */}
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
-                      Concept & Core Mechanism *
-                    </label>
-                    <textarea
-                      required
-                      rows={4}
-                      placeholder="What does it solve and what is the primary technical workflow?"
-                      value={idea.description}
-                      onChange={(e) => handleIdeaChange(idx, "description", e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                    />
-                  </div>
-
-                  {/* Target Audience */}
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
-                      Target Audience
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. CS students, B2B sales reps"
-                      value={idea.target_audience}
-                      onChange={(e) => handleIdeaChange(idx, "target_audience", e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                  </div>
-
-                  {/* Tech Stack */}
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
-                      Tech Stack (comma separated)
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Next.js, FastAPI, SQLite, OpenAI"
-                      value={idea.tech_stack}
-                      onChange={(e) => handleIdeaChange(idx, "tech_stack", e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
-          {ideas.length < 3 ? (
-            <button
-              type="button"
-              onClick={addThirdIdea}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add 3rd Project Idea</span>
-            </button>
-          ) : (
-            <div />
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold text-base shadow-lg shadow-indigo-600/30 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 cursor-pointer"
-          >
-            {loading ? (
-              <>
-                <RefreshCw className="w-5 h-5 animate-spin" />
-                <span>Running Deterministic Matrix...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-5 h-5" />
-                <span>Run Objective Comparison</span>
-              </>
-            )}
-          </button>
-        </div>
-      </form>
-
-      {/* RESULTS SECTION */}
-      {result && (
-        <div className="mt-16 space-y-8 animate-in fade-in-50 duration-500">
-          {/* Winner Banner */}
-          <div className="p-8 sm:p-10 rounded-3xl border border-emerald-500/40 bg-gradient-to-br from-emerald-500/10 via-slate-900/60 to-indigo-500/10 backdrop-blur-xl relative overflow-hidden shadow-2xl">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
-                  <Trophy className="w-4 h-4 text-amber-400" />
-                  <span>RECOMMENDED BUILD WINNER</span>
-                </div>
-                <h3 className="text-3xl sm:text-4xl font-extrabold text-white">
-                  {result.winner?.name}
-                </h3>
-                <p className="text-sm text-slate-300 max-w-2xl leading-relaxed">
-                  {result.winner?.reasoning ||
-                    "Highest overall score balancing technical feasibility, 48-hour delivery timeline, and clear problem definition."}
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-400 block mb-1">
+                  Shared Blueprint Context ({sourceContractId})
+                </span>
+                <h4 className="text-sm font-semibold text-white">
+                  Friend&apos;s project seeded into Idea A
+                </h4>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  Refine their parameters or enter your own concept in Idea B to determine the superior build.
                 </p>
               </div>
-
-              <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-black/40 border border-white/10 text-center min-w-[140px]">
-                <span className="text-4xl font-black text-emerald-400">
-                  {result.winner?.overall_score || result.winner?.score || "89"}
-                </span>
-                <span className="text-[11px] uppercase font-bold text-slate-400 mt-1">
-                  Overall Index / 100
-                </span>
+              <div className="flex items-center gap-2.5">
+                <Link
+                  href={`/contract/${sourceContractId}`}
+                  className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/15 text-white border border-white/10 transition whitespace-nowrap"
+                >
+                  View Blueprint
+                </Link>
+                <Link
+                  href={`/challenge/${sourceContractId}`}
+                  className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm shadow-indigo-500/30 transition whitespace-nowrap"
+                >
+                  Peer Critique
+                </Link>
               </div>
-            </div>
-
-            {/* CTA to Generate Contract */}
-            <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-2 text-xs text-slate-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <span>Ready to commit? Lock in this project's 60-Minute Build Contract now.</span>
-              </div>
-              <button
-                type="button"
-                onClick={handleGenerateContract}
-                disabled={generatingContract}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/20 transition hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 cursor-pointer"
-              >
-                {generatingContract ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Generating Contract...</span>
-                  </>
-                ) : (
-                  <>
-                    <FileCheck2 className="w-4 h-4" />
-                    <span>Generate Build Contract</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
             </div>
           </div>
+        )}
 
-          {/* Evaluations Breakdown Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(result.evaluations || []).map((ev: any, i: number) => {
-              const isWinner = ev.name === result.winner?.name;
-              return (
-                <div
-                  key={i}
-                  className={`glass-card p-6 flex flex-col justify-between ${
-                    isWinner
-                      ? "border-emerald-500/50 shadow-lg shadow-emerald-500/10"
-                      : "border-slate-200 dark:border-slate-800"
-                  }`}
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">
-                        Concept #{i + 1}
+        {/* Preset Quick Fill Bar */}
+        <div className="glass-panel rounded-2xl p-3 sm:p-4 mb-8 flex flex-col sm:flex-row items-center justify-between gap-3 border border-white/10">
+          <div className="flex items-center gap-2 text-xs font-medium text-slate-400">
+            <Lightbulb className="w-4 h-4 text-amber-400" />
+            <span>Preset Scenarios:</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {PRESETS.map((p, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => loadPreset(p)}
+                className="text-xs px-3.5 py-1.5 rounded-full border border-white/10 bg-slate-900/60 hover:bg-slate-800/80 hover:border-indigo-500/40 text-slate-300 hover:text-white font-medium transition cursor-pointer"
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Form Section */}
+        <form onSubmit={handleCompare} className="space-y-8">
+          <div className={`grid grid-cols-1 ${ideas.length === 3 ? "lg:grid-cols-3" : "md:grid-cols-2"} gap-6`}>
+            {ideas.map((idea, idx) => (
+              <div
+                key={idx}
+                className="relative rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-gradient-to-r before:from-indigo-500/50 before:via-purple-500/40 before:to-cyan-500/50 transition-all hover:border-white/20"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-7 h-7 rounded-lg bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center text-xs font-bold font-mono">
+                        {CARD_BADGES[idx]}
                       </span>
-                      {isWinner && (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-                          WINNER
-                        </span>
-                      )}
-                    </div>
-                    <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
-                      {ev.name}
-                    </h4>
-
-                    {/* Progress Bars */}
-                    <div className="space-y-3 mb-6">
-                      <div>
-                        <div className="flex justify-between text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                          <span>Feasibility (48h)</span>
-                          <span className="font-bold">{ev.feasibility_score || ev.feasibility || 85}%</span>
-                        </div>
-                        <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                          <div
-                            className="h-full bg-indigo-500 rounded-full transition-all duration-1000"
-                            style={{ width: `${ev.feasibility_score || ev.feasibility || 85}%` }}
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="flex justify-between text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                          <span>Uniqueness</span>
-                          <span className="font-bold">{ev.uniqueness_score || ev.uniqueness || 80}%</span>
-                        </div>
-                        <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                          <div
-                            className="h-full bg-purple-500 rounded-full transition-all duration-1000"
-                            style={{ width: `${ev.uniqueness_score || ev.uniqueness || 80}%` }}
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="flex justify-between text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                          <span>Market Demand</span>
-                          <span className="font-bold">{ev.market_score || ev.market || 88}%</span>
-                        </div>
-                        <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                          <div
-                            className="h-full bg-cyan-500 rounded-full transition-all duration-1000"
-                            style={{ width: `${ev.market_score || ev.market || 88}%` }}
-                          />
-                        </div>
-                      </div>
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        Concept {CARD_BADGES[idx]}
+                      </span>
                     </div>
 
-                    {/* Strengths and Blindspots */}
-                    <div className="space-y-3 text-xs">
-                      {ev.strengths && (
-                        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300">
-                          <span className="font-bold block mb-0.5">Key Advantage:</span>
-                          {Array.isArray(ev.strengths) ? ev.strengths[0] : ev.strengths}
-                        </div>
-                      )}
+                    {idx === 2 && (
+                      <button
+                        type="button"
+                        onClick={removeThirdIdea}
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-amber-400 hover:bg-amber-400/10 transition"
+                        title="Remove Idea C"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
 
-                      {ev.blindspots && (
-                        <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300">
-                          <span className="font-bold block mb-0.5">Critical Risk:</span>
-                          {Array.isArray(ev.blindspots) ? ev.blindspots[0] : ev.blindspots}
-                        </div>
-                      )}
+                  <div className="space-y-4">
+                    {/* Project Name */}
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1.5">
+                        Project Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. AI Customer Support Agent"
+                        value={idea.name}
+                        onChange={(e) => handleIdeaChange(idx, "name", e.target.value)}
+                        className="bg-slate-800/60 border border-white/10 text-white placeholder:text-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 w-full text-sm outline-none transition"
+                      />
+                    </div>
+
+                    {/* Concept Description */}
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1.5">
+                        Mechanism & Architecture *
+                      </label>
+                      <textarea
+                        required
+                        rows={4}
+                        placeholder="What problem does it solve and what is the primary technical workflow?"
+                        value={idea.description}
+                        onChange={(e) => handleIdeaChange(idx, "description", e.target.value)}
+                        className="bg-slate-800/60 border border-white/10 text-white placeholder:text-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 w-full text-sm outline-none transition resize-none"
+                      />
+                    </div>
+
+                    {/* Target Audience */}
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1.5">
+                        Target Audience
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. CS students, B2B sales teams"
+                        value={idea.target_audience}
+                        onChange={(e) => handleIdeaChange(idx, "target_audience", e.target.value)}
+                        className="bg-slate-800/60 border border-white/10 text-white placeholder:text-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 w-full text-sm outline-none transition"
+                      />
+                    </div>
+
+                    {/* Tech Stack */}
+                    <div>
+                      <label className="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1.5">
+                        Tech Stack
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Next.js, FastAPI, SQLite, OpenAI"
+                        value={idea.tech_stack}
+                        onChange={(e) => handleIdeaChange(idx, "tech_stack", e.target.value)}
+                        className="bg-slate-800/60 border border-white/10 text-white placeholder:text-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 w-full text-sm outline-none transition"
+                      />
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
-        </div>
-      )}
+
+          {/* Action Row */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+            {ideas.length < 3 ? (
+              <button
+                type="button"
+                onClick={addThirdIdea}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/10 bg-slate-900/60 hover:bg-slate-800 text-sm font-medium text-slate-300 hover:text-white transition cursor-pointer"
+              >
+                <Plus className="w-4 h-4 text-indigo-400" />
+                <span>Add Candidate Idea C</span>
+              </button>
+            ) : (
+              <div />
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/25 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 cursor-pointer"
+            >
+              {loading ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin text-white" />
+                  <span>Evaluating Matrix...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 text-indigo-200" />
+                  <span>Run Comparison Matrix</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+
+        {/* RESULTS SECTION */}
+        {result && (
+          <div className="mt-16 space-y-8 animate-in fade-in-50 duration-500">
+            {/* Winner Banner */}
+            <div className="rounded-3xl border border-emerald-500/30 bg-gradient-to-br from-emerald-950/20 via-slate-900/80 to-indigo-950/30 backdrop-blur-2xl p-8 sm:p-10 relative overflow-hidden shadow-2xl">
+              <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+                <div className="space-y-3 max-w-2xl">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                    <span>RECOMMENDED BUILD ARCHETYPE</span>
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    {result.winner?.name}
+                  </h2>
+                  <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    {result.winner?.reasoning ||
+                      "Optimal balance of technical feasibility, tight 48-hour execution scope, and high market demand."}
+                  </p>
+                </div>
+
+                {/* Score Circular Badge */}
+                <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-black/40 border border-white/10 text-center min-w-[160px]">
+                  <div className="relative w-24 h-24 flex items-center justify-center">
+                    <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                      <path
+                        className="text-white/10"
+                        strokeWidth="3"
+                        stroke="currentColor"
+                        fill="none"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                      <path
+                        className="text-emerald-400"
+                        strokeDasharray={`${winnerScore}, 100`}
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        stroke="currentColor"
+                        fill="none"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-2xl font-black text-white">{winnerScore}</span>
+                      <span className="text-[10px] text-slate-400 font-medium">/ 100</span>
+                    </div>
+                  </div>
+                  <span className="text-[11px] uppercase font-bold tracking-wider text-emerald-400 mt-2">
+                    Overall Index
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Banner inside Winner Box */}
+              <div className="relative z-10 mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-2 text-xs text-slate-300">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Lock in this winner as a formal 60-Minute Build Contract with milestones.</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleGenerateContract}
+                  disabled={generatingContract}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/20 transition hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 cursor-pointer"
+                >
+                  {generatingContract ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>Generating Blueprint...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FileCheck2 className="w-4 h-4" />
+                      <span>Generate Build Contract</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Evaluation Breakdown Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {(result.evaluations || []).map((ev: any, i: number) => {
+                const isWinner = ev.name === result.winner?.name;
+                const feasibility = ev.feasibility_score || ev.feasibility || 85;
+                const uniqueness = ev.uniqueness_score || ev.uniqueness || 80;
+                const market = ev.market_score || ev.market || 88;
+
+                return (
+                  <div
+                    key={i}
+                    className={`rounded-2xl border p-6 flex flex-col justify-between backdrop-blur-xl transition ${
+                      isWinner
+                        ? "border-emerald-500/40 bg-slate-900/80 shadow-lg shadow-emerald-500/5"
+                        : "border-white/10 bg-slate-900/50"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs font-mono font-semibold text-slate-400 uppercase">
+                          Concept {CARD_BADGES[i] || `${i + 1}`}
+                        </span>
+                        {isWinner && (
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            WINNER
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 className="text-lg font-bold text-white mb-5 line-clamp-2">
+                        {ev.name}
+                      </h3>
+
+                      {/* Clean Metric Bars */}
+                      <div className="space-y-3.5 mb-6">
+                        <div>
+                          <div className="flex justify-between text-xs font-medium text-slate-300 mb-1.5">
+                            <span className="flex items-center gap-1.5">
+                              <Zap className="w-3.5 h-3.5 text-indigo-400" />
+                              <span>Feasibility (48h)</span>
+                            </span>
+                            <span className="font-semibold text-white">{feasibility}%</span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                            <div
+                              className="h-full bg-indigo-500 rounded-full transition-all duration-700"
+                              style={{ width: `${feasibility}%` }}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="flex justify-between text-xs font-medium text-slate-300 mb-1.5">
+                            <span className="flex items-center gap-1.5">
+                              <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                              <span>Uniqueness</span>
+                            </span>
+                            <span className="font-semibold text-white">{uniqueness}%</span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                            <div
+                              className="h-full bg-purple-500 rounded-full transition-all duration-700"
+                              style={{ width: `${uniqueness}%` }}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="flex justify-between text-xs font-medium text-slate-300 mb-1.5">
+                            <span className="flex items-center gap-1.5">
+                              <Target className="w-3.5 h-3.5 text-cyan-400" />
+                              <span>Market Demand</span>
+                            </span>
+                            <span className="font-semibold text-white">{market}%</span>
+                          </div>
+                          <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                            <div
+                              className="h-full bg-cyan-400 rounded-full transition-all duration-700"
+                              style={{ width: `${market}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Strengths and Blindspots */}
+                      <div className="space-y-2.5 text-xs">
+                        {ev.strengths && (
+                          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300">
+                            <span className="font-semibold block mb-0.5 text-emerald-400">Core Strength:</span>
+                            {Array.isArray(ev.strengths) ? ev.strengths[0] : ev.strengths}
+                          </div>
+                        )}
+
+                        {ev.blindspots && (
+                          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300">
+                            <span className="font-semibold block mb-0.5 text-amber-400">Critical Risk:</span>
+                            {Array.isArray(ev.blindspots) ? ev.blindspots[0] : ev.blindspots}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
-
