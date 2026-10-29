@@ -91,6 +91,60 @@ def get_growth_metrics(db: Session) -> Dict[str, Any]:
                 for e in recent_evts
             ]
             supa_m["page_views"] = supa_m.get("cta_clicks", 0) * 3 + supa_m["total_comparisons"]
+
+            # Merge local SQLite registrations so newly registered students ALWAYS appear immediately
+            local_regs = (
+                db.query(WorkshopRegistration)
+                .order_by(WorkshopRegistration.created_at.desc())
+                .limit(25)
+                .all()
+            )
+            local_formatted = []
+            for r in local_regs:
+                email_val = r.email or ""
+                if "@" in email_val:
+                    p1, p2 = email_val.split("@", 1)
+                    m_email = (p1[:3] + "***@" + p2) if len(p1) > 3 else (p1[0] + "***@" + p2)
+                else:
+                    m_email = "***"
+                s_name = r.name or "Student Participant"
+                src = r.utm_source or r.referral_source or "direct"
+                local_formatted.append({
+                    "registration_id": r.registration_id,
+                    "name": s_name,
+                    "full_name": s_name,
+                    "masked_email": m_email,
+                    "email_masked": m_email,
+                    "email": m_email,
+                    "source": src,
+                    "referral_source": src,
+                    "utm_source": src,
+                    "is_demo": r.is_demo,
+                    "track": "AI Workshop",
+                    "created_at": r.created_at.isoformat() if r.created_at else "",
+                })
+
+            seen_emails = set()
+            merged_regs = []
+            for item in local_formatted:
+                ek = item["email"].lower()
+                if ek not in seen_emails:
+                    seen_emails.add(ek)
+                    merged_regs.append(item)
+
+            for item in supa_m.get("recent_registrations", []):
+                ek = (item.get("email") or item.get("email_masked") or "").lower()
+                if ek not in seen_emails:
+                    seen_emails.add(ek)
+                    merged_regs.append(item)
+
+            supa_m["recent_registrations"] = merged_regs[:15]
+            
+            # Ensure total counts accurately reflect any local signups
+            local_count = db.query(WorkshopRegistration).count()
+            if local_count > supa_m.get("total_registrations", 0):
+                supa_m["total_registrations"] = local_count
+
             return supa_m
     except Exception as e:
         logger.warning("[Supabase] Metrics fallback to local: %s", e)
