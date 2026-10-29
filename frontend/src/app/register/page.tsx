@@ -256,7 +256,7 @@ export default function RegisterPage() {
                       </label>
                       <input
                         type="text"
-                        placeholder="https://github.com/handle"
+                        placeholder="e.g. username or profile URL"
                         value={github}
                         onChange={(e) => setGithub(e.target.value)}
                         className="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 w-full text-sm outline-none transition"
