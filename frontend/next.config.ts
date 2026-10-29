@@ -4,7 +4,9 @@ import path from "path";
 const rawBackendUrl =
   process.env.BACKEND_URL ||
   process.env.NEXT_PUBLIC_API_URL ||
-  "http://127.0.0.1:8000";
+  (process.env.NODE_ENV === "production"
+    ? "https://nxtwave-ttys.onrender.com"
+    : "http://127.0.0.1:8000");
 
 const backendUrl = rawBackendUrl.replace(/\/+$/, "");
 

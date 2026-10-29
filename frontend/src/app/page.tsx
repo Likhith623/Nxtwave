@@ -143,7 +143,7 @@ export default function HomePage() {
       </div>
 
       {/* ── HERO SECTION ────────────────────────────────────────────────────── */}
-      <section className="relative pt-28 sm:pt-36 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto flex flex-col items-center text-center">
+      <section className="relative pt-12 sm:pt-16 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto flex flex-col items-center text-center">
         <ParticleHero />
 
         {/* Sleek Announcement Pill */}

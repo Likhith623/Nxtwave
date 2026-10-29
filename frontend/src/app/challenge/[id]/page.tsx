@@ -411,7 +411,7 @@ export default function ChallengePage({
           </div>
         </div>
         <Link
-          href="/"
+          href="/compare"
           className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-extrabold text-xs sm:text-sm shadow-xl shadow-emerald-500/25 transition whitespace-nowrap text-center active:scale-95 flex-shrink-0"
         >
           <span>🚀 Test My Idea Free →</span>
@@ -445,7 +445,7 @@ export default function ChallengePage({
             </div>
 
             <Link
-              href="/"
+              href="/compare"
               className="px-3 py-1.5 rounded-xl text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition whitespace-nowrap hidden sm:inline-block"
             >
               Test My Own Idea 🚀

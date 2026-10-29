@@ -53,14 +53,18 @@ export default function AdminPage() {
   const [metrics, setMetrics] = useState<any | null>(null);
   const [resetting, setResetting] = useState(false);
 
-  const fetchMetrics = async (authToken: string) => {
+  const fetchMetrics = async (authToken: string, showToast = false) => {
     try {
       setLoading(true);
       const data = await getAdminMetrics(authToken);
       setMetrics(data);
-      success("Real-time metrics updated");
+      if (showToast) {
+        success("Real-time metrics updated");
+      }
     } catch (err: any) {
-      error(err.message || "Failed to load metrics. Check token.");
+      if (showToast) {
+        error(err.message || "Failed to load metrics. Check token.");
+      }
       // Provide demo metrics fallback if backend is waiting for events
       setMetrics({
         kpis: {
@@ -210,7 +214,7 @@ export default function AdminPage() {
             </div>
 
             <button
-              onClick={() => fetchMetrics(token)}
+              onClick={() => fetchMetrics(token, true)}
               disabled={loading}
               className="inline-flex items-center justify-center p-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-700/60 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer shadow-sm dark:shadow-none"
               title="Refresh telemetry"

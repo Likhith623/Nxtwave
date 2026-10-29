@@ -67,6 +67,51 @@ const PRESETS = [
 
 const CARD_BADGES = ["A", "B", "C"];
 
+const ARCHETYPE_PAIRS: Record<string, IdeaInput[]> = {
+  rag: [
+    {
+      name: "College Policy RAG Assistant",
+      description: "Indexes university circulars and handbooks to answer student questions locally with zero API fees.",
+      target_audience: "College students and faculty",
+      tech_stack: "FastAPI, Sentence-Transformers, SQLite, CPU",
+    },
+    {
+      name: "Generic Web Search FAQ Scraper",
+      description: "Scrapes public college websites on-the-fly and runs unstructured keyword search over HTML.",
+      target_audience: "Prospective applicants and visitors",
+      tech_stack: "Python, BeautifulSoup, Flask, SQLite",
+    },
+  ],
+  vision: [
+    {
+      name: "Crop Leaf Disease Classifier",
+      description: "Lightweight MobileNet CNN classifying leaf lesions and suggesting organic remediation steps.",
+      target_audience: "Smallholder farmers and agronomists",
+      tech_stack: "PyTorch, MobileNetV2, OpenCV, FastAPI",
+    },
+    {
+      name: "Manual Farm Inspection Spreadsheet",
+      description: "Manual mobile form logging crop symptoms for delayed offline expert manual review.",
+      target_audience: "Agricultural field workers",
+      tech_stack: "React, Google Sheets API, Node.js",
+    },
+  ],
+  tabular: [
+    {
+      name: "Placement Package Predictor",
+      description: "Gradient boosting model predicting placement readiness and package brackets from coding metrics.",
+      target_audience: "Final-year college job applicants",
+      tech_stack: "Scikit-Learn, XGBoost, FastAPI, Pandas",
+    },
+    {
+      name: "Manual Resume Word Cloud Highlighter",
+      description: "Basic regex keyword counter matching resume text against generic job descriptions.",
+      target_audience: "Campus placement coordinators",
+      tech_stack: "Python, NLTK, Streamlit",
+    },
+  ],
+};
+
 export default function ComparePage() {
   const router = useRouter();
   const { success, error } = useToast();
@@ -96,7 +141,12 @@ export default function ComparePage() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const fc = params.get("from_contract");
-      if (fc) {
+      const fa = params.get("from_archetype");
+
+      if (fa && ARCHETYPE_PAIRS[fa]) {
+        setIdeas(ARCHETYPE_PAIRS[fa]);
+        success(`Loaded benchmark pair for ${ARCHETYPE_PAIRS[fa][0].name}`);
+      } else if (fc) {
         setSourceContractId(fc);
         import("@/lib/api").then(({ getContract }) => {
           getContract(fc)
@@ -160,6 +210,10 @@ export default function ComparePage() {
     for (let i = 0; i < ideas.length; i++) {
       if (!ideas[i].name.trim() || !ideas[i].description.trim()) {
         error(`Please fill in both name and description for Idea ${CARD_BADGES[i]}`);
+        return;
+      }
+      if (ideas[i].description.trim().length < 10) {
+        error(`Description for Idea ${CARD_BADGES[i]} must be at least 10 characters long`);
         return;
       }
     }
