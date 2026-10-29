@@ -2,7 +2,7 @@ import json
 import re
 from datetime import datetime
 from typing import List, Optional, Dict, Any, Union
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 class CandidateIdeaInput(BaseModel):
     title: str = Field(..., min_length=2, max_length=120, description="Short title of the idea")
@@ -172,12 +172,17 @@ class WorkshopRegistrationRequest(BaseModel):
     year_of_study: Optional[int] = None
     github_handle: Optional[str] = None
 
-    @field_validator('name', mode='before')
+    @model_validator(mode='before')
     @classmethod
-    def resolve_name(cls, v: Any, info) -> Any:
-        if not v:
-            return 'Engineering Student'
-        return v
+    def unify_name(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            raw_name = data.get('name') or data.get('full_name') or data.get('student_name')
+            if not raw_name or not str(raw_name).strip():
+                raw_name = 'Engineering Student'
+            cleaned = str(raw_name).strip()
+            data['name'] = cleaned
+            data['full_name'] = cleaned
+        return data
 
     @field_validator("email")
     @classmethod

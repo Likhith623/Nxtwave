@@ -330,8 +330,10 @@ def supabase_get_admin_metrics() -> Optional[Dict[str, Any]]:
         res_chal = sb.table("peer_challenges").select("id", count="exact").execute()
         total_chal = res_chal.count or 0
 
-        res_reg = sb.table("workshop_registrations").select("*").execute()
+        res_reg = sb.table("workshop_registrations").select("*").order("created_at", desc=True).limit(50).execute()
         regs = res_reg.data or []
+        # Ensure latest registrations appear first
+        regs = sorted(regs, key=lambda x: str(x.get("created_at") or ""), reverse=True)
         total_reg = len(regs)
         demo_reg = sum(1 for r in regs if r.get("is_demo") is True)
         confirmed_reg = total_reg - demo_reg
