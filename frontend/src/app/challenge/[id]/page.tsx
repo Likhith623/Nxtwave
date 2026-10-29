@@ -21,7 +21,7 @@ import {
   Copy,
   Check,
 } from "lucide-react";
-import { getContract, trackAnalyticsEvent } from "@/lib/api";
+import { getContract, trackAnalyticsEvent, chatWithContract } from "@/lib/api";
 import { useToast } from "@/components/ui/ToastContext";
 
 interface ChatMessage {
@@ -322,15 +322,7 @@ export default function ChallengePage({
     setSending(true);
 
     try {
-      const res = await fetch(`/api/contracts/${contractId}/challenges/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg.trim(), peer_name: "Classmate" }),
-      });
-
-      if (!res.ok) throw new Error("Chat request failed");
-
-      const data = await res.json();
+      const data = await chatWithContract(contractId, msg.trim(), "Classmate");
       const botEntry: ChatMessage = {
         id: `b_${Date.now()}`,
         sender: "bot",

@@ -1,10 +1,21 @@
 // Frontend API Client for Project Compass
 
+const RAW_API_BASE = (process.env.NEXT_PUBLIC_API_URL || "").trim().replace(/\/+$/, "");
+
+export function getApiBaseUrl(): string {
+  return RAW_API_BASE;
+}
+
 export async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const url = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const url = endpoint.startsWith("http")
+    ? endpoint
+    : RAW_API_BASE
+    ? `${RAW_API_BASE}${path}`
+    : path;
 
   const response = await fetch(url, {
     ...options,
@@ -261,4 +272,21 @@ export async function simulateWhatsAppMessage(
 // WhatsApp Status
 export async function getWhatsAppStatus() {
   return apiRequest<any>("/api/whatsapp/status");
+}
+
+// Interactive AI Chat with Project Build Contract
+export async function chatWithContract(
+  contractId: string,
+  message: string,
+  peerName: string = "Classmate"
+) {
+  return apiRequest<{
+    reply: string;
+    is_critique: boolean;
+    model_used?: string;
+    status: string;
+  }>(`/api/contracts/${contractId}/challenges/chat`, {
+    method: "POST",
+    body: JSON.stringify({ message, peer_name: peerName }),
+  });
 }

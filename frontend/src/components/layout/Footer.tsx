@@ -76,7 +76,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm">
               <li>
                 <a
-                  href="http://127.0.0.1:8000/docs"
+                  href={process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, "")}/docs` : "/docs"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
@@ -87,7 +87,7 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="http://127.0.0.1:8000/redoc"
+                  href={process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, "")}/redoc` : "/redoc"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
